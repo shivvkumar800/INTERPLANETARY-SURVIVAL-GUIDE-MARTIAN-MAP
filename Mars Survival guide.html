@@ -112,8 +112,61 @@
       opacity: 1;
     }
 
+    /* Visual Preset Switcher in Top Left */
+    .visual-switcher {
+      position: absolute;
+      top: 28px;
+      left: 32px;
+      z-index: 100;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      background: rgba(12, 16, 24, 0.65);
+      border: 1px solid rgba(255, 255, 255, 0.14);
+      padding: 5px 10px;
+      border-radius: 9999px;
+      backdrop-filter: blur(12px);
+    }
+
+    .visual-switcher-label {
+      font-family: var(--font-tech);
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 1.5px;
+      color: var(--gold-accent);
+      text-transform: uppercase;
+      padding-left: 6px;
+    }
+
+    .btn-visual-opt {
+      background: transparent;
+      border: 1px solid transparent;
+      color: rgba(255, 255, 255, 0.7);
+      font-family: var(--font-tech);
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 1px;
+      padding: 4px 12px;
+      border-radius: 9999px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      text-transform: uppercase;
+    }
+
+    .btn-visual-opt:hover {
+      color: #ffffff;
+      background: rgba(255, 255, 255, 0.08);
+    }
+
+    .btn-visual-opt.active {
+      background: rgba(212, 163, 115, 0.25);
+      border-color: var(--gold-accent);
+      color: #ffffff;
+      box-shadow: 0 0 12px rgba(212, 163, 115, 0.2);
+    }
+
     /* ==========================================================================
-       SECTION 1: THE MAJESTIC ASTRONAUT & INTRO SCREEN
+       SECTION 1: THE MAJESTIC HERO & INTRO SCREEN
        ========================================================================== */
     #intro-screen {
       position: absolute;
@@ -127,7 +180,7 @@
       flex-direction: column;
       align-items: center;
       justify-content: flex-end;
-      transform-origin: 50% 41%; /* Precise Visor Focus */
+      transform-origin: 50% 45%; /* Visor / Horizon Focus */
       transition: transform 1.7s cubic-bezier(0.76, 0, 0.24, 1), opacity 1.3s cubic-bezier(0.76, 0, 0.24, 1);
       will-change: transform, opacity;
       animation: introOpeningFade 2.5s cubic-bezier(0.2, 0.9, 0.3, 1) forwards;
@@ -154,17 +207,17 @@
       display: none;
     }
 
-    /* Celestial Atmospheric Backlight Aura behind Astronaut */
+    /* Celestial Atmospheric Backlight Aura behind Hero */
     .astronaut-backlight {
       position: absolute;
       bottom: 12%;
       left: 50%;
       transform: translateX(-50%);
-      width: 520px;
-      height: 520px;
+      width: 580px;
+      height: 580px;
       border-radius: 50%;
-      background: radial-gradient(circle at center, rgba(100, 180, 255, 0.16) 0%, rgba(212, 163, 115, 0.12) 40%, transparent 75%);
-      filter: blur(45px);
+      background: radial-gradient(circle at center, rgba(100, 180, 255, 0.18) 0%, rgba(212, 163, 115, 0.12) 40%, transparent 75%);
+      filter: blur(48px);
       pointer-events: none;
       z-index: 2;
       animation: auraBreathe 7s ease-in-out infinite alternate;
@@ -175,10 +228,10 @@
       100% { opacity: 1.0; transform: translateX(-50%) scale(1.08); }
     }
 
-    /* Astronaut Anchor Frame: Huge, Close, Grounded at Bottom */
+    /* Hero Anchor Frame: Huge, Majestic, Grounded at Bottom */
     .astronaut-anchor {
       position: absolute;
-      bottom: -15px;
+      bottom: -10px;
       left: 50%;
       transform: translateX(-50%);
       width: min(96vw, 1260px);
@@ -212,6 +265,7 @@
       object-position: center bottom;
       pointer-events: none;
       filter: drop-shadow(0 0 60px rgba(0, 0, 0, 0.98)) contrast(1.06);
+      transition: opacity 0.4s ease, filter 0.4s ease;
     }
 
     /* Ultra-Minimal, Aesthetic Tap Prompt */
@@ -277,8 +331,8 @@
     /* Sound Button */
     .audio-toggle-btn {
       position: absolute;
-      top: 30px;
-      right: 36px;
+      top: 28px;
+      right: 32px;
       z-index: 100;
       width: 44px;
       height: 44px;
@@ -601,6 +655,14 @@
     <canvas id="warp-canvas"></canvas>
     <div id="warp-overlay"></div>
 
+    <!-- Visual Image Preset Switcher (Select between the 3 images you provided) -->
+    <div class="visual-switcher">
+      <span class="visual-switcher-label">HERO:</span>
+      <button class="btn-visual-opt" id="opt-btn-1" title="Futuristic Close-Up Helmet">HELMET</button>
+      <button class="btn-visual-opt active" id="opt-btn-2" title="Floating Astronaut with Glowing Planet">PLANET &amp; SUIT</button>
+      <button class="btn-visual-opt" id="opt-btn-3" title="Orbital Atmospheric Horizon">ORBIT</button>
+    </div>
+
     <!-- Minimal Audio Toggle -->
     <button class="audio-toggle-btn" id="btn-sound" title="Toggle Soundscape" aria-label="Toggle Soundscape">
       <svg id="sound-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -611,7 +673,7 @@
 
     <!-- ======================================================================
          SECTION 1: CINEMATIC INTRO SCREEN
-         Grounded Majestic Astronaut + Ethereal Nebula + Meteors Behind
+         Grounded Majestic Hero + Ethereal Nebula + Meteors Behind
          ====================================================================== -->
     <div id="intro-screen">
       
@@ -620,7 +682,8 @@
 
       <!-- Astronaut Hero Frame - Large, Close, Grounded at Bottom -->
       <div class="astronaut-anchor" id="astronaut-anchor">
-        <img src="astronaut_hero.png" alt="NASA Astronaut" class="astronaut-image" id="astronaut-image">
+        <!-- Default: hero_2_clean.png (Floating Astronaut with glowing planet) -->
+        <img src="hero_2_clean.png" alt="NASA Astronaut" class="astronaut-image" id="astronaut-image">
       </div>
 
       <!-- Ultra-Clean, Aesthetic Tap Prompt -->
@@ -1025,7 +1088,6 @@
           const by = bs.yRatio * h - tiltY * 1.5;
           const pulse = Math.sin(Date.now() * 0.002 + i) * 0.15 + 0.85;
 
-          // Radial glow
           const starGlow = spaceCtx.createRadialGradient(bx, by, 1, bx, by, bs.spikeLen * 1.5);
           starGlow.addColorStop(0, `${bs.color}0.85)`);
           starGlow.addColorStop(0.3, `${bs.color}0.35)`);
@@ -1033,7 +1095,6 @@
           spaceCtx.fillStyle = starGlow;
           spaceCtx.fillRect(bx - bs.spikeLen * 1.5, by - bs.spikeLen * 1.5, bs.spikeLen * 3, bs.spikeLen * 3);
 
-          // Horizontal Spike
           spaceCtx.strokeStyle = `${bs.color}${0.7 * pulse})`;
           spaceCtx.lineWidth = 1.2;
           spaceCtx.beginPath();
@@ -1041,13 +1102,11 @@
           spaceCtx.lineTo(bx + bs.spikeLen * pulse, by);
           spaceCtx.stroke();
 
-          // Vertical Spike
           spaceCtx.beginPath();
           spaceCtx.moveTo(bx, by - bs.spikeLen * pulse);
           spaceCtx.lineTo(bx, by + bs.spikeLen * pulse);
           spaceCtx.stroke();
 
-          // Core
           spaceCtx.beginPath();
           spaceCtx.arc(bx, by, bs.radius, 0, Math.PI * 2);
           spaceCtx.fillStyle = '#ffffff';
@@ -1092,13 +1151,11 @@
           spaceCtx.lineCap = 'round';
           spaceCtx.stroke();
 
-          // Meteor core glow
           spaceCtx.beginPath();
           spaceCtx.arc(m.x, m.y, m.thick * 1.4, 0, Math.PI * 2);
           spaceCtx.fillStyle = `rgba(255, 255, 255, ${m.alpha})`;
           spaceCtx.fill();
 
-          // Sparks
           for (let k = m.sparks.length - 1; k >= 0; k--) {
             const sp = m.sparks[k];
             sp.alpha -= 0.045;
@@ -1181,7 +1238,6 @@
           rippleCtx.lineWidth = 3;
           rippleCtx.stroke();
 
-          // Outer refraction halo
           rippleCtx.beginPath();
           rippleCtx.arc(r.x, r.y, r.radius * 0.95, 0, Math.PI * 2);
           rippleCtx.strokeStyle = `rgba(212, 163, 115, ${r.alpha * 0.35})`;
@@ -1214,7 +1270,7 @@
         if (!isWarping) return;
         warpCtx.clearRect(0, 0, warpCanvas.width, warpCanvas.height);
         const cx = warpCanvas.width * 0.5;
-        const cy = warpCanvas.height * 0.41;
+        const cy = warpCanvas.height * 0.45;
 
         for (let i = 0; i < warpLines.length; i++) {
           const wl = warpLines[i];
@@ -1243,7 +1299,43 @@
       }
 
       /* ========================================================================
-         4. TAP ANYWHERE TO ENTER: WARP VISOR TRANSITION
+         4. HERO IMAGE PRESET SWITCHER (Between the 3 uploaded images)
+         ======================================================================== */
+      const astronautImg = document.getElementById('astronaut-image');
+      const optBtn1 = document.getElementById('opt-btn-1');
+      const optBtn2 = document.getElementById('opt-btn-2');
+      const optBtn3 = document.getElementById('opt-btn-3');
+      const allOptBtns = [optBtn1, optBtn2, optBtn3];
+
+      function setHeroImage(src, activeBtn) {
+        astronautImg.style.opacity = '0';
+        setTimeout(() => {
+          astronautImg.src = src;
+          astronautImg.style.opacity = '1';
+        }, 200);
+
+        allOptBtns.forEach(b => b.classList.remove('active'));
+        activeBtn.classList.add('active');
+        audio.playChirp();
+      }
+
+      optBtn1.addEventListener('click', (e) => {
+        e.stopPropagation();
+        setHeroImage('hero_1_clean.png', optBtn1);
+      });
+
+      optBtn2.addEventListener('click', (e) => {
+        e.stopPropagation();
+        setHeroImage('hero_2_clean.png', optBtn2);
+      });
+
+      optBtn3.addEventListener('click', (e) => {
+        e.stopPropagation();
+        setHeroImage('hero_3_clean.png', optBtn3);
+      });
+
+      /* ========================================================================
+         5. TAP ANYWHERE TO ENTER: WARP ZOOM TRANSITION
          ======================================================================== */
       const introScreen = document.getElementById('intro-screen');
       const helmetInteriorView = document.getElementById('helmet-interior-view');
@@ -1311,7 +1403,7 @@
       });
 
       /* ========================================================================
-         5. REALISTIC MARTIAN ATMOSPHERE & HORIZON (INSIDE VISOR)
+         6. REALISTIC MARTIAN ATMOSPHERE & HORIZON (INSIDE VISOR)
          ======================================================================== */
       const marsCanvas = document.getElementById('mars-surface-canvas');
       const marsCtx = marsCanvas.getContext('2d');
@@ -1328,7 +1420,6 @@
       resizeMarsCanvas();
       window.addEventListener('resize', resizeMarsCanvas);
 
-      // Volumetric Mars Dust Particles
       const dustParticles = [];
       for (let i = 0; i < 110; i++) {
         dustParticles.push({
@@ -1430,7 +1521,7 @@
       }
 
       /* ========================================================================
-         6. NASA SCIENTIST IDENTIFIED SITES
+         7. NASA SCIENTIST IDENTIFIED SITES
          ======================================================================== */
       const SITES = [
         {
