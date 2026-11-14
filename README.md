@@ -73,14 +73,56 @@ Click **`SIMULATE EVA TRAVERSE`** (or press `[SPACE]`) to watch the astronaut tr
 
 ## 📡 3. REST API Reference
 
-The lightweight mission control microservice (`server.js`) exposes the following endpoints:
+The repository features two complementary components:
+1. **Frontend Tactical Mission Control HUD** (`server.js` + `Mars Survival guide.html`)
+2. **High-Performance Python Safe-Path Routing Engine** in [`/backend`](backend/) (`FastAPI` + `NumPy`)
 
+### 🌐 Frontend Service (`server.js`)
 | Endpoint | Method | Description |
 | :--- | :---: | :--- |
 | `/api/route-analysis` | `GET` | Returns the full 8-directional Weighted A* route analysis dataset with coordinates, elevations, and slopes. |
 | `/api/mars-data` | `GET` | Returns environmental conditions (pressure, radiation, temperature, storm status) for all 6 exploration sites. |
 | `/api/health` | `GET` | Returns microservice health, mission status (`ARES-2026`), and ISO timestamp. |
 | `/` | `GET` | Serves the primary web application (`Mars Survival guide.html`). |
+
+### 🚀 Python Safe-Path Routing Backend (`/backend`)
+Built with **FastAPI** and **NumPy**, this engine provides real-time dual-path evaluation across Jezero Crater ($R_{\text{Mars}} = 3,389,500\text{ m}$ datum), calculating direct trajectories vs. 8-directional Weighted A* detours around steep slopes ($> 20.0^\circ$), cosmic radiation corridors, and Séítah dune entrapment fields.
+
+| Endpoint | Method | Description |
+| :--- | :---: | :--- |
+| `/api/route/calculate` | `POST` | Calculates & compares **Direct Path** vs **Safe Survival Path** with configurable slope limits and weights. |
+| `/api/terrain/grid` | `GET` | Exposes 2D arrays of elevation, slope angles, radiation, and dust hazards with optional downsampling for heatmap rendering. |
+| `/api/health` | `GET` | Backend system health and loaded terrain grid status. |
+| `/docs` | `GET` | Interactive Swagger UI with pre-populated Jezero Crater test coordinates. |
+
+#### `POST /api/route/calculate` Payload & Response:
+```json
+// Request Payload:
+{
+  "start": { "lat": 18.380, "lon": 77.580 },
+  "end": { "lat": 18.445, "lon": 77.455 },
+  "max_safe_slope": 20.0,
+  "weights": { "distance": 1.0, "slope_penalty": 3.5, "hazard_penalty": 4.5 }
+}
+
+// Response Highlights:
+{
+  "direct_path": {
+    "total_distance_m": 8011.3,
+    "max_slope_deg": 14.08,
+    "elevation_array": [...],
+    "slope_array": [...],
+    "hazard_warnings": ["CRITICAL ROLLOVER RISK...", "WHEEL ENTRAPMENT / DUST HAZARD..."]
+  },
+  "safe_survival_path": {
+    "total_distance_m": 10751.6,
+    "max_slope_deg": 12.29,
+    "estimated_eva_time_mins": 75.5,
+    "detour_percentage": 34.4
+  },
+  "comparison_summary": "MISSION ABORT PREVENTED: Direct trajectory is NON-SURVIVABLE due to extreme slopes... Safe Survival Path detoured around impassable crater scarps and Séítah sand dunes..."
+}
+```
 
 ---
 
@@ -103,21 +145,33 @@ The lightweight mission control microservice (`server.js`) exposes the following
 
 ### Prerequisites
 - Node.js (v18 or higher recommended)
+- Python 3.10+ (for `/backend`)
 - Any modern web browser (Chrome, Edge, Firefox, Safari)
 
-### Run Mission Server
+### Option A: Run Python Safe-Path Routing Backend
 ```bash
-# 1. Clone repository
-git clone https://github.com/shivvkumar800/INTERPLANETARY-SURVIVAL-GUIDE-MARTIAN-MAP.git
-cd INTERPLANETARY-SURVIVAL-GUIDE-MARTIAN-MAP
+# 1. Navigate to backend directory
+cd backend
 
-# 2. Start Mission Control Server
+# 2. Install dependencies
+pip install -r requirements.txt
+
+# 3. Launch FastAPI backend
+python run_server.py
+# or: uvicorn main:app --host 0.0.0.0 --port 8000 --reload
+```
+- **Interactive Swagger UI**: [http://127.0.0.1:8000/docs](http://127.0.0.1:8000/docs)
+- **ReDoc API Explorer**: [http://127.0.0.1:8000/redoc](http://127.0.0.1:8000/redoc)
+- **Terrain Heatmap Grid**: [http://127.0.0.1:8000/api/terrain/grid](http://127.0.0.1:8000/api/terrain/grid)
+- **Run Automated Tests**: `python test_routing.py`
+- **Run CLI Demo**: `python demo_cli.py`
+
+### Option B: Run Frontend Tactical Mission Control Server
+```bash
+# 1. Start Node.js Mission Control Server
 node server.js
 ```
-
-### Access Application
-Open your browser to:
-- **Web App**: [http://localhost:8080](http://localhost:8080)
+- **Web Application**: [http://localhost:8080](http://localhost:8080)
 - **Route Analysis API**: [http://localhost:8080/api/route-analysis](http://localhost:8080/api/route-analysis)
 - **Mars Environmental API**: [http://localhost:8080/api/mars-data](http://localhost:8080/api/mars-data)
 
