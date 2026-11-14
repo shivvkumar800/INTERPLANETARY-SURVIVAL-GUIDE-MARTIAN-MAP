@@ -74,7 +74,7 @@
         "solar_efficiency_pct": 62
       },
       "resources": {
-        "subsurface_ice_pct": 28.0,
+        "subsurface_ice_pct": 28,
         "ice_depth_m": 0.9,
         "regolith_grade": "glacial_till",
         "isru_water_yield_l_per_ton": 110
@@ -114,7 +114,7 @@
       },
       "resources": {
         "subsurface_ice_pct": 1.2,
-        "ice_depth_m": 15.0,
+        "ice_depth_m": 15,
         "regolith_grade": "basaltic_lava",
         "isru_water_yield_l_per_ton": 4
       },
@@ -178,7 +178,7 @@
       "category": "isru_hub",
       "coordinates": {
         "lat": 46.7,
-        "lng": -172.0
+        "lng": -172
       },
       "elevation_m": -3200,
       "environment": {
@@ -191,7 +191,7 @@
         "solar_efficiency_pct": 70
       },
       "resources": {
-        "subsurface_ice_pct": 34.0,
+        "subsurface_ice_pct": 34,
         "ice_depth_m": 0.4,
         "regolith_grade": "ice_rich_loam",
         "isru_water_yield_l_per_ton": 140
@@ -210,6 +210,108 @@
           "Insulated Habitat Dome"
         ]
       }
+    },
+    {
+      "id": "valles-marineris",
+      "name": "Valles Marineris (Coprates)",
+      "category": "rift_canyon",
+      "coordinates": {
+        "lat": -14,
+        "lng": -59.2
+      },
+      "elevation_m": -5800,
+      "environment": {
+        "avg_temp_c": -48,
+        "min_temp_c": -85,
+        "max_temp_c": -5,
+        "pressure_pa": 980,
+        "radiation_msv_yr": 185,
+        "dust_storm_risk": "moderate",
+        "solar_efficiency_pct": 68
+      },
+      "resources": {
+        "subsurface_ice_pct": 6,
+        "ice_depth_m": 3.5,
+        "regolith_grade": "stratified_basalt_clays",
+        "isru_water_yield_l_per_ton": 22
+      },
+      "terrain": {
+        "mean_slope_deg": 13.5,
+        "rover_traversability": "moderate",
+        "comms_line_of_sight_pct": 75
+      },
+      "survival_notes": {
+        "primary_hazard": "Catastrophic 7km canyon rockfalls and sheer cliff drop-offs.",
+        "tactical_advantage": "Deep canyon floor atmospheric shielding and dense layered bedrock strata."
+      }
+    },
+    {
+      "id": "ares-vallis",
+      "name": "Ares Vallis",
+      "category": "outflow_channel",
+      "coordinates": {
+        "lat": 19.3,
+        "lng": -33.5
+      },
+      "elevation_m": -3680,
+      "environment": {
+        "avg_temp_c": -60,
+        "min_temp_c": -86,
+        "max_temp_c": -18,
+        "pressure_pa": 730,
+        "radiation_msv_yr": 230,
+        "dust_storm_risk": "moderate",
+        "solar_efficiency_pct": 82
+      },
+      "resources": {
+        "subsurface_ice_pct": 10.5,
+        "ice_depth_m": 2.1,
+        "regolith_grade": "fluvial_gravel_till",
+        "isru_water_yield_l_per_ton": 35
+      },
+      "terrain": {
+        "mean_slope_deg": 5.2,
+        "rover_traversability": "high",
+        "comms_line_of_sight_pct": 95
+      },
+      "survival_notes": {
+        "primary_hazard": "High-density megaflood boulder fields obstructing rover chassis.",
+        "tactical_advantage": "Diverse rock assortment swept from ancient southern highlands."
+      }
+    },
+    {
+      "id": "chryse-planitia",
+      "name": "Chryse Planitia",
+      "category": "lowland_basin",
+      "coordinates": {
+        "lat": 22.5,
+        "lng": -48
+      },
+      "elevation_m": -3900,
+      "environment": {
+        "avg_temp_c": -61,
+        "min_temp_c": -89,
+        "max_temp_c": -16,
+        "pressure_pa": 745,
+        "radiation_msv_yr": 225,
+        "dust_storm_risk": "high",
+        "solar_efficiency_pct": 79
+      },
+      "resources": {
+        "subsurface_ice_pct": 14,
+        "ice_depth_m": 1.6,
+        "regolith_grade": "volcanic_ash_basalt",
+        "isru_water_yield_l_per_ton": 42
+      },
+      "terrain": {
+        "mean_slope_deg": 3.1,
+        "rover_traversability": "high",
+        "comms_line_of_sight_pct": 96
+      },
+      "survival_notes": {
+        "primary_hazard": "Fine perchlorate dust drift mantles and winter dust storms.",
+        "tactical_advantage": "Smooth, consolidated volcanic bedrock plains with stable baseline pressure."
+      }
     }
   ],
   "hazard_zones": [
@@ -218,8 +320,8 @@
       "type": "dust_storm",
       "name": "Hellas-Noachis Seasonal Dust Corridor",
       "center": {
-        "lat": -38.0,
-        "lng": 65.0
+        "lat": -38,
+        "lng": 65
       },
       "radius_km": 950,
       "severity": "high",
@@ -231,8 +333,8 @@
       "type": "high_radiation",
       "name": "Tharsis High-Altitude Radiation Zone",
       "center": {
-        "lat": 10.0,
-        "lng": -120.0
+        "lat": 10,
+        "lng": -120
       },
       "radius_km": 1400,
       "severity": "critical",
@@ -240,10 +342,10 @@
     }
   ],
   "survival_weights": {
-    "water_ice_weight": 0.30,
+    "water_ice_weight": 0.3,
     "radiation_safety_weight": 0.25,
-    "solar_power_weight": 0.20,
+    "solar_power_weight": 0.2,
     "terrain_traversability_weight": 0.15,
-    "atmospheric_pressure_weight": 0.10
+    "atmospheric_pressure_weight": 0.1
   }
 }

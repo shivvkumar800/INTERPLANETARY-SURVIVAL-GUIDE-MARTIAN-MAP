@@ -31,7 +31,42 @@ const server = http.createServer((req, res) => {
 
   let reqPath = decodeURIComponent(req.url.split('?')[0]);
 
-  // REST API Endpoints
+  // REST API: Multi-Site Trajectories
+  if (reqPath === '/api/trajectories') {
+    const trajFile = path.join(PUBLIC_DIR, 'public', 'data', 'all_trajectories.json');
+    if (fs.existsSync(trajFile)) {
+      res.writeHead(200, {
+        'Content-Type': 'application/json; charset=UTF-8',
+        'Cache-Control': 'no-cache'
+      });
+      fs.createReadStream(trajFile).pipe(res);
+      return;
+    }
+  }
+
+  // REST API: Specific Site Trajectory e.g. /api/trajectory/gale-crater
+  if (reqPath.startsWith('/api/trajectory/')) {
+    const siteId = reqPath.replace('/api/trajectory/', '').trim();
+    const trajFile = path.join(PUBLIC_DIR, 'public', 'data', 'all_trajectories.json');
+    if (fs.existsSync(trajFile)) {
+      try {
+        const all = JSON.parse(fs.readFileSync(trajFile, 'utf8'));
+        if (all[siteId]) {
+          res.writeHead(200, {
+            'Content-Type': 'application/json; charset=UTF-8',
+            'Cache-Control': 'no-cache'
+          });
+          res.end(JSON.stringify(all[siteId], null, 2));
+          return;
+        }
+      } catch (e) {}
+    }
+    res.writeHead(404, { 'Content-Type': 'application/json' });
+    res.end(JSON.stringify({ error: `Trajectory not found for site: ${siteId}` }));
+    return;
+  }
+
+  // REST API: Default Route Analysis (Jezero Crater)
   if (reqPath === '/api/route-analysis' || reqPath === '/api/route') {
     const routeFile = path.join(PUBLIC_DIR, 'route_analysis.json');
     if (fs.existsSync(routeFile)) {
@@ -41,13 +76,10 @@ const server = http.createServer((req, res) => {
       });
       fs.createReadStream(routeFile).pipe(res);
       return;
-    } else {
-      res.writeHead(404, { 'Content-Type': 'application/json' });
-      res.end(JSON.stringify({ error: 'route_analysis.json not found' }));
-      return;
     }
   }
 
+  // REST API: Planetary Data
   if (reqPath === '/api/mars-data' || reqPath === '/api/data') {
     const dataFile = path.join(PUBLIC_DIR, 'public', 'data', 'mars_data.json');
     if (fs.existsSync(dataFile)) {
@@ -57,16 +89,12 @@ const server = http.createServer((req, res) => {
       });
       fs.createReadStream(dataFile).pipe(res);
       return;
-    } else {
-      res.writeHead(404, { 'Content-Type': 'application/json' });
-      res.end(JSON.stringify({ error: 'mars_data.json not found' }));
-      return;
     }
   }
 
   if (reqPath === '/api/health') {
     res.writeHead(200, { 'Content-Type': 'application/json' });
-    res.end(JSON.stringify({ status: 'active', mission: 'ARES-2026', timestamp: new Date().toISOString() }));
+    res.end(JSON.stringify({ status: 'active', mission: 'SPACEWEB-ARES-2026', timestamp: new Date().toISOString() }));
     return;
   }
 
@@ -107,9 +135,10 @@ const server = http.createServer((req, res) => {
 
 server.listen(PORT, '0.0.0.0', () => {
   console.log(`\n======================================================`);
-  console.log(`  MARS EXPEDITION MISSION CONTROL SERVER ACTIVE`);
+  console.log(`  SPACEWEB // MARS MISSION CONTROL SERVER ACTIVE`);
   console.log(`  Local URL:        http://localhost:${PORT}`);
-  console.log(`  Route API:        http://localhost:${PORT}/api/route-analysis`);
+  console.log(`  All Trajectories: http://localhost:${PORT}/api/trajectories`);
+  console.log(`  Site Trajectory:  http://localhost:${PORT}/api/trajectory/:siteId`);
   console.log(`  Mars Data API:    http://localhost:${PORT}/api/mars-data`);
   console.log(`  Serving:          Mars Survival guide.html`);
   console.log(`======================================================\n`);
