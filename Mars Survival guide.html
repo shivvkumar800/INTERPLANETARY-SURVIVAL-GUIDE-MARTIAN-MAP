@@ -5,28 +5,29 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Interplanetary Survival Guide: Martian Map | NASA Space Apps</title>
   
-  <!-- Fonts -->
+  <!-- Modern High-End Luxury & Sci-Fi Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700;800;900&family=Rajdhani:wght@500;600;700&family=Space+Grotesk:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Syncopate:wght@400;700&family=Syne:wght@500;700;800&family=Space+Grotesk:wght@300;400;500;600;700&family=Rajdhani:wght@500;600;700&display=swap" rel="stylesheet">
 
   <style>
     /* ==========================================================================
-       ETHEREAL CELESTIAL AESTHETIC (Deep Space, Radiant Nebulae, Zero Clutter)
+       EDITORIAL LUXURY & AEROSPACE MINIMALISM (Pure Black, Exquisite Typography)
        ========================================================================== */
     :root {
-      --bg-void: #030408;
+      --bg-pure: #000000;
       --text-white: #ffffff;
-      --text-dim: rgba(255, 255, 255, 0.7);
+      --text-silver: #a0aab8;
+      --text-dim: rgba(255, 255, 255, 0.45);
       --gold-accent: #d4a373;
-      --gold-bright: #fcedd8;
-      --mars-rust: #c85a2b;
-      --mars-dark: #6e2712;
+      --gold-bright: #fae1c3;
       --telemetry-cyan: #38bdf8;
       --telemetry-green: #10b981;
-      --font-cinematic: 'Cinzel', serif;
-      --font-tech: 'Rajdhani', monospace, sans-serif;
-      --font-body: 'Space Grotesk', sans-serif;
+      
+      --font-display: 'Syne', sans-serif;
+      --font-wide: 'Syncopate', sans-serif;
+      --font-tech: 'Space Grotesk', sans-serif;
+      --font-mono: 'Rajdhani', monospace, sans-serif;
     }
 
     * {
@@ -41,9 +42,9 @@
       width: 100%;
       height: 100%;
       overflow: hidden;
-      background-color: var(--bg-void);
+      background-color: var(--bg-pure);
       color: var(--text-white);
-      font-family: var(--font-body);
+      font-family: var(--font-tech);
       -webkit-font-smoothing: antialiased;
     }
 
@@ -52,10 +53,10 @@
       width: 100vw;
       height: 100vh;
       overflow: hidden;
-      background: radial-gradient(ellipse at 50% 35%, #080c16 0%, #030408 70%, #000000 100%);
+      background: #000000;
     }
 
-    /* Multi-Layer Deep Space & Volumetric Nebula Canvas */
+    /* Subtle Cosmic Meteors Canvas in Background */
     #space-canvas {
       position: absolute;
       top: 0;
@@ -63,17 +64,6 @@
       width: 100%;
       height: 100%;
       z-index: 1;
-      pointer-events: none;
-    }
-
-    /* Glass Touch Ripple Canvas */
-    #ripple-canvas {
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      z-index: 35;
       pointer-events: none;
     }
 
@@ -87,86 +77,16 @@
       z-index: 25;
       pointer-events: none;
       opacity: 0;
-      background: radial-gradient(circle at 50% 41%, rgba(212, 163, 115, 0.4) 0%, rgba(3, 4, 8, 0.98) 75%);
-      transition: opacity 0.5s ease;
+      background: radial-gradient(circle at 75% 50%, rgba(212, 163, 115, 0.3) 0%, rgba(0, 0, 0, 0.98) 75%);
+      transition: opacity 0.4s ease;
     }
 
     #warp-overlay.active {
       opacity: 1;
     }
 
-    /* Radial Warp Streaks */
-    #warp-canvas {
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      z-index: 26;
-      pointer-events: none;
-      opacity: 0;
-      transition: opacity 0.3s ease;
-    }
-
-    #warp-canvas.active {
-      opacity: 1;
-    }
-
-    /* Visual Preset Switcher in Top Left */
-    .visual-switcher {
-      position: absolute;
-      top: 28px;
-      left: 32px;
-      z-index: 100;
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      background: rgba(12, 16, 24, 0.65);
-      border: 1px solid rgba(255, 255, 255, 0.14);
-      padding: 5px 10px;
-      border-radius: 9999px;
-      backdrop-filter: blur(12px);
-    }
-
-    .visual-switcher-label {
-      font-family: var(--font-tech);
-      font-size: 11px;
-      font-weight: 700;
-      letter-spacing: 1.5px;
-      color: var(--gold-accent);
-      text-transform: uppercase;
-      padding-left: 6px;
-    }
-
-    .btn-visual-opt {
-      background: transparent;
-      border: 1px solid transparent;
-      color: rgba(255, 255, 255, 0.7);
-      font-family: var(--font-tech);
-      font-size: 11px;
-      font-weight: 600;
-      letter-spacing: 1px;
-      padding: 4px 12px;
-      border-radius: 9999px;
-      cursor: pointer;
-      transition: all 0.2s ease;
-      text-transform: uppercase;
-    }
-
-    .btn-visual-opt:hover {
-      color: #ffffff;
-      background: rgba(255, 255, 255, 0.08);
-    }
-
-    .btn-visual-opt.active {
-      background: rgba(212, 163, 115, 0.25);
-      border-color: var(--gold-accent);
-      color: #ffffff;
-      box-shadow: 0 0 12px rgba(212, 163, 115, 0.2);
-    }
-
     /* ==========================================================================
-       SECTION 1: THE MAJESTIC HERO & INTRO SCREEN
+       SECTION 1: THE MAIN SCREEN (ASTRONAUT PROFILE + EDITORIAL TYPOGRAPHY)
        ========================================================================== */
     #intro-screen {
       position: absolute;
@@ -177,19 +97,18 @@
       z-index: 10;
       cursor: pointer;
       display: flex;
-      flex-direction: column;
       align-items: center;
-      justify-content: flex-end;
-      transform-origin: 50% 45%; /* Visor / Horizon Focus */
-      transition: transform 1.7s cubic-bezier(0.76, 0, 0.24, 1), opacity 1.3s cubic-bezier(0.76, 0, 0.24, 1);
+      justify-content: space-between;
+      transform-origin: 78% 48%; /* Exact Focal Center on the Visor */
+      transition: transform 1.6s cubic-bezier(0.76, 0, 0.24, 1), opacity 1.2s cubic-bezier(0.76, 0, 0.24, 1);
       will-change: transform, opacity;
-      animation: introOpeningFade 2.5s cubic-bezier(0.2, 0.9, 0.3, 1) forwards;
+      animation: introOpeningFade 2.2s cubic-bezier(0.2, 0.9, 0.3, 1) forwards;
     }
 
     @keyframes introOpeningFade {
       0% {
         opacity: 0;
-        filter: blur(14px) brightness(0.3);
+        filter: blur(12px) brightness(0.4);
       }
       100% {
         opacity: 1;
@@ -198,7 +117,7 @@
     }
 
     #intro-screen.zooming {
-      transform: scale(12.5) translateY(10px);
+      transform: scale(14) translateY(-10px);
       opacity: 0;
       pointer-events: none;
     }
@@ -207,163 +126,206 @@
       display: none;
     }
 
-    /* Celestial Atmospheric Backlight Aura behind Hero */
-    .astronaut-backlight {
+    /* Astronaut Profile Image Container (Right Half) */
+    .astronaut-hero-wrap {
       position: absolute;
-      bottom: 12%;
-      left: 50%;
-      transform: translateX(-50%);
-      width: 580px;
-      height: 580px;
-      border-radius: 50%;
-      background: radial-gradient(circle at center, rgba(100, 180, 255, 0.18) 0%, rgba(212, 163, 115, 0.12) 40%, transparent 75%);
-      filter: blur(48px);
+      right: 0;
+      bottom: 0;
+      width: clamp(520px, 60vw, 980px);
+      height: 100vh;
+      display: flex;
+      justify-content: flex-end;
+      align-items: center;
       pointer-events: none;
       z-index: 2;
-      animation: auraBreathe 7s ease-in-out infinite alternate;
     }
 
-    @keyframes auraBreathe {
-      0% { opacity: 0.6; transform: translateX(-50%) scale(0.95); }
-      100% { opacity: 1.0; transform: translateX(-50%) scale(1.08); }
-    }
-
-    /* Hero Anchor Frame: Huge, Majestic, Grounded at Bottom */
-    .astronaut-anchor {
-      position: absolute;
-      bottom: -10px;
-      left: 50%;
-      transform: translateX(-50%);
-      width: min(96vw, 1260px);
-      height: min(92vh, 940px);
-      display: flex;
-      justify-content: center;
-      align-items: flex-end;
-      pointer-events: none;
-      transform-style: preserve-3d;
-      z-index: 10;
-      transition: transform 0.2s cubic-bezier(0.2, 0.8, 0.2, 1);
-      animation: microgravityFloat 8s ease-in-out infinite alternate;
-    }
-
-    @keyframes microgravityFloat {
-      0% {
-        transform: translateX(-50%) translateY(0px) rotate(0deg);
-      }
-      50% {
-        transform: translateX(-50%) translateY(-10px) rotate(0.25deg);
-      }
-      100% {
-        transform: translateX(-50%) translateY(3px) rotate(-0.2deg);
-      }
-    }
-
-    .astronaut-image {
+    .astronaut-hero-img {
       width: 100%;
       height: 100%;
       object-fit: contain;
-      object-position: center bottom;
+      object-position: right center;
       pointer-events: none;
-      filter: drop-shadow(0 0 60px rgba(0, 0, 0, 0.98)) contrast(1.06);
-      transition: opacity 0.4s ease, filter 0.4s ease;
+      filter: drop-shadow(0 0 60px rgba(0, 0, 0, 0.98)) contrast(1.08) brightness(1.02);
+      animation: subtleFloat 7s ease-in-out infinite alternate;
     }
 
-    /* Ultra-Minimal, Aesthetic Tap Prompt */
-    .tap-indicator {
-      position: absolute;
-      bottom: 28px;
-      z-index: 25;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 10px;
+    @keyframes subtleFloat {
+      0% {
+        transform: translateY(0px) scale(1);
+      }
+      50% {
+        transform: translateY(-8px) scale(1.01);
+      }
+      100% {
+        transform: translateY(3px) scale(1);
+      }
+    }
+
+    /* LEFT SIDE: EDITORIAL LUXURY TYPOGRAPHY */
+    .editorial-content-left {
+      position: relative;
+      z-index: 5;
+      padding-left: clamp(40px, 6vw, 100px);
+      max-width: clamp(480px, 50vw, 760px);
       pointer-events: none;
     }
 
-    .tap-pill {
+    .meta-tagline {
       display: flex;
       align-items: center;
-      gap: 14px;
-      padding: 11px 28px;
-      background: rgba(10, 14, 22, 0.72);
-      border: 1px solid rgba(255, 255, 255, 0.18);
+      gap: 12px;
+      font-family: var(--font-wide);
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.32em;
+      color: var(--gold-accent);
+      text-transform: uppercase;
+      margin-bottom: 24px;
+    }
+
+    .meta-tagline::before {
+      content: '';
+      width: 28px;
+      height: 1px;
+      background: var(--gold-accent);
+    }
+
+    .editorial-headline {
+      font-family: var(--font-display);
+      font-size: clamp(42px, 5.5vw, 84px);
+      font-weight: 800;
+      line-height: 0.95;
+      letter-spacing: -0.01em;
+      text-transform: uppercase;
+      color: #ffffff;
+      margin-bottom: 28px;
+    }
+
+    .editorial-headline span {
+      display: block;
+      color: transparent;
+      -webkit-text-stroke: 1.5px rgba(255, 255, 255, 0.85);
+      font-weight: 700;
+    }
+
+    .editorial-desc {
+      font-family: var(--font-tech);
+      font-size: clamp(14px, 1.2vw, 16px);
+      font-weight: 400;
+      line-height: 1.7;
+      color: var(--text-silver);
+      letter-spacing: 0.05em;
+      max-width: 520px;
+      margin-bottom: 36px;
+    }
+
+    /* Sleek Editorial Tap Trigger */
+    .editorial-tap-trigger {
+      display: inline-flex;
+      align-items: center;
+      gap: 16px;
+      padding: 12px 28px;
+      background: rgba(18, 22, 32, 0.6);
+      border: 1px solid rgba(255, 255, 255, 0.16);
       border-radius: 9999px;
       backdrop-filter: blur(16px);
-      box-shadow: 0 12px 35px rgba(0, 0, 0, 0.85);
-      animation: pillBreathe 3.2s ease-in-out infinite;
-      transition: transform 0.2s ease;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.8);
+      animation: triggerBreathe 3s ease-in-out infinite;
+      transition: all 0.3s ease;
     }
 
-    @keyframes pillBreathe {
+    @keyframes triggerBreathe {
       0%, 100% {
         border-color: rgba(255, 255, 255, 0.16);
-        box-shadow: 0 12px 35px rgba(0, 0, 0, 0.85), 0 0 12px rgba(212, 163, 115, 0.12);
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.8), 0 0 12px rgba(212, 163, 115, 0.12);
       }
       50% {
         border-color: rgba(212, 163, 115, 0.7);
-        box-shadow: 0 14px 40px rgba(0, 0, 0, 0.95), 0 0 28px rgba(212, 163, 115, 0.35);
+        box-shadow: 0 12px 36px rgba(0, 0, 0, 0.95), 0 0 24px rgba(212, 163, 115, 0.3);
       }
     }
 
-    .tap-dot {
+    .trigger-dot {
       width: 7px;
       height: 7px;
       border-radius: 50%;
       background: var(--gold-bright);
-      box-shadow: 0 0 12px var(--gold-accent);
-      animation: pulseDot 1.4s infinite alternate;
+      box-shadow: 0 0 10px var(--gold-accent);
+      animation: dotPulse 1.5s infinite alternate;
     }
 
-    @keyframes pulseDot {
+    @keyframes dotPulse {
       from { opacity: 0.4; }
       to { opacity: 1; }
     }
 
-    .tap-text {
-      font-family: var(--font-tech);
-      font-size: 13px;
+    .trigger-label {
+      font-family: var(--font-wide);
+      font-size: 11px;
       font-weight: 700;
-      letter-spacing: 3.5px;
+      letter-spacing: 0.28em;
       text-transform: uppercase;
-      color: rgba(255, 255, 255, 0.95);
+      color: #ffffff;
+    }
+
+    /* Minimal Bottom Telemetry Tape */
+    .bottom-telemetry-strip {
+      position: absolute;
+      bottom: 28px;
+      left: clamp(40px, 6vw, 100px);
+      z-index: 5;
+      display: flex;
+      gap: 28px;
+      font-family: var(--font-mono);
+      font-size: 12px;
+      letter-spacing: 2px;
+      color: var(--text-dim);
+      text-transform: uppercase;
+      pointer-events: none;
+    }
+
+    .telemetry-item strong {
+      color: var(--text-white);
+      font-weight: 600;
     }
 
     /* Sound Button */
     .audio-toggle-btn {
       position: absolute;
-      top: 28px;
-      right: 32px;
+      top: 32px;
+      right: 40px;
       z-index: 100;
       width: 44px;
       height: 44px;
       border-radius: 50%;
-      background: rgba(12, 16, 24, 0.65);
-      border: 1px solid rgba(255, 255, 255, 0.16);
-      color: rgba(255, 255, 255, 0.8);
+      background: rgba(14, 18, 25, 0.65);
+      border: 1px solid rgba(255, 255, 255, 0.14);
+      color: rgba(255, 255, 255, 0.75);
       display: flex;
       align-items: center;
       justify-content: center;
       cursor: pointer;
-      backdrop-filter: blur(14px);
+      backdrop-filter: blur(12px);
       transition: all 0.25s ease;
     }
 
     .audio-toggle-btn:hover {
       border-color: var(--gold-accent);
       color: #ffffff;
-      background: rgba(25, 32, 48, 0.85);
+      background: rgba(25, 30, 42, 0.85);
       transform: scale(1.05);
     }
 
     .audio-toggle-btn.active {
       color: var(--gold-bright);
       border-color: var(--gold-accent);
-      box-shadow: 0 0 18px rgba(212, 163, 115, 0.3);
+      box-shadow: 0 0 15px rgba(212, 163, 115, 0.25);
     }
 
     /* ==========================================================================
        SECTION 2: INSIDE-THE-HELMET MARTIAN VIEWPORT (FIRST-PERSON POV)
-       Looking out onto the Red Planet from inside the Astronaut's Helmet Visor
+       Curved Visor Looking onto Mars + Grand "WELCOME TO MARS" Typography
        ========================================================================== */
     #helmet-interior-view {
       position: absolute;
@@ -435,9 +397,9 @@
     }
 
     .visor-telemetry-badge {
-      font-family: var(--font-tech);
-      font-size: 13px;
-      letter-spacing: 2.5px;
+      font-family: var(--font-wide);
+      font-size: 11px;
+      letter-spacing: 0.25em;
       color: rgba(255, 255, 255, 0.75);
       text-transform: uppercase;
       display: flex;
@@ -460,14 +422,14 @@
 
     .btn-return-orbit {
       pointer-events: auto;
-      background: rgba(18, 22, 30, 0.7);
+      background: rgba(18, 22, 30, 0.75);
       border: 1px solid rgba(255, 255, 255, 0.18);
       border-radius: 9999px;
-      padding: 7px 18px;
-      font-family: var(--font-tech);
-      font-size: 11px;
+      padding: 8px 20px;
+      font-family: var(--font-wide);
+      font-size: 10px;
       font-weight: 700;
-      letter-spacing: 2px;
+      letter-spacing: 0.25em;
       text-transform: uppercase;
       color: rgba(255, 255, 255, 0.9);
       cursor: pointer;
@@ -490,7 +452,7 @@
       position: relative;
       z-index: 25;
       text-align: center;
-      max-width: 960px;
+      max-width: 1000px;
       padding: 0 24px;
       animation: welcomeHeroReveal 1.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
       pointer-events: none;
@@ -499,7 +461,7 @@
     @keyframes welcomeHeroReveal {
       0% {
         opacity: 0;
-        transform: scale(0.9) translateY(30px);
+        transform: scale(0.92) translateY(30px);
         filter: blur(10px);
       }
       100% {
@@ -510,36 +472,36 @@
     }
 
     .welcome-pretitle {
-      font-family: var(--font-tech);
-      font-size: 14px;
+      font-family: var(--font-wide);
+      font-size: 13px;
       font-weight: 700;
-      letter-spacing: 7px;
+      letter-spacing: 0.4em;
       color: var(--gold-accent);
       text-transform: uppercase;
-      margin-bottom: 14px;
+      margin-bottom: 16px;
       text-shadow: 0 2px 12px rgba(0,0,0,0.9);
     }
 
     .welcome-main-title {
-      font-family: var(--font-cinematic);
-      font-size: clamp(42px, 7vw, 84px);
-      font-weight: 900;
-      letter-spacing: 14px;
+      font-family: var(--font-display);
+      font-size: clamp(48px, 7.5vw, 92px);
+      font-weight: 800;
+      letter-spacing: 0.12em;
       text-transform: uppercase;
       color: #ffffff;
       line-height: 1.05;
-      margin-bottom: 16px;
+      margin-bottom: 18px;
       text-shadow: 0 8px 35px rgba(0, 0, 0, 0.95), 0 0 30px rgba(212, 163, 115, 0.35);
     }
 
     .welcome-subtitle {
-      font-family: var(--font-body);
-      font-size: clamp(14px, 1.7vw, 19px);
-      font-weight: 300;
-      letter-spacing: 3.5px;
+      font-family: var(--font-tech);
+      font-size: clamp(14px, 1.6vw, 18px);
+      font-weight: 400;
+      letter-spacing: 0.2em;
       color: rgba(255, 255, 255, 0.85);
       text-transform: uppercase;
-      margin-bottom: 28px;
+      margin-bottom: 32px;
     }
 
     /* Minimalist Tactical Site Selector (The identified areas from NASA scientists) */
@@ -551,7 +513,7 @@
       flex-wrap: wrap;
       justify-content: center;
       gap: 12px;
-      width: min(94vw, 1050px);
+      width: min(94vw, 1080px);
     }
 
     .site-pill-btn {
@@ -582,20 +544,21 @@
     }
 
     .site-pill-title {
-      font-family: var(--font-tech);
-      font-size: 13px;
+      font-family: var(--font-wide);
+      font-size: 11px;
       font-weight: 700;
-      letter-spacing: 1.5px;
+      letter-spacing: 0.15em;
       color: #ffffff;
       text-transform: uppercase;
     }
 
     .site-pill-sub {
       font-family: var(--font-tech);
-      font-size: 10px;
-      letter-spacing: 1px;
+      font-size: 11px;
+      letter-spacing: 0.08em;
       color: var(--gold-accent);
       text-transform: uppercase;
+      margin-top: 2px;
     }
 
     /* Holographic Site Modal */
@@ -605,10 +568,10 @@
       left: 50%;
       transform: translate(-50%, -50%);
       width: min(90vw, 580px);
-      background: rgba(12, 16, 24, 0.92);
+      background: rgba(12, 16, 24, 0.94);
       border: 1px solid rgba(212, 163, 115, 0.4);
       border-radius: 8px;
-      padding: 30px;
+      padding: 32px;
       backdrop-filter: blur(20px);
       box-shadow: 0 25px 70px rgba(0, 0, 0, 0.95), 0 0 35px rgba(212, 163, 115, 0.15);
       z-index: 30;
@@ -645,23 +608,11 @@
 
   <div id="stage">
     
-    <!-- Multi-Layer Deep Space & Volumetric Nebula Canvas -->
+    <!-- Multi-Layer Deep Space & Shooting Meteors Canvas -->
     <canvas id="space-canvas"></canvas>
 
-    <!-- Glass Touch Ripple Canvas -->
-    <canvas id="ripple-canvas"></canvas>
-
-    <!-- Fullscreen Warp Lines Canvas during Tap Zoom-In -->
-    <canvas id="warp-canvas"></canvas>
+    <!-- Warp Overlay during Tap Zoom-In -->
     <div id="warp-overlay"></div>
-
-    <!-- Visual Image Preset Switcher (Select between the 3 images you provided) -->
-    <div class="visual-switcher">
-      <span class="visual-switcher-label">HERO:</span>
-      <button class="btn-visual-opt" id="opt-btn-1" title="Futuristic Close-Up Helmet">HELMET</button>
-      <button class="btn-visual-opt active" id="opt-btn-2" title="Floating Astronaut with Glowing Planet">PLANET &amp; SUIT</button>
-      <button class="btn-visual-opt" id="opt-btn-3" title="Orbital Atmospheric Horizon">ORBIT</button>
-    </div>
 
     <!-- Minimal Audio Toggle -->
     <button class="audio-toggle-btn" id="btn-sound" title="Toggle Soundscape" aria-label="Toggle Soundscape">
@@ -673,25 +624,38 @@
 
     <!-- ======================================================================
          SECTION 1: CINEMATIC INTRO SCREEN
-         Grounded Majestic Hero + Ethereal Nebula + Meteors Behind
+         Exact User Astronaut Image + High-Fashion Editorial Sci-Fi Typography
          ====================================================================== -->
     <div id="intro-screen">
       
-      <!-- Celestial Atmospheric Aura behind Astronaut -->
-      <div class="astronaut-backlight"></div>
+      <!-- Left Side: Editorial Typography -->
+      <div class="editorial-content-left">
+        <div class="meta-tagline">NASA SPACE APPS CHALLENGE 2026</div>
+        <h1 class="editorial-headline">
+          MARTIAN
+          <span>SURVIVAL</span>
+          GUIDE
+        </h1>
+        <p class="editorial-desc">
+          Intelligent surface reconnaissance and tactical route planning for astronaut Marswalk exploration across scientist-identified geological landing zones.
+        </p>
 
-      <!-- Astronaut Hero Frame - Large, Close, Grounded at Bottom -->
-      <div class="astronaut-anchor" id="astronaut-anchor">
-        <!-- Default: hero_2_clean.png (Floating Astronaut with glowing planet) -->
-        <img src="hero_2_clean.png" alt="NASA Astronaut" class="astronaut-image" id="astronaut-image">
+        <div class="editorial-tap-trigger">
+          <div class="trigger-dot"></div>
+          <span class="trigger-label">TAP TO INITIATE DESCENT</span>
+        </div>
       </div>
 
-      <!-- Ultra-Clean, Aesthetic Tap Prompt -->
-      <div class="tap-indicator">
-        <div class="tap-pill">
-          <div class="tap-dot"></div>
-          <span class="tap-text">TOUCH THE SCREEN TO INITIATE DESCENT</span>
-        </div>
+      <!-- Right Side: Exact Astronaut Image from User -->
+      <div class="astronaut-hero-wrap">
+        <img src="astronaut_profile.jpg" alt="Astronaut Exploration Helmet" class="astronaut-hero-img" id="astronaut-img">
+      </div>
+
+      <!-- Bottom Telemetry Tape -->
+      <div class="bottom-telemetry-strip">
+        <div class="telemetry-item">EXPEDITION: <strong>ARES EVA-01</strong></div>
+        <div class="telemetry-item">COORDINATES: <strong>18.38° N, 77.58° E</strong></div>
+        <div class="telemetry-item">STATUS: <strong>DEPLOYMENT READY</strong></div>
       </div>
 
     </div>
@@ -741,13 +705,13 @@
       <!-- Holographic Site Dossier Modal (Opens when a site is clicked) -->
       <div class="site-info-modal" id="site-info-modal">
         <button class="modal-close-btn" id="modal-close-btn">&times;</button>
-        <div style="font-family: var(--font-tech); font-size: 11px; color: var(--gold-accent); letter-spacing: 2px; text-transform: uppercase;" id="modal-tag">NASA IDENTIFIED EXPLORATION ZONE</div>
-        <h2 style="font-family: var(--font-cinematic); font-size: 24px; color: #fff; margin: 6px 0 10px 0;" id="modal-title">Jezero Crater</h2>
-        <div style="font-family: var(--font-tech); font-size: 13px; color: var(--telemetry-cyan); margin-bottom: 12px;" id="modal-coords">18.38° N, 77.58° E • ELEVATION: -2,560 m</div>
-        <p style="font-size: 13px; color: rgba(255,255,255,0.85); line-height: 1.6; margin-bottom: 14px;" id="modal-body">
+        <div style="font-family: var(--font-wide); font-size: 10px; color: var(--gold-accent); letter-spacing: 0.25em; text-transform: uppercase;" id="modal-tag">NASA IDENTIFIED EXPLORATION ZONE</div>
+        <h2 style="font-family: var(--font-display); font-size: 26px; color: #fff; margin: 8px 0 10px 0; letter-spacing: 0.05em;" id="modal-title">Jezero Crater</h2>
+        <div style="font-family: var(--font-tech); font-size: 13px; color: var(--telemetry-cyan); margin-bottom: 12px; letter-spacing: 0.1em;" id="modal-coords">18.38° N, 77.58° E • ELEVATION: -2,560 m</div>
+        <p style="font-size: 14px; color: rgba(255,255,255,0.85); line-height: 1.6; margin-bottom: 16px;" id="modal-body">
           Ancient river delta and lakebed where Perseverance rover caches biosignature samples.
         </p>
-        <div style="border-top: 1px solid rgba(255,255,255,0.1); padding-top: 10px; display: flex; justify-content: space-between; font-family: var(--font-tech); font-size: 12px;">
+        <div style="border-top: 1px solid rgba(255,255,255,0.1); padding-top: 12px; display: flex; justify-content: space-between; font-family: var(--font-tech); font-size: 12px;">
           <div><span style="color: var(--text-dim);">DISCOVERY: </span><span style="color: #fff;" id="modal-discovery">2025 Boxwork Formations</span></div>
           <div><span style="color: var(--text-dim);">HAZARD: </span><span style="color: #f87171;" id="modal-hazard">Low</span></div>
         </div>
@@ -817,23 +781,6 @@
           gain.connect(this.master);
           osc1.start();
           osc2.start();
-        }
-
-        playGlassTouchRipple() {
-          if (!this.ctx || this.muted) return;
-          const now = this.ctx.currentTime;
-
-          const osc = this.ctx.createOscillator();
-          const gain = this.ctx.createGain();
-          osc.type = 'sine';
-          osc.frequency.setValueAtTime(1400, now);
-          osc.frequency.exponentialRampToValueAtTime(800, now + 0.4);
-          gain.gain.setValueAtTime(0.18, now);
-          gain.gain.exponentialRampToValueAtTime(0.001, now + 0.45);
-          osc.connect(gain);
-          gain.connect(this.master);
-          osc.start(now);
-          osc.stop(now + 0.45);
         }
 
         playWarpZoomSound() {
@@ -938,7 +885,7 @@
       const audio = new CosmicAudio();
 
       /* ========================================================================
-         2. RADIANT CELESTIAL NEBULA, SPIKED STARS & DYNAMIC METEORS
+         2. DEEP SPACE & METEORS CANVAS (Clean, Subtle, Atmospheric)
          ======================================================================== */
       const spaceCanvas = document.getElementById('space-canvas');
       const spaceCtx = spaceCanvas.getContext('2d');
@@ -955,123 +902,64 @@
       resizeSpace();
       window.addEventListener('resize', resizeSpace);
 
-      // Multi-layer Starfield (550 stars across 4 depth layers)
+      // Starfield
       const stars = [];
-      const STAR_COUNT = 550;
+      const STAR_COUNT = 320;
       for (let i = 0; i < STAR_COUNT; i++) {
         stars.push({
           x: Math.random() * w,
           y: Math.random() * h,
-          z: Math.random() * 2.8 + 0.4,
-          radius: Math.random() * 1.5 + 0.25,
-          baseAlpha: Math.random() * 0.75 + 0.25,
-          twinkleSpeed: Math.random() * 0.035 + 0.01,
+          z: Math.random() * 2.2 + 0.4,
+          radius: Math.random() * 1.3 + 0.25,
+          baseAlpha: Math.random() * 0.7 + 0.2,
+          twinkleSpeed: Math.random() * 0.03 + 0.01,
           phase: Math.random() * Math.PI * 2,
-          color: Math.random() > 0.82 ? 'rgba(212, 163, 115,' : (Math.random() > 0.5 ? 'rgba(215, 235, 255,' : 'rgba(255, 255, 255,')
+          color: Math.random() > 0.8 ? 'rgba(212, 163, 115,' : (Math.random() > 0.5 ? 'rgba(215, 235, 255,' : 'rgba(255, 255, 255,')
         });
       }
 
-      // Prominent Bright Stars with 4-Point Cross Diffraction Spikes
-      const brightStars = [
-        { xRatio: 0.15, yRatio: 0.22, radius: 2.8, color: 'rgba(220, 240, 255,', spikeLen: 24 },
-        { xRatio: 0.82, yRatio: 0.18, radius: 3.2, color: 'rgba(255, 220, 180,', spikeLen: 30 },
-        { xRatio: 0.28, yRatio: 0.45, radius: 2.2, color: 'rgba(210, 235, 255,', spikeLen: 18 },
-        { xRatio: 0.76, yRatio: 0.52, radius: 2.6, color: 'rgba(255, 210, 160,', spikeLen: 22 },
-        { xRatio: 0.50, yRatio: 0.12, radius: 2.4, color: 'rgba(255, 255, 255,', spikeLen: 20 }
-      ];
-
-      // Meteors with sparkling debris
+      // Meteors passing behind the astronaut
       const meteors = [];
       function spawnMeteor() {
-        if (meteors.length >= 4) return;
+        if (meteors.length >= 3) return;
         const angle = Math.PI / 4 + (Math.random() * 0.25 - 0.12);
-        const speed = Math.random() * 10 + 8;
+        const speed = Math.random() * 9 + 7;
         meteors.push({
-          x: Math.random() * (w * 0.9) + w * 0.05,
-          y: Math.random() * (h * 0.4),
+          x: Math.random() * (w * 0.8) + w * 0.1,
+          y: Math.random() * (h * 0.35),
           vx: -Math.cos(angle) * speed,
           vy: Math.sin(angle) * speed,
-          len: Math.random() * 150 + 90,
-          thick: Math.random() * 2.2 + 1.2,
+          len: Math.random() * 130 + 80,
+          thick: Math.random() * 1.8 + 1.0,
           alpha: 1.0,
-          decay: Math.random() * 0.012 + 0.011,
-          sparks: []
+          decay: Math.random() * 0.012 + 0.011
         });
       }
 
       setInterval(() => {
-        if (Math.random() > 0.3) spawnMeteor();
-      }, 1400);
+        if (Math.random() > 0.35) spawnMeteor();
+      }, 1600);
 
-      // Interactive Cursor Stardust
-      const cursorDust = [];
       let mouseX = w / 2;
       let mouseY = h / 2;
       let tiltX = 0;
       let tiltY = 0;
 
-      const astronautAnchor = document.getElementById('astronaut-anchor');
-
       window.addEventListener('mousemove', (e) => {
         mouseX = e.clientX;
         mouseY = e.clientY;
-        tiltX = (mouseX / w - 0.5) * 14;
+        tiltX = (mouseX / w - 0.5) * 12;
         tiltY = (mouseY / h - 0.5) * 8;
-
-        // Subtle 3D astronaut tilt
-        if (astronautAnchor && !isZoomedIn) {
-          astronautAnchor.style.transform = `translateX(-50%) perspective(1200px) rotateY(${tiltX * -0.35}deg) rotateX(${tiltY * 0.2}deg)`;
-        }
-
-        // Spawn interactive cursor dust particles
-        if (cursorDust.length < 50 && Math.random() > 0.35) {
-          cursorDust.push({
-            x: mouseX + (Math.random() * 20 - 10),
-            y: mouseY + (Math.random() * 20 - 10),
-            vx: (Math.random() - 0.5) * 1.5,
-            vy: (Math.random() - 0.5) * 1.5 - 0.5,
-            radius: Math.random() * 1.8 + 0.4,
-            alpha: 0.85,
-            decay: 0.02
-          });
-        }
       });
 
       function renderSpace() {
         spaceCtx.clearRect(0, 0, w, h);
 
-        // 1. ETHEREAL VOLUMETRIC NEBULAE (Carina / Orion Celestial Color Palette)
-        // Nebula 1: Deep Celestial Indigo & Star-Cluster Violet (Upper Left)
-        const g1 = spaceCtx.createRadialGradient(w * 0.2 - tiltX, h * 0.25 - tiltY, 40, w * 0.2, h * 0.25, w * 0.65);
-        g1.addColorStop(0, 'rgba(45, 28, 75, 0.55)');
-        g1.addColorStop(0.35, 'rgba(25, 30, 65, 0.35)');
-        g1.addColorStop(0.7, 'rgba(12, 18, 35, 0.18)');
-        g1.addColorStop(1, 'rgba(0, 0, 0, 0)');
-        spaceCtx.fillStyle = g1;
-        spaceCtx.fillRect(0, 0, w, h);
-
-        // Nebula 2: Warm Solar Bronze & Rose-Gold Stardust (Upper Right / Center)
-        const g2 = spaceCtx.createRadialGradient(w * 0.78 + tiltX, h * 0.32 + tiltY, 50, w * 0.78, h * 0.32, w * 0.6);
-        g2.addColorStop(0, 'rgba(65, 32, 22, 0.48)');
-        g2.addColorStop(0.4, 'rgba(48, 22, 35, 0.28)');
-        g2.addColorStop(0.8, 'rgba(18, 12, 24, 0.12)');
-        g2.addColorStop(1, 'rgba(0, 0, 0, 0)');
-        spaceCtx.fillStyle = g2;
-        spaceCtx.fillRect(0, 0, w, h);
-
-        // Nebula 3: Ethereal Cyan-Teal Stellar Veil (Center Horizon)
-        const g3 = spaceCtx.createRadialGradient(w * 0.5, h * 0.45, 80, w * 0.5, h * 0.45, w * 0.45);
-        g3.addColorStop(0, 'rgba(20, 45, 60, 0.22)');
-        g3.addColorStop(0.6, 'rgba(12, 22, 36, 0.1)');
-        g3.addColorStop(1, 'rgba(0, 0, 0, 0)');
-        spaceCtx.fillStyle = g3;
-        spaceCtx.fillRect(0, 0, w, h);
-
-        // 2. Stars
+        // 1. Stars
         for (let i = 0; i < stars.length; i++) {
           const s = stars[i];
           s.phase += s.twinkleSpeed;
-          const alpha = s.baseAlpha + Math.sin(s.phase) * 0.28;
+          const alpha = s.baseAlpha + Math.sin(s.phase) * 0.25;
           const px = s.x - tiltX * s.z;
           const py = s.y - tiltY * s.z;
 
@@ -1081,53 +969,12 @@
           spaceCtx.fill();
         }
 
-        // 3. Focal Bright Stars with 4-Point Cross Diffraction Spikes
-        for (let i = 0; i < brightStars.length; i++) {
-          const bs = brightStars[i];
-          const bx = bs.xRatio * w - tiltX * 1.5;
-          const by = bs.yRatio * h - tiltY * 1.5;
-          const pulse = Math.sin(Date.now() * 0.002 + i) * 0.15 + 0.85;
-
-          const starGlow = spaceCtx.createRadialGradient(bx, by, 1, bx, by, bs.spikeLen * 1.5);
-          starGlow.addColorStop(0, `${bs.color}0.85)`);
-          starGlow.addColorStop(0.3, `${bs.color}0.35)`);
-          starGlow.addColorStop(1, 'rgba(0,0,0,0)');
-          spaceCtx.fillStyle = starGlow;
-          spaceCtx.fillRect(bx - bs.spikeLen * 1.5, by - bs.spikeLen * 1.5, bs.spikeLen * 3, bs.spikeLen * 3);
-
-          spaceCtx.strokeStyle = `${bs.color}${0.7 * pulse})`;
-          spaceCtx.lineWidth = 1.2;
-          spaceCtx.beginPath();
-          spaceCtx.moveTo(bx - bs.spikeLen * pulse, by);
-          spaceCtx.lineTo(bx + bs.spikeLen * pulse, by);
-          spaceCtx.stroke();
-
-          spaceCtx.beginPath();
-          spaceCtx.moveTo(bx, by - bs.spikeLen * pulse);
-          spaceCtx.lineTo(bx, by + bs.spikeLen * pulse);
-          spaceCtx.stroke();
-
-          spaceCtx.beginPath();
-          spaceCtx.arc(bx, by, bs.radius, 0, Math.PI * 2);
-          spaceCtx.fillStyle = '#ffffff';
-          spaceCtx.fill();
-        }
-
-        // 4. Meteors passing behind the astronaut
+        // 2. Meteors passing behind
         for (let i = meteors.length - 1; i >= 0; i--) {
           const m = meteors[i];
           m.x += m.vx;
           m.y += m.vy;
           m.alpha -= m.decay;
-
-          if (Math.random() > 0.35) {
-            m.sparks.push({
-              x: m.x,
-              y: m.y,
-              alpha: m.alpha * 0.85,
-              radius: Math.random() * 1.8 + 0.5
-            });
-          }
 
           if (m.alpha <= 0 || m.x < -150 || m.y > h + 150) {
             meteors.splice(i, 1);
@@ -1138,9 +985,9 @@
           const tailY = m.y - (m.vy / Math.hypot(m.vx, m.vy)) * m.len;
 
           const grad = spaceCtx.createLinearGradient(m.x, m.y, tailX, tailY);
-          grad.addColorStop(0, `rgba(255, 255, 255, ${m.alpha * 0.98})`);
-          grad.addColorStop(0.2, `rgba(255, 235, 210, ${m.alpha * 0.8})`);
-          grad.addColorStop(0.6, `rgba(212, 163, 115, ${m.alpha * 0.45})`);
+          grad.addColorStop(0, `rgba(255, 255, 255, ${m.alpha * 0.95})`);
+          grad.addColorStop(0.3, `rgba(255, 230, 200, ${m.alpha * 0.7})`);
+          grad.addColorStop(0.7, `rgba(212, 163, 115, ${m.alpha * 0.35})`);
           grad.addColorStop(1, 'rgba(0, 0, 0, 0)');
 
           spaceCtx.beginPath();
@@ -1151,38 +998,10 @@
           spaceCtx.lineCap = 'round';
           spaceCtx.stroke();
 
+          // Meteor core
           spaceCtx.beginPath();
-          spaceCtx.arc(m.x, m.y, m.thick * 1.4, 0, Math.PI * 2);
+          spaceCtx.arc(m.x, m.y, m.thick * 1.3, 0, Math.PI * 2);
           spaceCtx.fillStyle = `rgba(255, 255, 255, ${m.alpha})`;
-          spaceCtx.fill();
-
-          for (let k = m.sparks.length - 1; k >= 0; k--) {
-            const sp = m.sparks[k];
-            sp.alpha -= 0.045;
-            if (sp.alpha <= 0) {
-              m.sparks.splice(k, 1);
-              continue;
-            }
-            spaceCtx.beginPath();
-            spaceCtx.arc(sp.x, sp.y, sp.radius, 0, Math.PI * 2);
-            spaceCtx.fillStyle = `rgba(255, 220, 180, ${sp.alpha})`;
-            spaceCtx.fill();
-          }
-        }
-
-        // 5. Cursor Stardust
-        for (let i = cursorDust.length - 1; i >= 0; i--) {
-          const cd = cursorDust[i];
-          cd.x += cd.vx;
-          cd.y += cd.vy;
-          cd.alpha -= cd.decay;
-          if (cd.alpha <= 0) {
-            cursorDust.splice(i, 1);
-            continue;
-          }
-          spaceCtx.beginPath();
-          spaceCtx.arc(cd.x, cd.y, cd.radius, 0, Math.PI * 2);
-          spaceCtx.fillStyle = `rgba(240, 215, 175, ${cd.alpha})`;
           spaceCtx.fill();
         }
 
@@ -1191,198 +1010,41 @@
       requestAnimationFrame(renderSpace);
 
       /* ========================================================================
-         3. GLASS TOUCH RIPPLE & WARP ZOOM TRANSITION
-         ======================================================================== */
-      const rippleCanvas = document.getElementById('ripple-canvas');
-      const rippleCtx = rippleCanvas.getContext('2d');
-      const warpCanvas = document.getElementById('warp-canvas');
-      const warpCtx = warpCanvas.getContext('2d');
-      const warpOverlay = document.getElementById('warp-overlay');
-
-      function resizeRipples() {
-        rippleCanvas.width = window.innerWidth;
-        rippleCanvas.height = window.innerHeight;
-        warpCanvas.width = window.innerWidth;
-        warpCanvas.height = window.innerHeight;
-      }
-      resizeRipples();
-      window.addEventListener('resize', resizeRipples);
-
-      const ripples = [];
-      function addGlassRipple(clickX, clickY) {
-        ripples.push({
-          x: clickX,
-          y: clickY,
-          radius: 10,
-          maxRadius: Math.max(w, h) * 0.8,
-          alpha: 1.0,
-          speed: 28
-        });
-        audio.playGlassTouchRipple();
-      }
-
-      function renderRipples() {
-        rippleCtx.clearRect(0, 0, rippleCanvas.width, rippleCanvas.height);
-        for (let i = ripples.length - 1; i >= 0; i--) {
-          const r = ripples[i];
-          r.radius += r.speed;
-          r.alpha -= 0.025;
-          if (r.alpha <= 0 || r.radius >= r.maxRadius) {
-            ripples.splice(i, 1);
-            continue;
-          }
-
-          rippleCtx.beginPath();
-          rippleCtx.arc(r.x, r.y, r.radius, 0, Math.PI * 2);
-          rippleCtx.strokeStyle = `rgba(255, 255, 255, ${r.alpha * 0.6})`;
-          rippleCtx.lineWidth = 3;
-          rippleCtx.stroke();
-
-          rippleCtx.beginPath();
-          rippleCtx.arc(r.x, r.y, r.radius * 0.95, 0, Math.PI * 2);
-          rippleCtx.strokeStyle = `rgba(212, 163, 115, ${r.alpha * 0.35})`;
-          rippleCtx.lineWidth = 6;
-          rippleCtx.stroke();
-        }
-        if (ripples.length > 0) {
-          requestAnimationFrame(renderRipples);
-        }
-      }
-
-      // Radial warp streaks
-      const warpLines = [];
-      const WARP_COUNT = 160;
-      for (let i = 0; i < WARP_COUNT; i++) {
-        const ang = Math.random() * Math.PI * 2;
-        warpLines.push({
-          angle: ang,
-          dist: Math.random() * 300 + 40,
-          speed: Math.random() * 22 + 18,
-          len: Math.random() * 90 + 50,
-          thick: Math.random() * 2 + 1,
-          alpha: Math.random() * 0.8 + 0.2
-        });
-      }
-
-      let isWarping = false;
-
-      function renderWarp() {
-        if (!isWarping) return;
-        warpCtx.clearRect(0, 0, warpCanvas.width, warpCanvas.height);
-        const cx = warpCanvas.width * 0.5;
-        const cy = warpCanvas.height * 0.45;
-
-        for (let i = 0; i < warpLines.length; i++) {
-          const wl = warpLines[i];
-          wl.dist += wl.speed;
-          wl.speed *= 1.05;
-
-          const x1 = cx + Math.cos(wl.angle) * wl.dist;
-          const y1 = cy + Math.sin(wl.angle) * wl.dist;
-          const x2 = cx + Math.cos(wl.angle) * (wl.dist - wl.len);
-          const y2 = cy + Math.sin(wl.angle) * (wl.dist - wl.len);
-
-          const grad = warpCtx.createLinearGradient(x1, y1, x2, y2);
-          grad.addColorStop(0, `rgba(255, 255, 255, ${wl.alpha})`);
-          grad.addColorStop(0.5, `rgba(212, 163, 115, ${wl.alpha * 0.7})`);
-          grad.addColorStop(1, 'rgba(0, 0, 0, 0)');
-
-          warpCtx.beginPath();
-          warpCtx.moveTo(x1, y1);
-          warpCtx.lineTo(x2, y2);
-          warpCtx.strokeStyle = grad;
-          warpCtx.lineWidth = wl.thick;
-          warpCtx.stroke();
-        }
-
-        requestAnimationFrame(renderWarp);
-      }
-
-      /* ========================================================================
-         4. HERO IMAGE PRESET SWITCHER (Between the 3 uploaded images)
-         ======================================================================== */
-      const astronautImg = document.getElementById('astronaut-image');
-      const optBtn1 = document.getElementById('opt-btn-1');
-      const optBtn2 = document.getElementById('opt-btn-2');
-      const optBtn3 = document.getElementById('opt-btn-3');
-      const allOptBtns = [optBtn1, optBtn2, optBtn3];
-
-      function setHeroImage(src, activeBtn) {
-        astronautImg.style.opacity = '0';
-        setTimeout(() => {
-          astronautImg.src = src;
-          astronautImg.style.opacity = '1';
-        }, 200);
-
-        allOptBtns.forEach(b => b.classList.remove('active'));
-        activeBtn.classList.add('active');
-        audio.playChirp();
-      }
-
-      optBtn1.addEventListener('click', (e) => {
-        e.stopPropagation();
-        setHeroImage('hero_1_clean.png', optBtn1);
-      });
-
-      optBtn2.addEventListener('click', (e) => {
-        e.stopPropagation();
-        setHeroImage('hero_2_clean.png', optBtn2);
-      });
-
-      optBtn3.addEventListener('click', (e) => {
-        e.stopPropagation();
-        setHeroImage('hero_3_clean.png', optBtn3);
-      });
-
-      /* ========================================================================
-         5. TAP ANYWHERE TO ENTER: WARP ZOOM TRANSITION
+         3. TAP ANYWHERE TO ENTER: VISOR ZOOM TRANSITION
          ======================================================================== */
       const introScreen = document.getElementById('intro-screen');
       const helmetInteriorView = document.getElementById('helmet-interior-view');
+      const warpOverlay = document.getElementById('warp-overlay');
       const btnSound = document.getElementById('btn-sound');
       const btnOrbitReturn = document.getElementById('btn-orbit-return');
 
       let isZoomedIn = false;
 
-      function triggerVisorHyperZoom(e) {
+      function triggerVisorHyperZoom() {
         if (isZoomedIn) return;
         isZoomedIn = true;
 
         audio.init();
-
-        const clickX = e ? (e.clientX || (e.touches && e.touches[0] ? e.touches[0].clientX : w / 2)) : w / 2;
-        const clickY = e ? (e.clientY || (e.touches && e.touches[0] ? e.touches[0].clientY : h / 2)) : h / 2;
-
-        addGlassRipple(clickX, clickY);
-        renderRipples();
-
         audio.playWarpZoomSound();
 
-        // 1. Activate Warp FX
-        isWarping = true;
-        warpCanvas.classList.add('active');
+        // 1. Activate Warp FX & Zoom directly into Visor
         warpOverlay.classList.add('active');
-        renderWarp();
-
-        // 2. Zoom directly through helmet visor glass
         introScreen.classList.add('zooming');
 
-        // 3. Pass into Martian Horizon Helmet POV
+        // 2. Pass into Martian Horizon Helmet POV
         setTimeout(() => {
-          isWarping = false;
-          warpCanvas.classList.remove('active');
           warpOverlay.classList.remove('active');
           introScreen.classList.add('hidden');
           helmetInteriorView.classList.add('active');
           resizeMarsCanvas();
           renderMarsAtmosphere();
-        }, 1200);
+        }, 1150);
       }
 
       introScreen.addEventListener('click', triggerVisorHyperZoom);
       introScreen.addEventListener('touchstart', (e) => {
         e.preventDefault();
-        triggerVisorHyperZoom(e);
+        triggerVisorHyperZoom();
       }, { passive: false });
 
       btnOrbitReturn.addEventListener('click', () => {
@@ -1403,7 +1065,7 @@
       });
 
       /* ========================================================================
-         6. REALISTIC MARTIAN ATMOSPHERE & HORIZON (INSIDE VISOR)
+         4. REALISTIC MARTIAN ATMOSPHERE & HORIZON (INSIDE VISOR)
          ======================================================================== */
       const marsCanvas = document.getElementById('mars-surface-canvas');
       const marsCtx = marsCanvas.getContext('2d');
@@ -1521,7 +1183,7 @@
       }
 
       /* ========================================================================
-         7. NASA SCIENTIST IDENTIFIED SITES
+         5. NASA SCIENTIST IDENTIFIED SITES
          ======================================================================== */
       const SITES = [
         {
