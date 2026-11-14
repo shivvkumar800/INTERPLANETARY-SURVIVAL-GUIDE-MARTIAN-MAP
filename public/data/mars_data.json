@@ -1,0 +1,249 @@
+{
+  "metadata": {
+    "version": "1.0.0",
+    "sol_epoch": 1245,
+    "data_sources": [
+      "NASA Mars Trek WMTS",
+      "MOLA Elevation Dataset",
+      "Mars Odyssey Neutron Spectrometer (Water Ice)",
+      "InSight / REMS Atmospheric Telemetry"
+    ]
+  },
+  "global_conditions": {
+    "solar_constant_wm2": 589,
+    "active_storm_alert": true,
+    "storm_severity_index": 0.65,
+    "season": "Northern Autumn (Ls 195°)"
+  },
+  "locations": [
+    {
+      "id": "jezero-crater",
+      "name": "Jezero Crater",
+      "category": "landing_site",
+      "coordinates": {
+        "lat": 18.38,
+        "lng": 77.58
+      },
+      "elevation_m": -2570,
+      "environment": {
+        "avg_temp_c": -63,
+        "min_temp_c": -88,
+        "max_temp_c": -20,
+        "pressure_pa": 710,
+        "radiation_msv_yr": 235,
+        "dust_storm_risk": "moderate",
+        "solar_efficiency_pct": 78
+      },
+      "resources": {
+        "subsurface_ice_pct": 12.5,
+        "ice_depth_m": 1.8,
+        "regolith_grade": "high_clay_silica",
+        "isru_water_yield_l_per_ton": 45
+      },
+      "terrain": {
+        "mean_slope_deg": 4.2,
+        "rover_traversability": "high",
+        "comms_line_of_sight_pct": 94
+      },
+      "survival_notes": {
+        "primary_hazard": "Seasonal dust loading on solar arrays and fine perchlorate regolith.",
+        "tactical_advantage": "Ancient river delta sediments offer accessible hydrated minerals and low-elevation atmospheric shielding.",
+        "recommended_gear": [
+          "Electrostatic Dust Shielding",
+          "Subsurface Thermal Drill",
+          "RTG Backup Power"
+        ]
+      }
+    },
+    {
+      "id": "hellas-planitia",
+      "name": "Hellas Planitia",
+      "category": "basin",
+      "coordinates": {
+        "lat": -42.4,
+        "lng": 70.5
+      },
+      "elevation_m": -7152,
+      "environment": {
+        "avg_temp_c": -55,
+        "min_temp_c": -95,
+        "max_temp_c": -10,
+        "pressure_pa": 1155,
+        "radiation_msv_yr": 190,
+        "dust_storm_risk": "high",
+        "solar_efficiency_pct": 62
+      },
+      "resources": {
+        "subsurface_ice_pct": 28.0,
+        "ice_depth_m": 0.9,
+        "regolith_grade": "glacial_till",
+        "isru_water_yield_l_per_ton": 110
+      },
+      "terrain": {
+        "mean_slope_deg": 2.1,
+        "rover_traversability": "high",
+        "comms_line_of_sight_pct": 88
+      },
+      "survival_notes": {
+        "primary_hazard": "Frequent basin-scale dust storm nucleation and steep winter thermal swings.",
+        "tactical_advantage": "Highest atmospheric pressure on Mars (nearly double Jezero), reducing radiation dose and easing aerobraking.",
+        "recommended_gear": [
+          "Sealed Airlock Filtration",
+          "High-Capacity Battery Bank",
+          "Ice Harvesting Rig"
+        ]
+      }
+    },
+    {
+      "id": "olympus-mons",
+      "name": "Olympus Mons Summit",
+      "category": "extreme_landmark",
+      "coordinates": {
+        "lat": 18.65,
+        "lng": -133.8
+      },
+      "elevation_m": 21229,
+      "environment": {
+        "avg_temp_c": -75,
+        "min_temp_c": -115,
+        "max_temp_c": -35,
+        "pressure_pa": 72,
+        "radiation_msv_yr": 340,
+        "dust_storm_risk": "low",
+        "solar_efficiency_pct": 95
+      },
+      "resources": {
+        "subsurface_ice_pct": 1.2,
+        "ice_depth_m": 15.0,
+        "regolith_grade": "basaltic_lava",
+        "isru_water_yield_l_per_ton": 4
+      },
+      "terrain": {
+        "mean_slope_deg": 18.5,
+        "rover_traversability": "low",
+        "comms_line_of_sight_pct": 99
+      },
+      "survival_notes": {
+        "primary_hazard": "Near-vacuum pressure (72 Pa) and extreme cosmic/solar radiation due to minimal atmospheric column.",
+        "tactical_advantage": "Rises above most regional dust storms; near-continuous solar irradiance and unobstructed orbital comms.",
+        "recommended_gear": [
+          "Heavy Regolith Radiation Shielding",
+          "Closed-Loop Water Recycler",
+          "Winch-Assisted Rover"
+        ]
+      }
+    },
+    {
+      "id": "gale-crater",
+      "name": "Gale Crater (Mount Sharp)",
+      "category": "landing_site",
+      "coordinates": {
+        "lat": -5.4,
+        "lng": 137.8
+      },
+      "elevation_m": -4500,
+      "environment": {
+        "avg_temp_c": -58,
+        "min_temp_c": -90,
+        "max_temp_c": -15,
+        "pressure_pa": 840,
+        "radiation_msv_yr": 220,
+        "dust_storm_risk": "moderate",
+        "solar_efficiency_pct": 81
+      },
+      "resources": {
+        "subsurface_ice_pct": 9.5,
+        "ice_depth_m": 2.4,
+        "regolith_grade": "sulfate_bearing_mudstone",
+        "isru_water_yield_l_per_ton": 38
+      },
+      "terrain": {
+        "mean_slope_deg": 6.8,
+        "rover_traversability": "moderate",
+        "comms_line_of_sight_pct": 91
+      },
+      "survival_notes": {
+        "primary_hazard": "Steep central peak terrain and abrasive basaltic sand traps.",
+        "tactical_advantage": "Well-mapped by Curiosity rover with proven atmospheric pressure stability and clay-sulfate mineral layers.",
+        "recommended_gear": [
+          "All-Terrain Cleated Wheels",
+          "Atmospheric Water Condenser",
+          "Regolith Sintering Printer"
+        ]
+      }
+    },
+    {
+      "id": "arcadia-planitia",
+      "name": "Arcadia Planitia",
+      "category": "isru_hub",
+      "coordinates": {
+        "lat": 46.7,
+        "lng": -172.0
+      },
+      "elevation_m": -3200,
+      "environment": {
+        "avg_temp_c": -68,
+        "min_temp_c": -102,
+        "max_temp_c": -25,
+        "pressure_pa": 760,
+        "radiation_msv_yr": 228,
+        "dust_storm_risk": "low",
+        "solar_efficiency_pct": 70
+      },
+      "resources": {
+        "subsurface_ice_pct": 34.0,
+        "ice_depth_m": 0.4,
+        "regolith_grade": "ice_rich_loam",
+        "isru_water_yield_l_per_ton": 140
+      },
+      "terrain": {
+        "mean_slope_deg": 1.5,
+        "rover_traversability": "high",
+        "comms_line_of_sight_pct": 86
+      },
+      "survival_notes": {
+        "primary_hazard": "High-latitude winter drop in solar angle requiring auxiliary nuclear/battery storage.",
+        "tactical_advantage": "Massive shallow water-ice sheet less than 50 cm below smooth volcanic plains—top NASA/SpaceX candidate site.",
+        "recommended_gear": [
+          "Shallow Auger Ice Miner",
+          "Kilopower Fission Reactor",
+          "Insulated Habitat Dome"
+        ]
+      }
+    }
+  ],
+  "hazard_zones": [
+    {
+      "id": "storm-hellas-arc",
+      "type": "dust_storm",
+      "name": "Hellas-Noachis Seasonal Dust Corridor",
+      "center": {
+        "lat": -38.0,
+        "lng": 65.0
+      },
+      "radius_km": 950,
+      "severity": "high",
+      "solar_penalty_pct": 45,
+      "visibility_km": 0.4
+    },
+    {
+      "id": "rad-tharsis-bulge",
+      "type": "high_radiation",
+      "name": "Tharsis High-Altitude Radiation Zone",
+      "center": {
+        "lat": 10.0,
+        "lng": -120.0
+      },
+      "radius_km": 1400,
+      "severity": "critical",
+      "radiation_multiplier": 1.45
+    }
+  ],
+  "survival_weights": {
+    "water_ice_weight": 0.30,
+    "radiation_safety_weight": 0.25,
+    "solar_power_weight": 0.20,
+    "terrain_traversability_weight": 0.15,
+    "atmospheric_pressure_weight": 0.10
+  }
+}
