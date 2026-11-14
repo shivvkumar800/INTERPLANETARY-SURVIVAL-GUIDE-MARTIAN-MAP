@@ -12,14 +12,14 @@
 
   <style>
     /* ==========================================================================
-       AESTHETIC ARCHITECTURE (IMAX Cinematic, Screen-Pressed 4th Wall Concept)
+       ETHEREAL CELESTIAL AESTHETIC (Deep Space, Radiant Nebulae, Zero Clutter)
        ========================================================================== */
     :root {
-      --bg-void: #000000;
+      --bg-void: #030408;
       --text-white: #ffffff;
       --text-dim: rgba(255, 255, 255, 0.7);
       --gold-accent: #d4a373;
-      --gold-bright: #f3d5b5;
+      --gold-bright: #fcedd8;
       --mars-rust: #c85a2b;
       --mars-dark: #6e2712;
       --telemetry-cyan: #38bdf8;
@@ -52,10 +52,10 @@
       width: 100vw;
       height: 100vh;
       overflow: hidden;
-      background: #000000;
+      background: radial-gradient(ellipse at 50% 35%, #080c16 0%, #030408 70%, #000000 100%);
     }
 
-    /* Deep Space Canvas */
+    /* Multi-Layer Deep Space & Volumetric Nebula Canvas */
     #space-canvas {
       position: absolute;
       top: 0;
@@ -66,7 +66,7 @@
       pointer-events: none;
     }
 
-    /* Glass Touch Ripple Canvas (Ripples outward from tap position) */
+    /* Glass Touch Ripple Canvas */
     #ripple-canvas {
       position: absolute;
       top: 0;
@@ -87,7 +87,7 @@
       z-index: 25;
       pointer-events: none;
       opacity: 0;
-      background: radial-gradient(circle at 50% 42%, rgba(212, 163, 115, 0.35) 0%, rgba(0, 0, 0, 0.98) 75%);
+      background: radial-gradient(circle at 50% 41%, rgba(212, 163, 115, 0.4) 0%, rgba(3, 4, 8, 0.98) 75%);
       transition: opacity 0.5s ease;
     }
 
@@ -113,8 +113,7 @@
     }
 
     /* ==========================================================================
-       SECTION 1: THE SCREEN-PRESSED ASTRONAUT (4TH WALL BREAKER)
-       Astronaut pressed up against the screen glass with hands gripping edges
+       SECTION 1: THE MAJESTIC ASTRONAUT & INTRO SCREEN
        ========================================================================== */
     #intro-screen {
       position: absolute;
@@ -155,23 +154,31 @@
       display: none;
     }
 
-    /* Glass Surface Sheen across the Screen */
-    .screen-glass-sheen {
+    /* Celestial Atmospheric Backlight Aura behind Astronaut */
+    .astronaut-backlight {
       position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
+      bottom: 12%;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 520px;
+      height: 520px;
+      border-radius: 50%;
+      background: radial-gradient(circle at center, rgba(100, 180, 255, 0.16) 0%, rgba(212, 163, 115, 0.12) 40%, transparent 75%);
+      filter: blur(45px);
       pointer-events: none;
-      z-index: 18;
-      background: linear-gradient(125deg, rgba(255, 255, 255, 0.035) 0%, transparent 40%, rgba(212, 163, 115, 0.015) 70%, transparent 100%);
-      box-shadow: inset 0 0 100px rgba(0, 0, 0, 0.8);
+      z-index: 2;
+      animation: auraBreathe 7s ease-in-out infinite alternate;
     }
 
-    /* Astronaut Anchor Frame: Huge, Close, Pressed Up Against Glass */
+    @keyframes auraBreathe {
+      0% { opacity: 0.6; transform: translateX(-50%) scale(0.95); }
+      100% { opacity: 1.0; transform: translateX(-50%) scale(1.08); }
+    }
+
+    /* Astronaut Anchor Frame: Huge, Close, Grounded at Bottom */
     .astronaut-anchor {
       position: absolute;
-      bottom: -10px;
+      bottom: -15px;
       left: 50%;
       transform: translateX(-50%);
       width: min(96vw, 1260px);
@@ -181,19 +188,20 @@
       align-items: flex-end;
       pointer-events: none;
       transform-style: preserve-3d;
+      z-index: 10;
       transition: transform 0.2s cubic-bezier(0.2, 0.8, 0.2, 1);
-      animation: glassFloat 6s ease-in-out infinite alternate;
+      animation: microgravityFloat 8s ease-in-out infinite alternate;
     }
 
-    @keyframes glassFloat {
+    @keyframes microgravityFloat {
       0% {
-        transform: translateX(-50%) translateY(0px) scale(1.02);
+        transform: translateX(-50%) translateY(0px) rotate(0deg);
       }
       50% {
-        transform: translateX(-50%) translateY(-6px) scale(1.035);
+        transform: translateX(-50%) translateY(-10px) rotate(0.25deg);
       }
       100% {
-        transform: translateX(-50%) translateY(2px) scale(1.02);
+        transform: translateX(-50%) translateY(3px) rotate(-0.2deg);
       }
     }
 
@@ -203,73 +211,13 @@
       object-fit: contain;
       object-position: center bottom;
       pointer-events: none;
-      filter: drop-shadow(0 0 50px rgba(0, 0, 0, 0.98)) contrast(1.06);
-    }
-
-    /* ==========================================================================
-       SPACESUIT GLOVED HANDS GRIPPING THE SCREEN EDGES (4TH WALL BREAK)
-       Realistic pressurized EVA spacesuit gloves pressed against your glass
-       ========================================================================== */
-    .glove-container {
-      position: absolute;
-      bottom: 0;
-      width: 100%;
-      height: 100%;
-      pointer-events: none;
-      z-index: 20;
-    }
-
-    /* Left Gloved Hand Gripping the Screen */
-    .glove-hand-left {
-      position: absolute;
-      bottom: -15px;
-      left: clamp(20px, 10vw, 160px);
-      width: clamp(160px, 18vw, 240px);
-      height: auto;
-      filter: drop-shadow(0 -10px 25px rgba(0, 0, 0, 0.85));
-      animation: leftGripFloat 6s ease-in-out infinite alternate;
-      transition: transform 0.25s ease-out;
-    }
-
-    /* Right Gloved Hand Gripping the Screen */
-    .glove-hand-right {
-      position: absolute;
-      bottom: -15px;
-      right: clamp(20px, 10vw, 160px);
-      width: clamp(160px, 18vw, 240px);
-      height: auto;
-      filter: drop-shadow(0 -10px 25px rgba(0, 0, 0, 0.85));
-      animation: rightGripFloat 6s ease-in-out infinite alternate;
-      transition: transform 0.25s ease-out;
-    }
-
-    @keyframes leftGripFloat {
-      0% { transform: translateY(0px) rotate(0deg); }
-      50% { transform: translateY(-4px) rotate(-1deg); }
-      100% { transform: translateY(2px) rotate(0.5deg); }
-    }
-
-    @keyframes rightGripFloat {
-      0% { transform: translateY(0px) rotate(0deg); }
-      50% { transform: translateY(-4px) rotate(1deg); }
-      100% { transform: translateY(2px) rotate(-0.5deg); }
-    }
-
-    /* Glass Pressure Condensation Contact Marks */
-    .glass-condensation {
-      position: absolute;
-      width: 45px;
-      height: 30px;
-      border-radius: 50%;
-      background: radial-gradient(ellipse at center, rgba(255, 255, 255, 0.18) 0%, rgba(212, 163, 115, 0.08) 50%, transparent 80%);
-      pointer-events: none;
-      filter: blur(2px);
+      filter: drop-shadow(0 0 60px rgba(0, 0, 0, 0.98)) contrast(1.06);
     }
 
     /* Ultra-Minimal, Aesthetic Tap Prompt */
     .tap-indicator {
       position: absolute;
-      bottom: 24px;
+      bottom: 28px;
       z-index: 25;
       display: flex;
       flex-direction: column;
@@ -283,7 +231,7 @@
       align-items: center;
       gap: 14px;
       padding: 11px 28px;
-      background: rgba(14, 18, 25, 0.75);
+      background: rgba(10, 14, 22, 0.72);
       border: 1px solid rgba(255, 255, 255, 0.18);
       border-radius: 9999px;
       backdrop-filter: blur(16px);
@@ -295,11 +243,11 @@
     @keyframes pillBreathe {
       0%, 100% {
         border-color: rgba(255, 255, 255, 0.16);
-        box-shadow: 0 12px 35px rgba(0, 0, 0, 0.85), 0 0 10px rgba(212, 163, 115, 0.1);
+        box-shadow: 0 12px 35px rgba(0, 0, 0, 0.85), 0 0 12px rgba(212, 163, 115, 0.12);
       }
       50% {
         border-color: rgba(212, 163, 115, 0.7);
-        box-shadow: 0 14px 40px rgba(0, 0, 0, 0.95), 0 0 25px rgba(212, 163, 115, 0.35);
+        box-shadow: 0 14px 40px rgba(0, 0, 0, 0.95), 0 0 28px rgba(212, 163, 115, 0.35);
       }
     }
 
@@ -307,8 +255,8 @@
       width: 7px;
       height: 7px;
       border-radius: 50%;
-      background: var(--gold-accent);
-      box-shadow: 0 0 10px var(--gold-accent);
+      background: var(--gold-bright);
+      box-shadow: 0 0 12px var(--gold-accent);
       animation: pulseDot 1.4s infinite alternate;
     }
 
@@ -335,28 +283,28 @@
       width: 44px;
       height: 44px;
       border-radius: 50%;
-      background: rgba(14, 18, 25, 0.65);
-      border: 1px solid rgba(255, 255, 255, 0.14);
-      color: rgba(255, 255, 255, 0.75);
+      background: rgba(12, 16, 24, 0.65);
+      border: 1px solid rgba(255, 255, 255, 0.16);
+      color: rgba(255, 255, 255, 0.8);
       display: flex;
       align-items: center;
       justify-content: center;
       cursor: pointer;
-      backdrop-filter: blur(12px);
+      backdrop-filter: blur(14px);
       transition: all 0.25s ease;
     }
 
     .audio-toggle-btn:hover {
       border-color: var(--gold-accent);
       color: #ffffff;
-      background: rgba(25, 30, 42, 0.85);
+      background: rgba(25, 32, 48, 0.85);
       transform: scale(1.05);
     }
 
     .audio-toggle-btn.active {
-      color: var(--gold-accent);
+      color: var(--gold-bright);
       border-color: var(--gold-accent);
-      box-shadow: 0 0 15px rgba(212, 163, 115, 0.25);
+      box-shadow: 0 0 18px rgba(212, 163, 115, 0.3);
     }
 
     /* ==========================================================================
@@ -643,10 +591,10 @@
 
   <div id="stage">
     
-    <!-- Multi-Layer Deep Space & Shooting Meteors Canvas -->
+    <!-- Multi-Layer Deep Space & Volumetric Nebula Canvas -->
     <canvas id="space-canvas"></canvas>
 
-    <!-- Glass Touch Ripple & Depressurization Canvas -->
+    <!-- Glass Touch Ripple Canvas -->
     <canvas id="ripple-canvas"></canvas>
 
     <!-- Fullscreen Warp Lines Canvas during Tap Zoom-In -->
@@ -663,116 +611,16 @@
 
     <!-- ======================================================================
          SECTION 1: CINEMATIC INTRO SCREEN
-         Astronaut Pressed against Glass + Gloved Hands Gripping Screen Edges
+         Grounded Majestic Astronaut + Ethereal Nebula + Meteors Behind
          ====================================================================== -->
     <div id="intro-screen">
       
-      <!-- Realistic Screen Glass Sheen Overlay -->
-      <div class="screen-glass-sheen"></div>
+      <!-- Celestial Atmospheric Aura behind Astronaut -->
+      <div class="astronaut-backlight"></div>
 
-      <!-- Astronaut Hero Frame - Large, Close, Pressed Up Against Glass -->
+      <!-- Astronaut Hero Frame - Large, Close, Grounded at Bottom -->
       <div class="astronaut-anchor" id="astronaut-anchor">
         <img src="astronaut_hero.png" alt="NASA Astronaut" class="astronaut-image" id="astronaut-image">
-      </div>
-
-      <!-- Spacesuit Pressurized Gloved Hands Gripping the Screen -->
-      <div class="glove-container">
-        
-        <!-- Left Gloved Hand Gripping the Glass -->
-        <svg class="glove-hand-left" id="glove-left" viewBox="0 0 240 200" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <defs>
-            <linearGradient id="suitFabricLeft" x1="0%" y1="100%" x2="50%" y2="0%">
-              <stop offset="0%" stop-color="#181c24" />
-              <stop offset="40%" stop-color="#8a94a6" />
-              <stop offset="75%" stop-color="#d6dde8" />
-              <stop offset="100%" stop-color="#ffffff" />
-            </linearGradient>
-            <linearGradient id="fingerPadGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-              <stop offset="0%" stop-color="#2a303c" />
-              <stop offset="60%" stop-color="#151922" />
-              <stop offset="100%" stop-color="#0a0d14" />
-            </linearGradient>
-            <radialGradient id="glassPressureL" cx="50%" cy="50%" r="50%">
-              <stop offset="0%" stop-color="rgba(255, 255, 255, 0.4)" />
-              <stop offset="60%" stop-color="rgba(212, 163, 115, 0.15)" />
-              <stop offset="100%" stop-color="transparent" />
-            </radialGradient>
-          </defs>
-          <!-- Wrist / Forearm sleeve extending from bottom -->
-          <path d="M20 200 C30 140, 60 110, 110 95 C140 130, 160 170, 180 200 Z" fill="url(#suitFabricLeft)" opacity="0.95"/>
-          <!-- Suit mechanical cuff ring -->
-          <path d="M40 135 C70 120, 110 115, 145 125 C142 133, 68 143, 38 142 Z" fill="#2d3748" stroke="#38bdf8" stroke-width="1.5"/>
-          <!-- Palm base resting on glass -->
-          <ellipse cx="120" cy="95" rx="55" ry="35" fill="url(#suitFabricLeft)"/>
-          <!-- Fingers pressing onto glass (index, middle, ring, pinky, thumb) -->
-          <!-- Index Finger -->
-          <path d="M75 90 C75 55, 95 35, 110 38 C122 42, 115 75, 105 92 Z" fill="url(#suitFabricLeft)" stroke="#cbd5e1" stroke-width="1"/>
-          <ellipse cx="102" cy="48" rx="14" ry="18" fill="url(#fingerPadGrad)"/>
-          <!-- Middle Finger (Highest) -->
-          <path d="M110 85 C115 45, 132 20, 148 24 C160 28, 150 65, 138 88 Z" fill="url(#suitFabricLeft)" stroke="#cbd5e1" stroke-width="1"/>
-          <ellipse cx="140" cy="34" rx="15" ry="20" fill="url(#fingerPadGrad)"/>
-          <!-- Ring Finger -->
-          <path d="M142 88 C150 55, 168 38, 180 44 C190 50, 178 78, 166 94 Z" fill="url(#suitFabricLeft)" stroke="#cbd5e1" stroke-width="1"/>
-          <ellipse cx="170" cy="50" rx="14" ry="18" fill="url(#fingerPadGrad)"/>
-          <!-- Pinky Finger -->
-          <path d="M168 95 C178 70, 195 58, 206 66 C214 74, 198 95, 185 106 Z" fill="url(#suitFabricLeft)"/>
-          <ellipse cx="196" cy="72" rx="12" ry="15" fill="url(#fingerPadGrad)"/>
-          <!-- Thumb gripping inward -->
-          <path d="M50 115 C35 95, 45 75, 60 78 C75 82, 78 108, 68 125 Z" fill="url(#suitFabricLeft)"/>
-          <ellipse cx="56" cy="85" rx="13" ry="15" fill="url(#fingerPadGrad)"/>
-          <!-- Glass Pressure Contact Rings (Where rubberized tips press the monitor glass) -->
-          <ellipse cx="102" cy="48" rx="17" ry="21" fill="url(#glassPressureL)"/>
-          <ellipse cx="140" cy="34" rx="18" ry="24" fill="url(#glassPressureL)"/>
-          <ellipse cx="170" cy="50" rx="17" ry="22" fill="url(#glassPressureL)"/>
-          <ellipse cx="196" cy="72" rx="15" ry="18" fill="url(#glassPressureL)"/>
-          <ellipse cx="56" cy="85" rx="15" ry="18" fill="url(#glassPressureL)"/>
-        </svg>
-
-        <!-- Right Gloved Hand Gripping the Glass -->
-        <svg class="glove-hand-right" id="glove-right" viewBox="0 0 240 200" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <defs>
-            <linearGradient id="suitFabricRight" x1="100%" y1="100%" x2="50%" y2="0%">
-              <stop offset="0%" stop-color="#181c24" />
-              <stop offset="40%" stop-color="#8a94a6" />
-              <stop offset="75%" stop-color="#d6dde8" />
-              <stop offset="100%" stop-color="#ffffff" />
-            </linearGradient>
-            <radialGradient id="glassPressureR" cx="50%" cy="50%" r="50%">
-              <stop offset="0%" stop-color="rgba(255, 255, 255, 0.4)" />
-              <stop offset="60%" stop-color="rgba(212, 163, 115, 0.15)" />
-              <stop offset="100%" stop-color="transparent" />
-            </radialGradient>
-          </defs>
-          <!-- Wrist / Forearm sleeve extending from bottom -->
-          <path d="M220 200 C210 140, 180 110, 130 95 C100 130, 80 170, 60 200 Z" fill="url(#suitFabricRight)" opacity="0.95"/>
-          <!-- Suit mechanical cuff ring -->
-          <path d="M200 135 C170 120, 130 115, 95 125 C98 133, 172 143, 202 142 Z" fill="#2d3748" stroke="#e11d48" stroke-width="1.5"/>
-          <!-- Palm base resting on glass -->
-          <ellipse cx="120" cy="95" rx="55" ry="35" fill="url(#suitFabricRight)"/>
-          <!-- Fingers pressing onto glass -->
-          <!-- Index Finger -->
-          <path d="M165 90 C165 55, 145 35, 130 38 C118 42, 125 75, 135 92 Z" fill="url(#suitFabricRight)" stroke="#cbd5e1" stroke-width="1"/>
-          <ellipse cx="138" cy="48" rx="14" ry="18" fill="url(#fingerPadGrad)"/>
-          <!-- Middle Finger (Highest) -->
-          <path d="M130 85 C125 45, 108 20, 92 24 C80 28, 90 65, 102 88 Z" fill="url(#suitFabricRight)" stroke="#cbd5e1" stroke-width="1"/>
-          <ellipse cx="100" cy="34" rx="15" ry="20" fill="url(#fingerPadGrad)"/>
-          <!-- Ring Finger -->
-          <path d="M98 88 C90 55, 72 38, 60 44 C50 50, 62 78, 74 94 Z" fill="url(#suitFabricRight)" stroke="#cbd5e1" stroke-width="1"/>
-          <ellipse cx="70" cy="50" rx="14" ry="18" fill="url(#fingerPadGrad)"/>
-          <!-- Pinky Finger -->
-          <path d="M72 95 C62 70, 45 58, 34 66 C26 74, 42 95, 55 106 Z" fill="url(#suitFabricRight)"/>
-          <ellipse cx="44" cy="72" rx="12" ry="15" fill="url(#fingerPadGrad)"/>
-          <!-- Thumb gripping inward -->
-          <path d="M190 115 C205 95, 195 75, 180 78 C165 82, 162 108, 172 125 Z" fill="url(#suitFabricRight)"/>
-          <ellipse cx="184" cy="85" rx="13" ry="15" fill="url(#fingerPadGrad)"/>
-          <!-- Glass Pressure Contact Rings -->
-          <ellipse cx="138" cy="48" rx="17" ry="21" fill="url(#glassPressureR)"/>
-          <ellipse cx="100" cy="34" rx="18" ry="24" fill="url(#glassPressureR)"/>
-          <ellipse cx="70" cy="50" rx="17" ry="22" fill="url(#glassPressureR)"/>
-          <ellipse cx="44" cy="72" rx="15" ry="18" fill="url(#glassPressureR)"/>
-          <ellipse cx="184" cy="85" rx="15" ry="18" fill="url(#glassPressureR)"/>
-        </svg>
-
       </div>
 
       <!-- Ultra-Clean, Aesthetic Tap Prompt -->
@@ -912,7 +760,6 @@
           if (!this.ctx || this.muted) return;
           const now = this.ctx.currentTime;
 
-          // High glass ping / resonance chime
           const osc = this.ctx.createOscillator();
           const gain = this.ctx.createGain();
           osc.type = 'sine';
@@ -1028,7 +875,7 @@
       const audio = new CosmicAudio();
 
       /* ========================================================================
-         2. DEEP SPACE GALAXY, METEORS & INTERACTIVE STARDUST ENGINE
+         2. RADIANT CELESTIAL NEBULA, SPIKED STARS & DYNAMIC METEORS
          ======================================================================== */
       const spaceCanvas = document.getElementById('space-canvas');
       const spaceCtx = spaceCanvas.getContext('2d');
@@ -1045,21 +892,30 @@
       resizeSpace();
       window.addEventListener('resize', resizeSpace);
 
-      // Multi-layer Starfield (450 stars)
+      // Multi-layer Starfield (550 stars across 4 depth layers)
       const stars = [];
-      const STAR_COUNT = 450;
+      const STAR_COUNT = 550;
       for (let i = 0; i < STAR_COUNT; i++) {
         stars.push({
           x: Math.random() * w,
           y: Math.random() * h,
-          z: Math.random() * 2.5 + 0.5,
-          radius: Math.random() * 1.4 + 0.3,
+          z: Math.random() * 2.8 + 0.4,
+          radius: Math.random() * 1.5 + 0.25,
           baseAlpha: Math.random() * 0.75 + 0.25,
           twinkleSpeed: Math.random() * 0.035 + 0.01,
           phase: Math.random() * Math.PI * 2,
           color: Math.random() > 0.82 ? 'rgba(212, 163, 115,' : (Math.random() > 0.5 ? 'rgba(215, 235, 255,' : 'rgba(255, 255, 255,')
         });
       }
+
+      // Prominent Bright Stars with 4-Point Cross Diffraction Spikes
+      const brightStars = [
+        { xRatio: 0.15, yRatio: 0.22, radius: 2.8, color: 'rgba(220, 240, 255,', spikeLen: 24 },
+        { xRatio: 0.82, yRatio: 0.18, radius: 3.2, color: 'rgba(255, 220, 180,', spikeLen: 30 },
+        { xRatio: 0.28, yRatio: 0.45, radius: 2.2, color: 'rgba(210, 235, 255,', spikeLen: 18 },
+        { xRatio: 0.76, yRatio: 0.52, radius: 2.6, color: 'rgba(255, 210, 160,', spikeLen: 22 },
+        { xRatio: 0.50, yRatio: 0.12, radius: 2.4, color: 'rgba(255, 255, 255,', spikeLen: 20 }
+      ];
 
       // Meteors with sparkling debris
       const meteors = [];
@@ -1072,8 +928,8 @@
           y: Math.random() * (h * 0.4),
           vx: -Math.cos(angle) * speed,
           vy: Math.sin(angle) * speed,
-          len: Math.random() * 140 + 90,
-          thick: Math.random() * 2.0 + 1.2,
+          len: Math.random() * 150 + 90,
+          thick: Math.random() * 2.2 + 1.2,
           alpha: 1.0,
           decay: Math.random() * 0.012 + 0.011,
           sparks: []
@@ -1092,8 +948,6 @@
       let tiltY = 0;
 
       const astronautAnchor = document.getElementById('astronaut-anchor');
-      const gloveLeft = document.getElementById('glove-left');
-      const gloveRight = document.getElementById('glove-right');
 
       window.addEventListener('mousemove', (e) => {
         mouseX = e.clientX;
@@ -1101,26 +955,20 @@
         tiltX = (mouseX / w - 0.5) * 14;
         tiltY = (mouseY / h - 0.5) * 8;
 
-        // Subtle 3D astronaut tilt pressed against glass
+        // Subtle 3D astronaut tilt
         if (astronautAnchor && !isZoomedIn) {
-          astronautAnchor.style.transform = `translateX(-50%) perspective(1200px) rotateY(${tiltX * -0.3}deg) rotateX(${tiltY * 0.2}deg)`;
-        }
-        if (gloveLeft && !isZoomedIn) {
-          gloveLeft.style.transform = `translate(${tiltX * -0.5}px, ${tiltY * -0.3}px)`;
-        }
-        if (gloveRight && !isZoomedIn) {
-          gloveRight.style.transform = `translate(${tiltX * -0.5}px, ${tiltY * -0.3}px)`;
+          astronautAnchor.style.transform = `translateX(-50%) perspective(1200px) rotateY(${tiltX * -0.35}deg) rotateX(${tiltY * 0.2}deg)`;
         }
 
         // Spawn interactive cursor dust particles
-        if (cursorDust.length < 50 && Math.random() > 0.4) {
+        if (cursorDust.length < 50 && Math.random() > 0.35) {
           cursorDust.push({
             x: mouseX + (Math.random() * 20 - 10),
             y: mouseY + (Math.random() * 20 - 10),
             vx: (Math.random() - 0.5) * 1.5,
             vy: (Math.random() - 0.5) * 1.5 - 0.5,
-            radius: Math.random() * 1.6 + 0.4,
-            alpha: 0.8,
+            radius: Math.random() * 1.8 + 0.4,
+            alpha: 0.85,
             decay: 0.02
           });
         }
@@ -1129,18 +977,31 @@
       function renderSpace() {
         spaceCtx.clearRect(0, 0, w, h);
 
-        // 1. Deep Space Atmospheric Nebula (James Webb style soft volumetric dust)
-        const g1 = spaceCtx.createRadialGradient(w * 0.25 - tiltX, h * 0.3 - tiltY, 60, w * 0.25, h * 0.3, w * 0.6);
-        g1.addColorStop(0, 'rgba(25, 18, 36, 0.45)');
-        g1.addColorStop(0.5, 'rgba(14, 18, 28, 0.2)');
+        // 1. ETHEREAL VOLUMETRIC NEBULAE (Carina / Orion Celestial Color Palette)
+        // Nebula 1: Deep Celestial Indigo & Star-Cluster Violet (Upper Left)
+        const g1 = spaceCtx.createRadialGradient(w * 0.2 - tiltX, h * 0.25 - tiltY, 40, w * 0.2, h * 0.25, w * 0.65);
+        g1.addColorStop(0, 'rgba(45, 28, 75, 0.55)');
+        g1.addColorStop(0.35, 'rgba(25, 30, 65, 0.35)');
+        g1.addColorStop(0.7, 'rgba(12, 18, 35, 0.18)');
         g1.addColorStop(1, 'rgba(0, 0, 0, 0)');
         spaceCtx.fillStyle = g1;
         spaceCtx.fillRect(0, 0, w, h);
 
-        const g2 = spaceCtx.createRadialGradient(w * 0.75 + tiltX, h * 0.6 + tiltY, 80, w * 0.75, h * 0.6, w * 0.55);
-        g2.addColorStop(0, 'rgba(38, 20, 14, 0.35)');
+        // Nebula 2: Warm Solar Bronze & Rose-Gold Stardust (Upper Right / Center)
+        const g2 = spaceCtx.createRadialGradient(w * 0.78 + tiltX, h * 0.32 + tiltY, 50, w * 0.78, h * 0.32, w * 0.6);
+        g2.addColorStop(0, 'rgba(65, 32, 22, 0.48)');
+        g2.addColorStop(0.4, 'rgba(48, 22, 35, 0.28)');
+        g2.addColorStop(0.8, 'rgba(18, 12, 24, 0.12)');
         g2.addColorStop(1, 'rgba(0, 0, 0, 0)');
         spaceCtx.fillStyle = g2;
+        spaceCtx.fillRect(0, 0, w, h);
+
+        // Nebula 3: Ethereal Cyan-Teal Stellar Veil (Center Horizon)
+        const g3 = spaceCtx.createRadialGradient(w * 0.5, h * 0.45, 80, w * 0.5, h * 0.45, w * 0.45);
+        g3.addColorStop(0, 'rgba(20, 45, 60, 0.22)');
+        g3.addColorStop(0.6, 'rgba(12, 22, 36, 0.1)');
+        g3.addColorStop(1, 'rgba(0, 0, 0, 0)');
+        spaceCtx.fillStyle = g3;
         spaceCtx.fillRect(0, 0, w, h);
 
         // 2. Stars
@@ -1157,19 +1018,55 @@
           spaceCtx.fill();
         }
 
-        // 3. Meteors passing behind the astronaut
+        // 3. Focal Bright Stars with 4-Point Cross Diffraction Spikes
+        for (let i = 0; i < brightStars.length; i++) {
+          const bs = brightStars[i];
+          const bx = bs.xRatio * w - tiltX * 1.5;
+          const by = bs.yRatio * h - tiltY * 1.5;
+          const pulse = Math.sin(Date.now() * 0.002 + i) * 0.15 + 0.85;
+
+          // Radial glow
+          const starGlow = spaceCtx.createRadialGradient(bx, by, 1, bx, by, bs.spikeLen * 1.5);
+          starGlow.addColorStop(0, `${bs.color}0.85)`);
+          starGlow.addColorStop(0.3, `${bs.color}0.35)`);
+          starGlow.addColorStop(1, 'rgba(0,0,0,0)');
+          spaceCtx.fillStyle = starGlow;
+          spaceCtx.fillRect(bx - bs.spikeLen * 1.5, by - bs.spikeLen * 1.5, bs.spikeLen * 3, bs.spikeLen * 3);
+
+          // Horizontal Spike
+          spaceCtx.strokeStyle = `${bs.color}${0.7 * pulse})`;
+          spaceCtx.lineWidth = 1.2;
+          spaceCtx.beginPath();
+          spaceCtx.moveTo(bx - bs.spikeLen * pulse, by);
+          spaceCtx.lineTo(bx + bs.spikeLen * pulse, by);
+          spaceCtx.stroke();
+
+          // Vertical Spike
+          spaceCtx.beginPath();
+          spaceCtx.moveTo(bx, by - bs.spikeLen * pulse);
+          spaceCtx.lineTo(bx, by + bs.spikeLen * pulse);
+          spaceCtx.stroke();
+
+          // Core
+          spaceCtx.beginPath();
+          spaceCtx.arc(bx, by, bs.radius, 0, Math.PI * 2);
+          spaceCtx.fillStyle = '#ffffff';
+          spaceCtx.fill();
+        }
+
+        // 4. Meteors passing behind the astronaut
         for (let i = meteors.length - 1; i >= 0; i--) {
           const m = meteors[i];
           m.x += m.vx;
           m.y += m.vy;
           m.alpha -= m.decay;
 
-          if (Math.random() > 0.4) {
+          if (Math.random() > 0.35) {
             m.sparks.push({
               x: m.x,
               y: m.y,
-              alpha: m.alpha * 0.8,
-              radius: Math.random() * 1.5 + 0.5
+              alpha: m.alpha * 0.85,
+              radius: Math.random() * 1.8 + 0.5
             });
           }
 
@@ -1182,9 +1079,9 @@
           const tailY = m.y - (m.vy / Math.hypot(m.vx, m.vy)) * m.len;
 
           const grad = spaceCtx.createLinearGradient(m.x, m.y, tailX, tailY);
-          grad.addColorStop(0, `rgba(255, 255, 255, ${m.alpha * 0.95})`);
-          grad.addColorStop(0.25, `rgba(255, 235, 205, ${m.alpha * 0.75})`);
-          grad.addColorStop(0.65, `rgba(212, 163, 115, ${m.alpha * 0.4})`);
+          grad.addColorStop(0, `rgba(255, 255, 255, ${m.alpha * 0.98})`);
+          grad.addColorStop(0.2, `rgba(255, 235, 210, ${m.alpha * 0.8})`);
+          grad.addColorStop(0.6, `rgba(212, 163, 115, ${m.alpha * 0.45})`);
           grad.addColorStop(1, 'rgba(0, 0, 0, 0)');
 
           spaceCtx.beginPath();
@@ -1197,14 +1094,14 @@
 
           // Meteor core glow
           spaceCtx.beginPath();
-          spaceCtx.arc(m.x, m.y, m.thick * 1.3, 0, Math.PI * 2);
+          spaceCtx.arc(m.x, m.y, m.thick * 1.4, 0, Math.PI * 2);
           spaceCtx.fillStyle = `rgba(255, 255, 255, ${m.alpha})`;
           spaceCtx.fill();
 
           // Sparks
           for (let k = m.sparks.length - 1; k >= 0; k--) {
             const sp = m.sparks[k];
-            sp.alpha -= 0.05;
+            sp.alpha -= 0.045;
             if (sp.alpha <= 0) {
               m.sparks.splice(k, 1);
               continue;
@@ -1216,7 +1113,7 @@
           }
         }
 
-        // 4. Cursor Stardust
+        // 5. Cursor Stardust
         for (let i = cursorDust.length - 1; i >= 0; i--) {
           const cd = cursorDust[i];
           cd.x += cd.vx;
@@ -1228,7 +1125,7 @@
           }
           spaceCtx.beginPath();
           spaceCtx.arc(cd.x, cd.y, cd.radius, 0, Math.PI * 2);
-          spaceCtx.fillStyle = `rgba(212, 163, 115, ${cd.alpha})`;
+          spaceCtx.fillStyle = `rgba(240, 215, 175, ${cd.alpha})`;
           spaceCtx.fill();
         }
 
@@ -1346,7 +1243,7 @@
       }
 
       /* ========================================================================
-         4. TAP ANYWHERE TO ENTER: 4TH WALL GLASS BREACH TRANSITION
+         4. TAP ANYWHERE TO ENTER: WARP VISOR TRANSITION
          ======================================================================== */
       const introScreen = document.getElementById('intro-screen');
       const helmetInteriorView = document.getElementById('helmet-interior-view');
@@ -1364,7 +1261,6 @@
         const clickX = e ? (e.clientX || (e.touches && e.touches[0] ? e.touches[0].clientX : w / 2)) : w / 2;
         const clickY = e ? (e.clientY || (e.touches && e.touches[0] ? e.touches[0].clientY : h / 2)) : h / 2;
 
-        // Trigger glass touch ripple on the monitor glass
         addGlassRipple(clickX, clickY);
         renderRipples();
 
@@ -1376,10 +1272,10 @@
         warpOverlay.classList.add('active');
         renderWarp();
 
-        // 2. Zoom directly through the helmet visor glass
+        // 2. Zoom directly through helmet visor glass
         introScreen.classList.add('zooming');
 
-        // 3. Pass through glass into Martian Horizon Helmet POV
+        // 3. Pass into Martian Horizon Helmet POV
         setTimeout(() => {
           isWarping = false;
           warpCanvas.classList.remove('active');
@@ -1449,7 +1345,7 @@
         if (!marsCanvas.width) return;
         marsCtx.clearRect(0, 0, mw, mh);
 
-        // 1. Martian Atmospheric Sky Gradient (Deep butterscotch / ochre)
+        // 1. Martian Atmospheric Sky Gradient
         const skyGrad = marsCtx.createLinearGradient(0, 0, 0, mh * 0.65);
         skyGrad.addColorStop(0, '#0c0706');
         skyGrad.addColorStop(0.35, '#28110a');
@@ -1458,7 +1354,7 @@
         marsCtx.fillStyle = skyGrad;
         marsCtx.fillRect(0, 0, mw, mh * 0.65);
 
-        // Solar Flare on Horizon (Small cold Sun as seen from Mars)
+        // Solar Flare on Horizon
         const sunX = mw * 0.7;
         const sunY = mh * 0.35;
         const sunGlow = marsCtx.createRadialGradient(sunX, sunY, 4, sunX, sunY, 90);
@@ -1481,7 +1377,7 @@
         marsCtx.closePath();
         marsCtx.fill();
 
-        // 3. Middle Mountain Ridges (Sunlit Rim)
+        // 3. Middle Mountain Ridges
         marsCtx.fillStyle = '#5c2314';
         marsCtx.beginPath();
         marsCtx.moveTo(0, mh * 0.65);
