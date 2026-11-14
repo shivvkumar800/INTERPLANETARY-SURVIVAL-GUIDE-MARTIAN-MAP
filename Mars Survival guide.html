@@ -602,6 +602,629 @@
     .modal-close-btn:hover {
       color: #ffffff;
     }
+  
+    /* ==========================================================================
+       SECTION 3: TACTICAL ROUTE & SURVIVAL ANALYSIS MODAL (A* RADAR & TELEMETRY)
+       ========================================================================== */
+    .tactical-route-modal {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      z-index: 200;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: clamp(10px, 2vw, 28px);
+      box-sizing: border-box;
+      opacity: 0;
+      transition: opacity 0.3s ease;
+    }
+
+    .tactical-route-modal.visible {
+      display: flex;
+      opacity: 1;
+    }
+
+    .tactical-modal-backdrop {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.88);
+      backdrop-filter: blur(18px);
+      z-index: 1;
+    }
+
+    .tactical-modal-container {
+      position: relative;
+      z-index: 2;
+      width: 100%;
+      max-width: 1420px;
+      max-height: 94vh;
+      background: rgba(10, 14, 22, 0.96);
+      border: 1px solid rgba(212, 163, 115, 0.4);
+      border-radius: 12px;
+      box-shadow: 0 25px 90px rgba(0, 0, 0, 0.98), 0 0 45px rgba(56, 189, 248, 0.15);
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      animation: tacticalModalSlide 0.38s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    }
+
+    @keyframes tacticalModalSlide {
+      from {
+        opacity: 0;
+        transform: translateY(20px) scale(0.98);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+      }
+    }
+
+    .tactical-modal-header {
+      padding: 14px 24px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+      background: rgba(14, 20, 32, 0.75);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-shrink: 0;
+    }
+
+    .tactical-header-tag {
+      font-family: var(--font-wide);
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.28em;
+      color: var(--gold-accent);
+      text-transform: uppercase;
+      margin-bottom: 4px;
+    }
+
+    .tactical-header-title {
+      font-family: var(--font-display);
+      font-size: clamp(16px, 1.8vw, 22px);
+      font-weight: 800;
+      letter-spacing: 0.08em;
+      color: #ffffff;
+      text-transform: uppercase;
+    }
+
+    .tactical-header-right {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+
+    .tactical-api-status {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 6px 14px;
+      border-radius: 9999px;
+      background: rgba(16, 185, 129, 0.12);
+      border: 1px solid rgba(16, 185, 129, 0.35);
+      font-family: var(--font-mono);
+      font-size: 11px;
+      letter-spacing: 1px;
+      color: #10b981;
+      text-transform: uppercase;
+    }
+
+    .tactical-api-status.offline {
+      background: rgba(239, 68, 68, 0.12);
+      border-color: rgba(239, 68, 68, 0.35);
+      color: #f87171;
+    }
+
+    .api-status-dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: #10b981;
+      box-shadow: 0 0 8px #10b981;
+      animation: dotPulse 1.2s infinite alternate;
+    }
+
+    .tactical-close-btn {
+      background: transparent;
+      border: none;
+      color: rgba(255, 255, 255, 0.6);
+      font-size: 26px;
+      line-height: 1;
+      cursor: pointer;
+      transition: color 0.2s;
+    }
+
+    .tactical-close-btn:hover {
+      color: #ffffff;
+    }
+
+    /* Verdict Alert Banner */
+    .tactical-verdict-banner {
+      background: linear-gradient(90deg, rgba(239, 68, 68, 0.18) 0%, rgba(16, 185, 129, 0.12) 100%);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+      padding: 12px 24px;
+      display: flex;
+      align-items: center;
+      gap: 18px;
+      flex-shrink: 0;
+    }
+
+    .verdict-icon {
+      font-size: 24px;
+      flex-shrink: 0;
+    }
+
+    .verdict-heading {
+      font-family: var(--font-wide);
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.18em;
+      color: #f87171;
+      text-transform: uppercase;
+      margin-bottom: 3px;
+    }
+
+    .verdict-text {
+      font-family: var(--font-tech);
+      font-size: 12px;
+      color: rgba(255, 255, 255, 0.85);
+      line-height: 1.45;
+    }
+
+    .verdict-stats {
+      margin-left: auto;
+      display: flex;
+      gap: 20px;
+      flex-shrink: 0;
+    }
+
+    .v-stat {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-end;
+      font-family: var(--font-mono);
+    }
+
+    .v-val {
+      font-size: 16px;
+      font-weight: 700;
+    }
+
+    .v-lbl {
+      font-size: 9px;
+      letter-spacing: 1px;
+      color: var(--text-dim);
+      text-transform: uppercase;
+    }
+
+    /* Tactical Main Body Grid */
+    .tactical-grid {
+      display: grid;
+      grid-template-columns: 1fr 420px;
+      gap: 16px;
+      padding: 16px 24px;
+      overflow-y: auto;
+      flex: 1;
+    }
+
+    @media (max-width: 1040px) {
+      .tactical-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    /* Map Panel */
+    .tactical-map-panel {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      background: rgba(6, 9, 14, 0.6);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 8px;
+      padding: 12px;
+    }
+
+    .map-controls-bar {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+    }
+
+    .mode-toggles {
+      display: flex;
+      gap: 6px;
+    }
+
+    .route-tab-btn {
+      background: rgba(18, 24, 36, 0.85);
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      border-radius: 4px;
+      padding: 6px 12px;
+      font-family: var(--font-tech);
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.08em;
+      color: rgba(255, 255, 255, 0.75);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.2s ease;
+    }
+
+    .route-tab-btn:hover {
+      background: rgba(30, 40, 60, 0.9);
+      color: #fff;
+    }
+
+    .route-tab-btn.active {
+      border-color: var(--telemetry-cyan);
+      background: rgba(56, 189, 248, 0.15);
+      color: #ffffff;
+      box-shadow: 0 0 12px rgba(56, 189, 248, 0.2);
+    }
+
+    .btn-indicator {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+    }
+
+    .btn-indicator.safe { background: #38bdf8; box-shadow: 0 0 6px #38bdf8; }
+    .btn-indicator.direct { background: #f87171; box-shadow: 0 0 6px #f87171; }
+    .btn-indicator.both { background: #fbbf24; box-shadow: 0 0 6px #fbbf24; }
+
+    .sim-actions {
+      display: flex;
+      gap: 6px;
+    }
+
+    .sim-btn {
+      background: rgba(212, 163, 115, 0.2);
+      border: 1px solid var(--gold-accent);
+      border-radius: 4px;
+      padding: 6px 14px;
+      font-family: var(--font-wide);
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.15em;
+      color: #ffffff;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.2s ease;
+    }
+
+    .sim-btn:hover {
+      background: rgba(212, 163, 115, 0.35);
+      box-shadow: 0 0 15px rgba(212, 163, 115, 0.3);
+    }
+
+    .sim-btn.secondary {
+      background: rgba(255, 255, 255, 0.06);
+      border-color: rgba(255, 255, 255, 0.18);
+      color: rgba(255, 255, 255, 0.7);
+    }
+
+    /* Radar Canvas Container */
+    .radar-canvas-wrap {
+      position: relative;
+      width: 100%;
+      height: clamp(340px, 45vh, 480px);
+      background: radial-gradient(circle at 50% 50%, #0d121c 0%, #040609 100%);
+      border: 1px solid rgba(56, 189, 248, 0.2);
+      border-radius: 6px;
+      overflow: hidden;
+    }
+
+    #route-radar-canvas {
+      width: 100%;
+      height: 100%;
+      display: block;
+      cursor: crosshair;
+    }
+
+    .radar-legend {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      background: rgba(10, 14, 22, 0.88);
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      border-radius: 4px;
+      padding: 8px 12px;
+      font-family: var(--font-tech);
+      font-size: 10px;
+      color: rgba(255, 255, 255, 0.75);
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      pointer-events: none;
+      backdrop-filter: blur(8px);
+    }
+
+    .legend-item {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .legend-color {
+      width: 8px;
+      height: 8px;
+      border-radius: 2px;
+    }
+
+    .legend-color.start { background: #10b981; }
+    .legend-color.target { background: #d4a373; }
+    .legend-color.safe-line { background: #38bdf8; height: 3px; }
+    .legend-color.hazard-line { background: #f87171; height: 3px; }
+    .legend-color.hazard-zone { background: rgba(239, 68, 68, 0.35); border: 1px solid #ef4444; }
+
+    /* Live Telemetry HUD during Simulation */
+    .eva-live-hud {
+      position: absolute;
+      bottom: 8px;
+      left: 8px;
+      right: 8px;
+      background: rgba(10, 15, 25, 0.92);
+      border: 1px solid rgba(56, 189, 248, 0.35);
+      border-radius: 4px;
+      padding: 8px 14px;
+      backdrop-filter: blur(12px);
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.6);
+      display: flex;
+      flex-direction: column;
+      gap: 3px;
+      pointer-events: none;
+    }
+
+    .eva-hud-title {
+      font-family: var(--font-wide);
+      font-size: 9px;
+      font-weight: 700;
+      letter-spacing: 0.25em;
+      color: var(--telemetry-cyan);
+      text-transform: uppercase;
+    }
+
+    .eva-hud-grid {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 14px;
+      font-family: var(--font-mono);
+      font-size: 11px;
+      color: rgba(255, 255, 255, 0.75);
+    }
+
+    .eva-hud-grid span {
+      color: #ffffff;
+      font-weight: 600;
+    }
+
+    /* Right Sidebar in Tactical Modal */
+    .tactical-side-panel {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .profile-card, .metrics-card, .env-card {
+      background: rgba(14, 18, 28, 0.65);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 8px;
+      padding: 12px 14px;
+    }
+
+    .card-title {
+      font-family: var(--font-wide);
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.2em;
+      color: var(--gold-accent);
+      text-transform: uppercase;
+      margin-bottom: 8px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .card-title::before {
+      content: '';
+      width: 6px;
+      height: 6px;
+      background: var(--gold-accent);
+      border-radius: 2px;
+    }
+
+    .profile-canvas-wrap {
+      width: 100%;
+      height: 110px;
+      background: rgba(4, 6, 10, 0.6);
+      border-radius: 4px;
+      border: 1px solid rgba(255, 255, 255, 0.06);
+      overflow: hidden;
+      margin-bottom: 4px;
+    }
+
+    #route-profile-canvas {
+      width: 100%;
+      height: 100%;
+      display: block;
+    }
+
+    .profile-legend {
+      display: flex;
+      justify-content: space-between;
+      font-family: var(--font-tech);
+      font-size: 10px;
+      color: rgba(255, 255, 255, 0.65);
+    }
+
+    .metrics-row {
+      display: flex;
+      justify-content: space-between;
+      padding: 5px 0;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+      font-family: var(--font-tech);
+      font-size: 11px;
+    }
+
+    .metrics-row:last-child {
+      border-bottom: none;
+    }
+
+    .m-label {
+      color: var(--text-dim);
+      letter-spacing: 0.05em;
+    }
+
+    .m-val {
+      font-family: var(--font-mono);
+      color: #ffffff;
+      font-weight: 600;
+      text-align: right;
+    }
+
+    .env-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 6px;
+    }
+
+    .env-item {
+      background: rgba(6, 9, 14, 0.6);
+      border: 1px solid rgba(255, 255, 255, 0.06);
+      border-radius: 4px;
+      padding: 6px 8px;
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+
+    .env-lbl {
+      font-family: var(--font-mono);
+      font-size: 9px;
+      letter-spacing: 1px;
+      color: var(--text-dim);
+      text-transform: uppercase;
+    }
+
+    .env-val {
+      font-family: var(--font-mono);
+      font-size: 13px;
+      font-weight: 700;
+      color: #ffffff;
+    }
+
+    /* Buttons inside Helmet view */
+    .btn-tactical-hud {
+      pointer-events: auto;
+      background: rgba(18, 24, 38, 0.85);
+      border: 1px solid rgba(56, 189, 248, 0.4);
+      border-radius: 9999px;
+      padding: 8px 18px;
+      font-family: var(--font-wide);
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: #38bdf8;
+      cursor: pointer;
+      backdrop-filter: blur(12px);
+      transition: all 0.25s ease;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .btn-tactical-hud:hover {
+      border-color: #38bdf8;
+      background: rgba(56, 189, 248, 0.25);
+      color: #ffffff;
+      box-shadow: 0 0 20px rgba(56, 189, 248, 0.4);
+      transform: translateY(-2px);
+    }
+
+    .live-pulse-dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: #10b981;
+      box-shadow: 0 0 8px #10b981;
+      animation: dotPulse 1.2s infinite alternate;
+    }
+
+    .welcome-actions {
+      margin-top: 24px;
+      pointer-events: auto;
+      display: flex;
+      justify-content: center;
+      gap: 16px;
+    }
+
+    .btn-action-primary {
+      background: linear-gradient(135deg, rgba(212, 163, 115, 0.25) 0%, rgba(56, 189, 248, 0.2) 100%);
+      border: 1px solid var(--gold-accent);
+      border-radius: 9999px;
+      padding: 12px 28px;
+      font-family: var(--font-wide);
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      color: #ffffff;
+      cursor: pointer;
+      backdrop-filter: blur(16px);
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.8), 0 0 20px rgba(212, 163, 115, 0.25);
+      transition: all 0.3s ease;
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .btn-action-primary:hover {
+      border-color: #fae1c3;
+      background: linear-gradient(135deg, rgba(212, 163, 115, 0.4) 0%, rgba(56, 189, 248, 0.35) 100%);
+      box-shadow: 0 12px 40px rgba(0, 0, 0, 0.95), 0 0 30px rgba(212, 163, 115, 0.45);
+      transform: translateY(-3px);
+    }
+
+    .btn-modal-action {
+      margin-top: 16px;
+      width: 100%;
+      background: rgba(56, 189, 248, 0.2);
+      border: 1px solid rgba(56, 189, 248, 0.5);
+      border-radius: 6px;
+      padding: 10px 16px;
+      font-family: var(--font-wide);
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.18em;
+      color: #38bdf8;
+      cursor: pointer;
+      text-transform: uppercase;
+      transition: all 0.2s ease;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+    }
+
+    .btn-modal-action:hover {
+      background: rgba(56, 189, 248, 0.35);
+      color: #ffffff;
+      box-shadow: 0 0 16px rgba(56, 189, 248, 0.3);
+    }
+
   </style>
 </head>
 <body>
@@ -675,6 +1298,10 @@
 
       <!-- Top Visor Telemetry Ribbon -->
       <div class="visor-top-ribbon">
+        <button class="btn-tactical-hud" id="btn-open-tactical-map" title="Open A* Tactical Route Analysis">
+          <span class="live-pulse-dot"></span>
+          TACTICAL ROUTE MAP (A* ALGORITHM)
+        </button>
         <div class="visor-telemetry-badge">
           <div class="telemetry-indicator-dot"></div>
           <span>ARES EVA-01 // <strong>LIFE SUPPORT OPTIMAL</strong></span>
@@ -695,6 +1322,12 @@
         <div class="welcome-pretitle">EXPEDITION 2026 // FIRST HUMAN SURFACE RECONNAISSANCE</div>
         <h1 class="welcome-main-title" id="welcome-title">WELCOME TO MARS</h1>
         <div class="welcome-subtitle">ARES SURFACE EXPLORATION &amp; TACTICAL SURVIVAL SYSTEM</div>
+        <div class="welcome-actions">
+          <button class="btn-action-primary" id="btn-hero-launch-route">
+            <span class="live-pulse-dot"></span>
+            LAUNCH JEZERO A* ROUTE ANALYSIS (API CONNECTED)
+          </button>
+        </div>
       </div>
 
       <!-- Minimalist Tactical Scientific Site Selector (The identified areas from NASA scientists) -->
@@ -704,6 +1337,7 @@
 
       <!-- Holographic Site Dossier Modal (Opens when a site is clicked) -->
       <div class="site-info-modal" id="site-info-modal">
+<!-- Dossier Content -->
         <button class="modal-close-btn" id="modal-close-btn">&times;</button>
         <div style="font-family: var(--font-wide); font-size: 10px; color: var(--gold-accent); letter-spacing: 0.25em; text-transform: uppercase;" id="modal-tag">NASA IDENTIFIED EXPLORATION ZONE</div>
         <h2 style="font-family: var(--font-display); font-size: 26px; color: #fff; margin: 8px 0 10px 0; letter-spacing: 0.05em;" id="modal-title">Jezero Crater</h2>
@@ -715,8 +1349,179 @@
           <div><span style="color: var(--text-dim);">DISCOVERY: </span><span style="color: #fff;" id="modal-discovery">2025 Boxwork Formations</span></div>
           <div><span style="color: var(--text-dim);">HAZARD: </span><span style="color: #f87171;" id="modal-hazard">Low</span></div>
         </div>
+
+        <button class="btn-modal-action" id="btn-modal-open-route">
+          🛰️ VIEW A* TRAJECTORY &amp; ELEVATION PROFILE
+        </button>
       </div>
 
+    </div>
+
+  
+    <!-- ======================================================================
+         SECTION 3: TACTICAL ROUTE ANALYSIS & A* NAVIGATION COMMAND CENTER
+         ====================================================================== -->
+    <div id="tactical-route-modal" class="tactical-route-modal">
+      <div class="tactical-modal-backdrop" id="route-modal-backdrop"></div>
+      <div class="tactical-modal-container">
+        
+        <!-- Header Bar -->
+        <div class="tactical-modal-header">
+          <div class="tactical-header-left">
+            <div class="tactical-header-tag">NASA SPACE APPS CHALLENGE 2026 // EXPEDITION ARES</div>
+            <h2 class="tactical-header-title">JEZERO CRATER TACTICAL ROUTE &amp; SURVIVAL ANALYSIS</h2>
+          </div>
+          <div class="tactical-header-right">
+            <div class="tactical-api-status" id="api-status-badge">
+              <span class="api-status-dot"></span>
+              <span id="api-status-text">INITIALIZING API...</span>
+            </div>
+            <button class="tactical-close-btn" id="btn-close-route-modal" title="Close Map">&times;</button>
+          </div>
+        </div>
+
+        <!-- NASA Mission Abort / Verdict Banner -->
+        <div class="tactical-verdict-banner">
+          <div class="verdict-icon">⚠️</div>
+          <div class="verdict-content">
+            <div class="verdict-heading">MISSION ABORT PREVENTED // EXECUTE SAFE SURVIVAL PATHWAY</div>
+            <div class="verdict-text" id="verdict-text-display">
+              Direct trajectory is NON-SURVIVABLE due to extreme slopes (peak 19.1°) and hazardous regolith corridors. Safe Survival Path detoured around impassable crater scarps and Séítah sand dunes, limiting peak incline to 12.3°.
+            </div>
+          </div>
+          <div class="verdict-stats">
+            <div class="v-stat"><span class="v-val" style="color: #f87171;">19.14°</span><span class="v-lbl">DIRECT SLOPE</span></div>
+            <div class="v-stat"><span class="v-val" style="color: #38bdf8;">12.29°</span><span class="v-lbl">SAFE SLOPE</span></div>
+            <div class="v-stat"><span class="v-val" style="color: #10b981;">76.6 min</span><span class="v-lbl">EST. EVA TIME</span></div>
+          </div>
+        </div>
+
+        <!-- Main Body Grid: Radar Map on Left, Analysis Dashboard on Right -->
+        <div class="tactical-grid">
+          
+          <!-- Left Column: Tactical Radar Map Canvas -->
+          <div class="tactical-map-panel">
+            <div class="map-controls-bar">
+              <div class="mode-toggles">
+                <button class="route-tab-btn active" data-mode="safe" id="tab-safe-route">
+                  <span class="btn-indicator safe"></span> SAFE A* PATH (10.9 km)
+                </button>
+                <button class="route-tab-btn" data-mode="direct" id="tab-direct-route">
+                  <span class="btn-indicator direct"></span> DIRECT PATH (8.4 km - DANGER)
+                </button>
+                <button class="route-tab-btn" data-mode="both" id="tab-both-routes">
+                  <span class="btn-indicator both"></span> COMPARE BOTH
+                </button>
+              </div>
+              
+              <div class="sim-actions">
+                <button class="sim-btn" id="btn-start-simulation">
+                  <span id="sim-btn-icon">▶</span> <span id="sim-btn-text">SIMULATE EVA TRAVERSE</span>
+                </button>
+                <button class="sim-btn secondary" id="btn-reset-simulation">↺ RESET</button>
+              </div>
+            </div>
+
+            <!-- The Interactive Radar Canvas -->
+            <div class="radar-canvas-wrap">
+              <canvas id="route-radar-canvas"></canvas>
+              
+              <!-- Map Legend Overlay -->
+              <div class="radar-legend">
+                <div class="legend-item"><span class="legend-color start"></span> Base Camp (18.38°N, 77.58°E)</div>
+                <div class="legend-item"><span class="legend-color target"></span> Science Objective (18.45°N, 77.45°E)</div>
+                <div class="legend-item"><span class="legend-color safe-line"></span> A* Safe Trajectory</div>
+                <div class="legend-item"><span class="legend-color hazard-line"></span> Direct Danger Path (19.1° slope)</div>
+                <div class="legend-item"><span class="legend-color hazard-zone"></span> Séítah Dune Hazard Zone</div>
+              </div>
+
+              <!-- Live EVA Simulation Telemetry Overlay -->
+              <div class="eva-live-hud" id="eva-live-hud">
+                <div class="eva-hud-title">EVA-01 REAL-TIME TELEMETRY</div>
+                <div class="eva-hud-grid">
+                  <div>COORD: <span id="eva-coord">18.380° N, 77.580° E</span></div>
+                  <div>ELEV: <span id="eva-elev">-2,494 m</span></div>
+                  <div>SLOPE: <span id="eva-slope">0.79° (SAFE)</span></div>
+                  <div>PROGRESS: <span id="eva-progress">0%</span></div>
+                  <div>EST. O2: <span id="eva-o2">100%</span></div>
+                  <div>DISTANCE: <span id="eva-dist">0.0 / 10.9 km</span></div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Right Column: Elevation Profile & Mission Telemetry -->
+          <div class="tactical-side-panel">
+            
+            <!-- Elevation & Slope Profile Graph -->
+            <div class="profile-card">
+              <div class="card-title">TERRAIN CROSS-SECTION PROFILE &amp; SLOPE</div>
+              <div class="profile-canvas-wrap">
+                <canvas id="route-profile-canvas"></canvas>
+              </div>
+              <div class="profile-legend">
+                <span><strong style="color: #38bdf8;">—</strong> Safe Elevation (-2500m to -2355m)</span>
+                <span><strong style="color: #f87171;">--</strong> Direct Slope (Peak 19.14° Cliff)</span>
+              </div>
+            </div>
+
+            <!-- Comparative Metrics Table -->
+            <div class="metrics-card">
+              <div class="card-title">TRAJECTORY SPECIFICATIONS</div>
+              <div class="metrics-row">
+                <span class="m-label">A* SOLVER ALGORITHM:</span>
+                <span class="m-val" id="meta-solver">8-dir Weighted A*</span>
+              </div>
+              <div class="metrics-row">
+                <span class="m-label">MARS DATUM / CRS:</span>
+                <span class="m-val">Areocentric IAU 2000 (R=3,389.5 km)</span>
+              </div>
+              <div class="metrics-row">
+                <span class="m-label">GRID RESOLUTION:</span>
+                <span class="m-val">239 m × 283.5 m (45.09 ms solve)</span>
+              </div>
+              <div class="metrics-row">
+                <span class="m-label">SAFE MAX SLOPE LIMIT:</span>
+                <span class="m-val" style="color: #10b981;">20.0° Enforced (Actual Max 12.29°)</span>
+              </div>
+              <div class="metrics-row">
+                <span class="m-label">DETOUR PENALTY:</span>
+                <span class="m-val" style="color: #d4a373;">+30.5% (+2,543.8 m)</span>
+              </div>
+              <div class="metrics-row">
+                <span class="m-label">PRIMARY HAZARD AVOIDED:</span>
+                <span class="m-val" style="color: #f87171;">Séítah Regolith &amp; 19.1° Scarp Cliffs</span>
+              </div>
+            </div>
+
+            <!-- NASA Environmental Telemetry (from mars_data.json) -->
+            <div class="env-card">
+              <div class="card-title">JEZERO SURFACE ENVIRONMENT (NASA TELEMETRY)</div>
+              <div class="env-grid">
+                <div class="env-item">
+                  <span class="env-lbl">SURFACE TEMP</span>
+                  <span class="env-val">-63°C</span>
+                </div>
+                <div class="env-item">
+                  <span class="env-lbl">PRESSURE</span>
+                  <span class="env-val">710 Pa</span>
+                </div>
+                <div class="env-item">
+                  <span class="env-lbl">RADIATION</span>
+                  <span class="env-val" style="color: #f87171;">235 mSv/yr</span>
+                </div>
+                <div class="env-item">
+                  <span class="env-lbl">ISRU WATER</span>
+                  <span class="env-val" style="color: #38bdf8;">45 L/ton</span>
+                </div>
+              </div>
+            </div>
+
+          </div>
+
+        </div>
+
+      </div>
     </div>
 
   </div>
@@ -1281,6 +2086,1341 @@
       modalClose.addEventListener('click', () => {
         modal.classList.remove('visible');
       });
+
+      /* ========================================================================
+         6. TACTICAL ROUTE ANALYSIS (A* ALGORITHM & LIVE REST API INTEGRATION)
+         ======================================================================== */
+      const FALLBACK_ROUTE_DATA = {
+  "direct_path": {
+    "coordinates": [
+      {
+        "lat": 18.38,
+        "lon": 77.58
+      },
+      {
+        "lat": 18.38071,
+        "lon": 77.57869
+      },
+      {
+        "lat": 18.38141,
+        "lon": 77.57737
+      },
+      {
+        "lat": 18.38212,
+        "lon": 77.57606
+      },
+      {
+        "lat": 18.38283,
+        "lon": 77.57475
+      },
+      {
+        "lat": 18.38354,
+        "lon": 77.57343
+      },
+      {
+        "lat": 18.38424,
+        "lon": 77.57212
+      },
+      {
+        "lat": 18.38495,
+        "lon": 77.57081
+      },
+      {
+        "lat": 18.38566,
+        "lon": 77.56949
+      },
+      {
+        "lat": 18.38636,
+        "lon": 77.56818
+      },
+      {
+        "lat": 18.38707,
+        "lon": 77.56687
+      },
+      {
+        "lat": 18.38778,
+        "lon": 77.56556
+      },
+      {
+        "lat": 18.38848,
+        "lon": 77.56424
+      },
+      {
+        "lat": 18.38919,
+        "lon": 77.56293
+      },
+      {
+        "lat": 18.3899,
+        "lon": 77.56162
+      },
+      {
+        "lat": 18.39061,
+        "lon": 77.5603
+      },
+      {
+        "lat": 18.39131,
+        "lon": 77.55899
+      },
+      {
+        "lat": 18.39202,
+        "lon": 77.55768
+      },
+      {
+        "lat": 18.39273,
+        "lon": 77.55636
+      },
+      {
+        "lat": 18.39343,
+        "lon": 77.55505
+      },
+      {
+        "lat": 18.39414,
+        "lon": 77.55374
+      },
+      {
+        "lat": 18.39485,
+        "lon": 77.55242
+      },
+      {
+        "lat": 18.39556,
+        "lon": 77.55111
+      },
+      {
+        "lat": 18.39626,
+        "lon": 77.5498
+      },
+      {
+        "lat": 18.39697,
+        "lon": 77.54848
+      },
+      {
+        "lat": 18.39768,
+        "lon": 77.54717
+      },
+      {
+        "lat": 18.39838,
+        "lon": 77.54586
+      },
+      {
+        "lat": 18.39909,
+        "lon": 77.54455
+      },
+      {
+        "lat": 18.3998,
+        "lon": 77.54323
+      },
+      {
+        "lat": 18.40051,
+        "lon": 77.54192
+      },
+      {
+        "lat": 18.40121,
+        "lon": 77.54061
+      },
+      {
+        "lat": 18.40192,
+        "lon": 77.53929
+      },
+      {
+        "lat": 18.40263,
+        "lon": 77.53798
+      },
+      {
+        "lat": 18.40333,
+        "lon": 77.53667
+      },
+      {
+        "lat": 18.40404,
+        "lon": 77.53535
+      },
+      {
+        "lat": 18.40475,
+        "lon": 77.53404
+      },
+      {
+        "lat": 18.40545,
+        "lon": 77.53273
+      },
+      {
+        "lat": 18.40616,
+        "lon": 77.53141
+      },
+      {
+        "lat": 18.40687,
+        "lon": 77.5301
+      },
+      {
+        "lat": 18.40758,
+        "lon": 77.52879
+      },
+      {
+        "lat": 18.40828,
+        "lon": 77.52747
+      },
+      {
+        "lat": 18.40899,
+        "lon": 77.52616
+      },
+      {
+        "lat": 18.4097,
+        "lon": 77.52485
+      },
+      {
+        "lat": 18.4104,
+        "lon": 77.52354
+      },
+      {
+        "lat": 18.41111,
+        "lon": 77.52222
+      },
+      {
+        "lat": 18.41182,
+        "lon": 77.52091
+      },
+      {
+        "lat": 18.41253,
+        "lon": 77.5196
+      },
+      {
+        "lat": 18.41323,
+        "lon": 77.51828
+      },
+      {
+        "lat": 18.41394,
+        "lon": 77.51697
+      },
+      {
+        "lat": 18.41465,
+        "lon": 77.51566
+      },
+      {
+        "lat": 18.41535,
+        "lon": 77.51434
+      },
+      {
+        "lat": 18.41606,
+        "lon": 77.51303
+      },
+      {
+        "lat": 18.41677,
+        "lon": 77.51172
+      },
+      {
+        "lat": 18.41747,
+        "lon": 77.5104
+      },
+      {
+        "lat": 18.41818,
+        "lon": 77.50909
+      },
+      {
+        "lat": 18.41889,
+        "lon": 77.50778
+      },
+      {
+        "lat": 18.4196,
+        "lon": 77.50646
+      },
+      {
+        "lat": 18.4203,
+        "lon": 77.50515
+      },
+      {
+        "lat": 18.42101,
+        "lon": 77.50384
+      },
+      {
+        "lat": 18.42172,
+        "lon": 77.50253
+      },
+      {
+        "lat": 18.42242,
+        "lon": 77.50121
+      },
+      {
+        "lat": 18.42313,
+        "lon": 77.4999
+      },
+      {
+        "lat": 18.42384,
+        "lon": 77.49859
+      },
+      {
+        "lat": 18.42455,
+        "lon": 77.49727
+      },
+      {
+        "lat": 18.42525,
+        "lon": 77.49596
+      },
+      {
+        "lat": 18.42596,
+        "lon": 77.49465
+      },
+      {
+        "lat": 18.42667,
+        "lon": 77.49333
+      },
+      {
+        "lat": 18.42737,
+        "lon": 77.49202
+      },
+      {
+        "lat": 18.42808,
+        "lon": 77.49071
+      },
+      {
+        "lat": 18.42879,
+        "lon": 77.48939
+      },
+      {
+        "lat": 18.42949,
+        "lon": 77.48808
+      },
+      {
+        "lat": 18.4302,
+        "lon": 77.48677
+      },
+      {
+        "lat": 18.43091,
+        "lon": 77.48545
+      },
+      {
+        "lat": 18.43162,
+        "lon": 77.48414
+      },
+      {
+        "lat": 18.43232,
+        "lon": 77.48283
+      },
+      {
+        "lat": 18.43303,
+        "lon": 77.48152
+      },
+      {
+        "lat": 18.43374,
+        "lon": 77.4802
+      },
+      {
+        "lat": 18.43444,
+        "lon": 77.47889
+      },
+      {
+        "lat": 18.43515,
+        "lon": 77.47758
+      },
+      {
+        "lat": 18.43586,
+        "lon": 77.47626
+      },
+      {
+        "lat": 18.43657,
+        "lon": 77.47495
+      },
+      {
+        "lat": 18.43727,
+        "lon": 77.47364
+      },
+      {
+        "lat": 18.43798,
+        "lon": 77.47232
+      },
+      {
+        "lat": 18.43869,
+        "lon": 77.47101
+      },
+      {
+        "lat": 18.43939,
+        "lon": 77.4697
+      },
+      {
+        "lat": 18.4401,
+        "lon": 77.46838
+      },
+      {
+        "lat": 18.44081,
+        "lon": 77.46707
+      },
+      {
+        "lat": 18.44152,
+        "lon": 77.46576
+      },
+      {
+        "lat": 18.44222,
+        "lon": 77.46444
+      },
+      {
+        "lat": 18.44293,
+        "lon": 77.46313
+      },
+      {
+        "lat": 18.44364,
+        "lon": 77.46182
+      },
+      {
+        "lat": 18.44434,
+        "lon": 77.46051
+      },
+      {
+        "lat": 18.44505,
+        "lon": 77.45919
+      },
+      {
+        "lat": 18.44576,
+        "lon": 77.45788
+      },
+      {
+        "lat": 18.44646,
+        "lon": 77.45657
+      },
+      {
+        "lat": 18.44717,
+        "lon": 77.45525
+      },
+      {
+        "lat": 18.44788,
+        "lon": 77.45394
+      },
+      {
+        "lat": 18.44859,
+        "lon": 77.45263
+      },
+      {
+        "lat": 18.44929,
+        "lon": 77.45131
+      },
+      {
+        "lat": 18.45,
+        "lon": 77.45
+      }
+    ],
+    "total_distance_m": 8403.9,
+    "max_slope_deg": 19.14,
+    "elevation_array": [
+      -2493.57,
+      -2494.09,
+      -2494.67,
+      -2495.42,
+      -2496.23,
+      -2497.05,
+      -2497.91,
+      -2498.82,
+      -2499.74,
+      -2500.68,
+      -2501.53,
+      -2502.32,
+      -2503.09,
+      -2503.85,
+      -2504.36,
+      -2504.68,
+      -2504.95,
+      -2505.17,
+      -2504.94,
+      -2504.64,
+      -2504.26,
+      -2503.7,
+      -2502.63,
+      -2501.53,
+      -2500.41,
+      -2499.14,
+      -2497.45,
+      -2495.72,
+      -2493.99,
+      -2492.13,
+      -2490.07,
+      -2488.05,
+      -2486.05,
+      -2483.95,
+      -2481.78,
+      -2479.66,
+      -2477.6,
+      -2475.13,
+      -2470.68,
+      -2465.3,
+      -2458.99,
+      -2452.03,
+      -2444.43,
+      -2434.42,
+      -2422.37,
+      -2412.35,
+      -2402.29,
+      -2392.2,
+      -2382.19,
+      -2389.63,
+      -2400.18,
+      -2406.41,
+      -2408.36,
+      -2404.55,
+      -2393.99,
+      -2399.33,
+      -2404.02,
+      -2404.94,
+      -2395.74,
+      -2376.41,
+      -2369.38,
+      -2374.93,
+      -2370.39,
+      -2355.78,
+      -2356.02,
+      -2362.5,
+      -2370.09,
+      -2374.68,
+      -2378.23,
+      -2383.88,
+      -2391.56,
+      -2400.42,
+      -2400.27,
+      -2400.61,
+      -2401.42,
+      -2402.35,
+      -2402.31,
+      -2402.36,
+      -2402.68,
+      -2403.14,
+      -2403.77,
+      -2404.4,
+      -2405.03,
+      -2405.81,
+      -2406.74,
+      -2407.63,
+      -2408.49,
+      -2409.34,
+      -2410.15,
+      -2410.98,
+      -2411.78,
+      -2412.51,
+      -2413.18,
+      -2413.79,
+      -2414.34,
+      -2414.79,
+      -2415.16,
+      -2415.47,
+      -2415.67,
+      -2415.58
+    ],
+    "slope_array": [
+      0.74,
+      0.76,
+      0.79,
+      0.81,
+      0.83,
+      0.85,
+      0.86,
+      0.86,
+      0.86,
+      0.85,
+      0.82,
+      0.78,
+      0.75,
+      0.72,
+      0.68,
+      0.64,
+      0.62,
+      0.6,
+      0.63,
+      0.67,
+      0.73,
+      0.79,
+      0.87,
+      0.96,
+      1.05,
+      1.13,
+      1.21,
+      1.27,
+      1.33,
+      1.37,
+      1.4,
+      1.43,
+      1.45,
+      1.5,
+      1.6,
+      1.75,
+      1.95,
+      2.42,
+      3.73,
+      5.13,
+      6.61,
+      7.79,
+      8.81,
+      9.06,
+      8.67,
+      8.19,
+      7.71,
+      7.21,
+      6.51,
+      7.95,
+      10.9,
+      14.04,
+      17.19,
+      18.76,
+      18.4,
+      18.1,
+      18.91,
+      19.14,
+      18.4,
+      16.67,
+      15.59,
+      14.78,
+      12.56,
+      8.91,
+      7.69,
+      7.6,
+      7.63,
+      6.47,
+      5.03,
+      4.12,
+      3.69,
+      3.73,
+      3.43,
+      2.98,
+      2.38,
+      1.86,
+      1.97,
+      2.08,
+      2.21,
+      2.29,
+      2.33,
+      2.37,
+      2.41,
+      2.43,
+      2.44,
+      2.45,
+      2.46,
+      2.46,
+      2.46,
+      2.45,
+      2.43,
+      2.41,
+      2.4,
+      2.38,
+      2.36,
+      2.34,
+      2.33,
+      2.31,
+      2.29,
+      2.3
+    ],
+    "hazard_warnings": [
+      "VERDICT: DIRECT PATH CLASSIFIED AS NON-SURVIVABLE FOR CREWED EVA / UNPROTECTED ROVER.",
+      "WHEEL ENTRAPMENT / DUST HAZARD: Direct line traverses 35% of journey inside high-risk loose dune regolith (Séítah/Delta silt zones). Extreme risk of rover entrapment and solar panel fouling."
+    ]
+  },
+  "safe_survival_path": {
+    "coordinates": [
+      {
+        "lat": 18.38182,
+        "lon": 77.57778
+      },
+      {
+        "lat": 18.38586,
+        "lon": 77.57778
+      },
+      {
+        "lat": 18.3899,
+        "lon": 77.57778
+      },
+      {
+        "lat": 18.39394,
+        "lon": 77.57778
+      },
+      {
+        "lat": 18.39798,
+        "lon": 77.57778
+      },
+      {
+        "lat": 18.40202,
+        "lon": 77.57778
+      },
+      {
+        "lat": 18.40606,
+        "lon": 77.57778
+      },
+      {
+        "lat": 18.4101,
+        "lon": 77.57778
+      },
+      {
+        "lat": 18.41414,
+        "lon": 77.57778
+      },
+      {
+        "lat": 18.41818,
+        "lon": 77.57778
+      },
+      {
+        "lat": 18.42222,
+        "lon": 77.57273
+      },
+      {
+        "lat": 18.42626,
+        "lon": 77.57273
+      },
+      {
+        "lat": 18.4303,
+        "lon": 77.57273
+      },
+      {
+        "lat": 18.43434,
+        "lon": 77.56768
+      },
+      {
+        "lat": 18.43838,
+        "lon": 77.56263
+      },
+      {
+        "lat": 18.44242,
+        "lon": 77.55758
+      },
+      {
+        "lat": 18.44646,
+        "lon": 77.55253
+      },
+      {
+        "lat": 18.45051,
+        "lon": 77.54747
+      },
+      {
+        "lat": 18.45455,
+        "lon": 77.54242
+      },
+      {
+        "lat": 18.45859,
+        "lon": 77.53737
+      },
+      {
+        "lat": 18.46263,
+        "lon": 77.53232
+      },
+      {
+        "lat": 18.46667,
+        "lon": 77.52727
+      },
+      {
+        "lat": 18.46667,
+        "lon": 77.52222
+      },
+      {
+        "lat": 18.46667,
+        "lon": 77.51717
+      },
+      {
+        "lat": 18.46667,
+        "lon": 77.51212
+      },
+      {
+        "lat": 18.46667,
+        "lon": 77.50707
+      },
+      {
+        "lat": 18.46667,
+        "lon": 77.50202
+      },
+      {
+        "lat": 18.46667,
+        "lon": 77.49697
+      },
+      {
+        "lat": 18.46667,
+        "lon": 77.49192
+      },
+      {
+        "lat": 18.46667,
+        "lon": 77.48687
+      },
+      {
+        "lat": 18.46667,
+        "lon": 77.48182
+      },
+      {
+        "lat": 18.46667,
+        "lon": 77.47677
+      },
+      {
+        "lat": 18.46667,
+        "lon": 77.47172
+      },
+      {
+        "lat": 18.46263,
+        "lon": 77.46667
+      },
+      {
+        "lat": 18.45859,
+        "lon": 77.46162
+      },
+      {
+        "lat": 18.45455,
+        "lon": 77.45657
+      },
+      {
+        "lat": 18.45051,
+        "lon": 77.45152
+      }
+    ],
+    "total_distance_m": 10947.7,
+    "max_slope_deg": 12.29,
+    "estimated_eva_time_mins": 76.6,
+    "elevation_array": [
+      -2494.19,
+      -2492.97,
+      -2492.27,
+      -2492.12,
+      -2492.51,
+      -2493.34,
+      -2494.47,
+      -2495.74,
+      -2496.96,
+      -2497.96,
+      -2495.17,
+      -2494.83,
+      -2494.27,
+      -2488.55,
+      -2483.41,
+      -2479.83,
+      -2466.77,
+      -2420.71,
+      -2401.8,
+      -2409,
+      -2399.18,
+      -2405.97,
+      -2395.91,
+      -2395.54,
+      -2405.81,
+      -2433.16,
+      -2462.4,
+      -2475.02,
+      -2478.37,
+      -2479.71,
+      -2479.58,
+      -2477.8,
+      -2474.4,
+      -2461.97,
+      -2447.52,
+      -2432.7,
+      -2418.46
+    ],
+    "slope_array": [
+      0.79,
+      0.76,
+      0.69,
+      0.6,
+      0.49,
+      0.39,
+      0.31,
+      0.31,
+      0.37,
+      0.47,
+      0.79,
+      0.9,
+      0.96,
+      1.03,
+      0.94,
+      2.44,
+      8.02,
+      6.8,
+      5.25,
+      12.29,
+      7.97,
+      5.15,
+      1.48,
+      1.16,
+      5.99,
+      10.95,
+      8.49,
+      3.09,
+      1.39,
+      1.33,
+      1.43,
+      1.6,
+      1.8,
+      2.25,
+      2.45,
+      2.42,
+      2.31
+    ],
+    "detour_percentage": 30.5
+  },
+  "comparison_summary": "MISSION ABORT PREVENTED: Direct trajectory is NON-SURVIVABLE due to extreme slopes (peak 19.1 deg) and hazardous regolith corridors. The Safe Survival Path detoured around impassable crater scarps and Séítah sand dunes, limiting peak incline to 12.3 deg. Tradeoff: Detour adds 2.54 km (+30.5%) and requires an estimated 76.6 minutes of EVA traverse time to guarantee 100% crew and rover survival. OPERATIONAL VERDICT: EXECUTE SAFE SURVIVAL PATHWAY.",
+  "metadata": {
+    "region": "Jezero Crater, Mars",
+    "crs": "Areocentric IAU 2000 Mars Sphere (R=3,389,500m)",
+    "grid_resolution_m": {
+      "dy": 239,
+      "dx": 283.5
+    },
+    "solver": "8-directional Weighted A* (Admissible Euclidean Heuristic)",
+    "safe_max_slope_enforced": 20,
+    "execution_time_ms": 45.09
+  }
+};
+
+      let activeRouteData = FALLBACK_ROUTE_DATA;
+      let activeRouteMode = 'safe'; // 'safe', 'direct', 'both'
+      let isSimulating = false;
+      let simIndex = 0;
+      let simTimer = null;
+
+      const tacticalModal = document.getElementById('tactical-route-modal');
+      const btnOpenTacticalMap = document.getElementById('btn-open-tactical-map');
+      const btnHeroLaunchRoute = document.getElementById('btn-hero-launch-route');
+      const btnModalOpenRoute = document.getElementById('btn-modal-open-route');
+      const btnCloseRouteModal = document.getElementById('btn-close-route-modal');
+      const routeModalBackdrop = document.getElementById('route-modal-backdrop');
+
+      const apiStatusBadge = document.getElementById('api-status-badge');
+      const apiStatusText = document.getElementById('api-status-text');
+      const verdictTextDisplay = document.getElementById('verdict-text-display');
+
+      const radarCanvas = document.getElementById('route-radar-canvas');
+      const radarCtx = radarCanvas.getContext('2d');
+      const profileCanvas = document.getElementById('route-profile-canvas');
+      const profileCtx = profileCanvas.getContext('2d');
+
+      const tabSafeRoute = document.getElementById('tab-safe-route');
+      const tabDirectRoute = document.getElementById('tab-direct-route');
+      const tabBothRoutes = document.getElementById('tab-both-routes');
+      const btnStartSim = document.getElementById('btn-start-simulation');
+      const btnResetSim = document.getElementById('btn-reset-simulation');
+      const simBtnIcon = document.getElementById('sim-btn-icon');
+      const simBtnText = document.getElementById('sim-btn-text');
+
+      const evaCoord = document.getElementById('eva-coord');
+      const evaElev = document.getElementById('eva-elev');
+      const evaSlope = document.getElementById('eva-slope');
+      const evaProgress = document.getElementById('eva-progress');
+      const evaO2 = document.getElementById('eva-o2');
+      const evaDist = document.getElementById('eva-dist');
+
+      // Fetch dynamic data from API with fallback
+      async function initializeRouteApi() {
+        try {
+          const res = await fetch('/api/route-analysis');
+          if (res.ok) {
+            const json = await res.json();
+            activeRouteData = json;
+            apiStatusBadge.className = 'tactical-api-status connected';
+            apiStatusText.textContent = 'API CONNECTED (/api/route-analysis)';
+            renderAllTacticalViews();
+            return;
+          }
+        } catch(e) {}
+
+        try {
+          const res = await fetch('route_analysis.json');
+          if (res.ok) {
+            const json = await res.json();
+            activeRouteData = json;
+            apiStatusBadge.className = 'tactical-api-status connected';
+            apiStatusText.textContent = 'FILE CONNECTED (route_analysis.json)';
+            renderAllTacticalViews();
+            return;
+          }
+        } catch(e) {}
+
+        // Fallback
+        activeRouteData = FALLBACK_ROUTE_DATA;
+        apiStatusBadge.className = 'tactical-api-status';
+        apiStatusText.textContent = 'LOCAL BACKUP DATA (OFFLINE)';
+        renderAllTacticalViews();
+      }
+
+      function openTacticalRouteModal() {
+        audio.playChirp();
+        tacticalModal.classList.add('visible');
+        resizeTacticalCanvases();
+        renderAllTacticalViews();
+      }
+
+      function closeTacticalRouteModal() {
+        audio.playChirp();
+        tacticalModal.classList.remove('visible');
+        pauseSimulation();
+      }
+
+      if (btnOpenTacticalMap) btnOpenTacticalMap.addEventListener('click', openTacticalRouteModal);
+      if (btnHeroLaunchRoute) btnHeroLaunchRoute.addEventListener('click', openTacticalRouteModal);
+      if (btnModalOpenRoute) btnModalOpenRoute.addEventListener('click', () => {
+        modal.classList.remove('visible');
+        openTacticalRouteModal();
+      });
+      if (btnCloseRouteModal) btnCloseRouteModal.addEventListener('click', closeTacticalRouteModal);
+      if (routeModalBackdrop) routeModalBackdrop.addEventListener('click', closeTacticalRouteModal);
+
+      // Tab Toggles
+      [tabSafeRoute, tabDirectRoute, tabBothRoutes].forEach(tab => {
+        if (!tab) return;
+        tab.addEventListener('click', () => {
+          [tabSafeRoute, tabDirectRoute, tabBothRoutes].forEach(t => t.classList.remove('active'));
+          tab.classList.add('active');
+          activeRouteMode = tab.dataset.mode;
+          audio.playChirp();
+          renderRadarMap();
+          renderProfileChart();
+        });
+      });
+
+      function resizeTacticalCanvases() {
+        const wrap = radarCanvas.parentElement;
+        if (wrap) {
+          radarCanvas.width = wrap.clientWidth;
+          radarCanvas.height = wrap.clientHeight;
+        }
+        const pwrap = profileCanvas.parentElement;
+        if (pwrap) {
+          profileCanvas.width = pwrap.clientWidth;
+          profileCanvas.height = pwrap.clientHeight;
+        }
+      }
+      window.addEventListener('resize', () => {
+        if (tacticalModal.classList.contains('visible')) {
+          resizeTacticalCanvases();
+          renderAllTacticalViews();
+        }
+      });
+
+      // Coordinate normalization to radar canvas
+      // Jezero bbox: lat 18.375 - 18.475, lon 77.44 - 77.585
+      const MIN_LAT = 18.375;
+      const MAX_LAT = 18.475;
+      const MIN_LON = 77.445;
+      const MAX_LON = 77.585;
+
+      function toRadarCoords(lat, lon, width, height) {
+        const padX = width * 0.12;
+        const padY = height * 0.12;
+        const availW = width - padX * 2;
+        const availH = height - padY * 2;
+
+        // Longitude: 77.445 (West, Left) to 77.585 (East, Right)
+        const x = padX + ((lon - MIN_LON) / (MAX_LON - MIN_LON)) * availW;
+        // Latitude: 18.375 (South, Bottom) to 18.475 (North, Top)
+        const y = height - padY - ((lat - MIN_LAT) / (MAX_LAT - MIN_LAT)) * availH;
+
+        return { x, y };
+      }
+
+      function renderRadarMap() {
+        if (!radarCanvas.width || !activeRouteData) return;
+        const rw = radarCanvas.width;
+        const rh = radarCanvas.height;
+
+        radarCtx.clearRect(0, 0, rw, rh);
+
+        // 1. Tactical Martian Grid
+        radarCtx.strokeStyle = 'rgba(56, 189, 248, 0.08)';
+        radarCtx.lineWidth = 1;
+        const gridStep = 40;
+        for (let x = 0; x < rw; x += gridStep) {
+          radarCtx.beginPath();
+          radarCtx.moveTo(x, 0);
+          radarCtx.lineTo(x, rh);
+          radarCtx.stroke();
+        }
+        for (let y = 0; y < rh; y += gridStep) {
+          radarCtx.beginPath();
+          radarCtx.moveTo(0, y);
+          radarCtx.lineTo(rw, y);
+          radarCtx.stroke();
+        }
+
+        // Radar Sweep Crosshairs
+        radarCtx.strokeStyle = 'rgba(56, 189, 248, 0.2)';
+        radarCtx.beginPath();
+        radarCtx.moveTo(rw * 0.5, 0);
+        radarCtx.lineTo(rw * 0.5, rh);
+        radarCtx.moveTo(0, rh * 0.5);
+        radarCtx.lineTo(rw, rh * 0.5);
+        radarCtx.stroke();
+
+        // 2. Jezero Crater Rim / Topographical Contours
+        radarCtx.strokeStyle = 'rgba(212, 163, 115, 0.15)';
+        radarCtx.lineWidth = 1.2;
+        radarCtx.beginPath();
+        radarCtx.ellipse(rw * 0.52, rh * 0.5, rw * 0.44, rh * 0.42, -0.1, 0, Math.PI * 2);
+        radarCtx.stroke();
+        radarCtx.beginPath();
+        radarCtx.ellipse(rw * 0.52, rh * 0.5, rw * 0.32, rh * 0.3, -0.1, 0, Math.PI * 2);
+        radarCtx.stroke();
+
+        // 3. Séítah Sand Dunes & Steep Scarp Hazard Zone
+        // Region where direct path hits 19.14° slope (lat 18.40-18.43, lon 77.49-77.54)
+        const hzP1 = toRadarCoords(18.400, 77.540, rw, rh);
+        const hzP2 = toRadarCoords(18.435, 77.540, rw, rh);
+        const hzP3 = toRadarCoords(18.435, 77.490, rw, rh);
+        const hzP4 = toRadarCoords(18.400, 77.490, rw, rh);
+
+        radarCtx.fillStyle = 'rgba(239, 68, 68, 0.12)';
+        radarCtx.strokeStyle = 'rgba(239, 68, 68, 0.45)';
+        radarCtx.lineWidth = 1.5;
+        radarCtx.setLineDash([4, 4]);
+        radarCtx.beginPath();
+        radarCtx.moveTo(hzP1.x, hzP1.y);
+        radarCtx.lineTo(hzP2.x, hzP2.y);
+        radarCtx.lineTo(hzP3.x, hzP3.y);
+        radarCtx.lineTo(hzP4.x, hzP4.y);
+        radarCtx.closePath();
+        radarCtx.fill();
+        radarCtx.stroke();
+        radarCtx.setLineDash([]);
+
+        // Hazard Zone Label
+        radarCtx.fillStyle = 'rgba(248, 113, 113, 0.85)';
+        radarCtx.font = '10px Space Grotesk, sans-serif';
+        radarCtx.fillText('⚠️ SÉÍTAH SCARP & DUNE HAZARD (SLOPE > 15°)', hzP4.x + 10, hzP4.y - 12);
+
+        // 4. Render Direct Hazard Path (if active)
+        if (activeRouteMode === 'direct' || activeRouteMode === 'both') {
+          const directCoords = activeRouteData.direct_path.coordinates;
+          radarCtx.strokeStyle = '#f87171';
+          radarCtx.lineWidth = 2.2;
+          radarCtx.setLineDash([5, 5]);
+          radarCtx.beginPath();
+          directCoords.forEach((pt, i) => {
+            const p = toRadarCoords(pt.lat, pt.lon, rw, rh);
+            if (i === 0) radarCtx.moveTo(p.x, p.y);
+            else radarCtx.lineTo(p.x, p.y);
+          });
+          radarCtx.stroke();
+          radarCtx.setLineDash([]);
+
+          // Highlight critical cliff spot (point with peak slope 19.14°)
+          const peakIdx = 57; // near peak slope
+          if (directCoords[peakIdx]) {
+            const cp = toRadarCoords(directCoords[peakIdx].lat, directCoords[peakIdx].lon, rw, rh);
+            radarCtx.beginPath();
+            radarCtx.arc(cp.x, cp.y, 6, 0, Math.PI * 2);
+            radarCtx.fillStyle = '#ef4444';
+            radarCtx.fill();
+            radarCtx.strokeStyle = '#ffffff';
+            radarCtx.lineWidth = 1.5;
+            radarCtx.stroke();
+
+            radarCtx.fillStyle = '#f87171';
+            radarCtx.font = '9px Syncopate, sans-serif';
+            radarCtx.fillText('19.14° CLIFF (FAIL)', cp.x + 10, cp.y + 4);
+          }
+        }
+
+        // 5. Render Safe Survival Path (if active)
+        if (activeRouteMode === 'safe' || activeRouteMode === 'both') {
+          const safeCoords = activeRouteData.safe_survival_path.coordinates;
+          
+          // Outer Glow
+          radarCtx.strokeStyle = 'rgba(56, 189, 248, 0.3)';
+          radarCtx.lineWidth = 6;
+          radarCtx.beginPath();
+          safeCoords.forEach((pt, i) => {
+            const p = toRadarCoords(pt.lat, pt.lon, rw, rh);
+            if (i === 0) radarCtx.moveTo(p.x, p.y);
+            else radarCtx.lineTo(p.x, p.y);
+          });
+          radarCtx.stroke();
+
+          // Main Neon Path Line
+          radarCtx.strokeStyle = '#38bdf8';
+          radarCtx.lineWidth = 2.5;
+          radarCtx.beginPath();
+          safeCoords.forEach((pt, i) => {
+            const p = toRadarCoords(pt.lat, pt.lon, rw, rh);
+            if (i === 0) radarCtx.moveTo(p.x, p.y);
+            else radarCtx.lineTo(p.x, p.y);
+          });
+          radarCtx.stroke();
+
+          // Waypoint dots
+          safeCoords.forEach((pt, i) => {
+            const p = toRadarCoords(pt.lat, pt.lon, rw, rh);
+            radarCtx.beginPath();
+            radarCtx.arc(p.x, p.y, i === 0 || i === safeCoords.length - 1 ? 5 : 2.5, 0, Math.PI * 2);
+            radarCtx.fillStyle = i === 0 ? '#10b981' : (i === safeCoords.length - 1 ? '#d4a373' : '#38bdf8');
+            radarCtx.fill();
+          });
+        }
+
+        // 6. Base Camp (Start) & Science Target (End)
+        const startPt = toRadarCoords(18.38, 77.58, rw, rh);
+        const endPt = toRadarCoords(18.45, 77.45, rw, rh);
+
+        // Start Pin (Green)
+        radarCtx.beginPath();
+        radarCtx.arc(startPt.x, startPt.y, 7, 0, Math.PI * 2);
+        radarCtx.fillStyle = '#10b981';
+        radarCtx.fill();
+        radarCtx.strokeStyle = '#ffffff';
+        radarCtx.lineWidth = 2;
+        radarCtx.stroke();
+        radarCtx.fillStyle = '#ffffff';
+        radarCtx.font = '10px Syncopate, sans-serif';
+        radarCtx.fillText('BASE CAMP (18.38°N, 77.58°E)', startPt.x - 40, startPt.y + 22);
+
+        // End Pin (Gold Diamond)
+        radarCtx.beginPath();
+        radarCtx.arc(endPt.x, endPt.y, 7, 0, Math.PI * 2);
+        radarCtx.fillStyle = '#d4a373';
+        radarCtx.fill();
+        radarCtx.strokeStyle = '#ffffff';
+        radarCtx.lineWidth = 2;
+        radarCtx.stroke();
+        radarCtx.fillStyle = '#ffffff';
+        radarCtx.font = '10px Syncopate, sans-serif';
+        radarCtx.fillText('SCIENCE TARGET (18.45°N, 77.45°E)', endPt.x - 30, endPt.y - 14);
+
+        // 7. Active Simulation Astronaut Pin
+        if (isSimulating || simIndex > 0) {
+          const safeCoords = activeRouteData.safe_survival_path.coordinates;
+          if (safeCoords[simIndex]) {
+            const simPt = toRadarCoords(safeCoords[simIndex].lat, safeCoords[simIndex].lon, rw, rh);
+
+            // Pulsing Rings around astronaut
+            radarCtx.beginPath();
+            radarCtx.arc(simPt.x, simPt.y, 14, 0, Math.PI * 2);
+            radarCtx.strokeStyle = 'rgba(56, 189, 248, 0.6)';
+            radarCtx.lineWidth = 1.5;
+            radarCtx.stroke();
+
+            radarCtx.beginPath();
+            radarCtx.arc(simPt.x, simPt.y, 6, 0, Math.PI * 2);
+            radarCtx.fillStyle = '#ffffff';
+            radarCtx.fill();
+
+            radarCtx.fillStyle = '#fae1c3';
+            radarCtx.font = '10px Rajdhani, monospace';
+            radarCtx.fillText('EVA-01 ASTRONAUT', simPt.x + 12, simPt.y - 6);
+          }
+        }
+      }
+
+      function renderProfileChart() {
+        if (!profileCanvas.width || !activeRouteData) return;
+        const pw = profileCanvas.width;
+        const ph = profileCanvas.height;
+
+        profileCtx.clearRect(0, 0, pw, ph);
+
+        const safeElev = activeRouteData.safe_survival_path.elevation_array;
+        const directSlope = activeRouteData.direct_path.slope_array;
+
+        // Min & Max elevations: -2505 to -2355
+        const minE = -2510;
+        const maxE = -2350;
+
+        // Draw Elevation Curve (Safe Path)
+        profileCtx.strokeStyle = '#38bdf8';
+        profileCtx.lineWidth = 2;
+        profileCtx.beginPath();
+        safeElev.forEach((elev, idx) => {
+          const x = (idx / (safeElev.length - 1)) * pw;
+          const y = ph - 15 - ((elev - minE) / (maxE - minE)) * (ph - 30);
+          if (idx === 0) profileCtx.moveTo(x, y);
+          else profileCtx.lineTo(x, y);
+        });
+        profileCtx.stroke();
+
+        // Fill under elevation
+        profileCtx.lineTo(pw, ph);
+        profileCtx.lineTo(0, ph);
+        profileCtx.closePath();
+        profileCtx.fillStyle = 'rgba(56, 189, 248, 0.08)';
+        profileCtx.fill();
+
+        // Draw Slope Warning Line (15° Rollover Limit)
+        const yWarn = ph - 15 - (15 / 22) * (ph - 30);
+        profileCtx.strokeStyle = 'rgba(239, 68, 68, 0.4)';
+        profileCtx.setLineDash([3, 3]);
+        profileCtx.beginPath();
+        profileCtx.moveTo(0, yWarn);
+        profileCtx.lineTo(pw, yWarn);
+        profileCtx.stroke();
+        profileCtx.setLineDash([]);
+        profileCtx.fillStyle = 'rgba(248, 113, 113, 0.8)';
+        profileCtx.font = '9px Rajdhani, monospace';
+        profileCtx.fillText('15° VEHICLE LIMIT', pw - 90, yWarn - 4);
+
+        // Draw Direct Path Slope Profile (showing red spike to 19.14°)
+        profileCtx.strokeStyle = 'rgba(248, 113, 113, 0.85)';
+        profileCtx.lineWidth = 1.4;
+        profileCtx.setLineDash([2, 2]);
+        profileCtx.beginPath();
+        directSlope.forEach((slope, idx) => {
+          const x = (idx / (directSlope.length - 1)) * pw;
+          const y = ph - 15 - (slope / 22) * (ph - 30);
+          if (idx === 0) profileCtx.moveTo(x, y);
+          else profileCtx.lineTo(x, y);
+        });
+        profileCtx.stroke();
+        profileCtx.setLineDash([]);
+      }
+
+      function renderAllTacticalViews() {
+        renderRadarMap();
+        renderProfileChart();
+      }
+
+      // Simulation Engine
+      function startSimulation() {
+        if (isSimulating) {
+          pauseSimulation();
+          return;
+        }
+        isSimulating = true;
+        simBtnIcon.textContent = '⏸';
+        simBtnText.textContent = 'PAUSE SIMULATION';
+
+        const safeCoords = activeRouteData.safe_survival_path.coordinates;
+        const safeElev = activeRouteData.safe_survival_path.elevation_array;
+        const safeSlope = activeRouteData.safe_survival_path.slope_array;
+        const totalDist = activeRouteData.safe_survival_path.total_distance_m;
+
+        simTimer = setInterval(() => {
+          simIndex++;
+          if (simIndex >= safeCoords.length) {
+            simIndex = safeCoords.length - 1;
+            pauseSimulation();
+            return;
+          }
+
+          const curPt = safeCoords[simIndex];
+          const curEl = safeElev[simIndex] || -2450;
+          const curSl = safeSlope[simIndex] || 1.2;
+          const progressPct = Math.round((simIndex / (safeCoords.length - 1)) * 100);
+          const distCovered = ((simIndex / (safeCoords.length - 1)) * (totalDist / 1000)).toFixed(1);
+          const remainingO2 = Math.max(10, Math.round(100 - (simIndex / safeCoords.length) * 32));
+
+          evaCoord.textContent = curPt.lat.toFixed(3) + '° N, ' + curPt.lon.toFixed(3) + '° E';
+          evaElev.textContent = curEl.toFixed(0) + ' m';
+          evaSlope.textContent = curSl.toFixed(2) + '° (' + (curSl < 15 ? 'SAFE' : 'CRITICAL') + ')';
+          evaProgress.textContent = progressPct + '%';
+          evaO2.textContent = remainingO2 + '%';
+          evaDist.textContent = distCovered + ' / ' + (totalDist / 1000).toFixed(1) + ' km';
+
+          renderRadarMap();
+        }, 420);
+      }
+
+      function pauseSimulation() {
+        isSimulating = false;
+        clearInterval(simTimer);
+        simBtnIcon.textContent = '▶';
+        simBtnText.textContent = 'RESUME SIMULATION';
+      }
+
+      function resetSimulation() {
+        pauseSimulation();
+        simIndex = 0;
+        simBtnText.textContent = 'SIMULATE EVA TRAVERSE';
+        evaCoord.textContent = '18.380° N, 77.580° E';
+        evaElev.textContent = '-2,494 m';
+        evaSlope.textContent = '0.79° (SAFE)';
+        evaProgress.textContent = '0%';
+        evaO2.textContent = '100%';
+        evaDist.textContent = '0.0 / 10.9 km';
+        renderRadarMap();
+      }
+
+      btnStartSim.addEventListener('click', startSimulation);
+      btnResetSim.addEventListener('click', resetSimulation);
+
+      // Initialize API load immediately
+      initializeRouteApi();
 
     })();
   </script>
