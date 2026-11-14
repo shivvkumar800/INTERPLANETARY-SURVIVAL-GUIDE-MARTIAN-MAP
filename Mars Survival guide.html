@@ -1225,6 +1225,131 @@
       box-shadow: 0 0 16px rgba(56, 189, 248, 0.3);
     }
 
+  
+    /* High-DPI & Interactive Canvas Reticle */
+    .radar-canvas-wrap {
+      cursor: crosshair;
+    }
+
+    /* Sensor Layer Toggle Bar */
+    .sensor-layers-bar {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin-top: 6px;
+    }
+
+    .sensor-layer-btn {
+      background: rgba(14, 20, 30, 0.85);
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      border-radius: 4px;
+      padding: 4px 10px;
+      font-family: var(--font-tech);
+      font-size: 10px;
+      letter-spacing: 0.06em;
+      color: rgba(255, 255, 255, 0.65);
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      transition: all 0.2s ease;
+    }
+
+    .sensor-layer-btn:hover {
+      background: rgba(25, 35, 52, 0.95);
+      color: #fff;
+    }
+
+    .sensor-layer-btn.active {
+      border-color: var(--gold-accent);
+      background: rgba(212, 163, 115, 0.2);
+      color: #fae1c3;
+      box-shadow: 0 0 10px rgba(212, 163, 115, 0.25);
+    }
+
+    .sensor-dot {
+      width: 5px;
+      height: 5px;
+      border-radius: 50%;
+    }
+    .sensor-dot.topo { background: #38bdf8; }
+    .sensor-dot.therm { background: #f59e0b; }
+    .sensor-dot.spec { background: #10b981; }
+    .sensor-dot.rad { background: #ef4444; }
+
+    /* Sound Equalizer Bars on audio button */
+    .audio-eq-bars {
+      display: flex;
+      align-items: flex-end;
+      gap: 2px;
+      height: 12px;
+      margin-left: 2px;
+    }
+
+    .eq-bar {
+      width: 2px;
+      background: var(--gold-accent);
+      border-radius: 1px;
+      transition: height 0.15s ease;
+    }
+
+    .audio-toggle-btn.active .eq-bar:nth-child(1) {
+      animation: eqBounce 0.8s ease-in-out infinite alternate;
+    }
+    .audio-toggle-btn.active .eq-bar:nth-child(2) {
+      animation: eqBounce 1.1s ease-in-out infinite alternate 0.2s;
+    }
+    .audio-toggle-btn.active .eq-bar:nth-child(3) {
+      animation: eqBounce 0.7s ease-in-out infinite alternate 0.4s;
+    }
+
+    @keyframes eqBounce {
+      0% { height: 3px; }
+      100% { height: 12px; }
+    }
+
+    /* Interactive Waypoint Tooltip */
+    .radar-waypoint-tooltip {
+      position: absolute;
+      pointer-events: none;
+      background: rgba(8, 12, 20, 0.95);
+      border: 1px solid var(--telemetry-cyan);
+      border-radius: 4px;
+      padding: 6px 12px;
+      font-family: var(--font-mono);
+      font-size: 10px;
+      letter-spacing: 0.8px;
+      color: #ffffff;
+      backdrop-filter: blur(10px);
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.8), 0 0 12px rgba(56, 189, 248, 0.25);
+      z-index: 50;
+      display: none;
+      white-space: nowrap;
+      transform: translate(-50%, -125%);
+    }
+
+    /* Hotkey hint pills */
+    .hotkey-hints {
+      display: flex;
+      gap: 12px;
+      font-family: var(--font-mono);
+      font-size: 10px;
+      color: var(--text-dim);
+      padding: 6px 24px 10px 24px;
+      border-top: 1px solid rgba(255, 255, 255, 0.05);
+      background: rgba(6, 9, 14, 0.5);
+    }
+
+    .hotkey-badge {
+      display: inline-block;
+      padding: 1px 5px;
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      border-radius: 3px;
+      color: var(--gold-bright);
+      margin-right: 4px;
+      font-weight: 600;
+    }
+
   </style>
 </head>
 <body>
@@ -1238,11 +1363,16 @@
     <div id="warp-overlay"></div>
 
     <!-- Minimal Audio Toggle -->
-    <button class="audio-toggle-btn" id="btn-sound" title="Toggle Soundscape" aria-label="Toggle Soundscape">
-      <svg id="sound-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+    <button class="audio-toggle-btn" id="btn-sound" title="Toggle Soundscape [Hotkey: M]" aria-label="Toggle Soundscape">
+      <svg id="sound-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
         <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon>
         <path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"></path>
       </svg>
+      <div class="audio-eq-bars">
+        <div class="eq-bar" style="height: 4px;"></div>
+        <div class="eq-bar" style="height: 8px;"></div>
+        <div class="eq-bar" style="height: 6px;"></div>
+      </div>
     </button>
 
     <!-- ======================================================================
@@ -1402,6 +1532,21 @@
           <!-- Left Column: Tactical Radar Map Canvas -->
           <div class="tactical-map-panel">
             <div class="map-controls-bar">
+              <div class="sensor-layers-bar">
+                <span style="font-family: var(--font-wide); font-size: 9px; color: var(--gold-accent); letter-spacing: 0.15em; display: flex; align-items: center; margin-right: 4px;">NASA SENSORS:</span>
+                <button class="sensor-layer-btn active" data-sensor="topo" id="btn-sensor-topo">
+                  <span class="sensor-dot topo"></span> TOPOGRAPHIC (MOLA)
+                </button>
+                <button class="sensor-layer-btn" data-sensor="therm" id="btn-sensor-therm">
+                  <span class="sensor-dot therm"></span> THERMAL (THEMIS)
+                </button>
+                <button class="sensor-layer-btn" data-sensor="spec" id="btn-sensor-spec">
+                  <span class="sensor-dot spec"></span> MINERALS (CRISM)
+                </button>
+                <button class="sensor-layer-btn" data-sensor="rad" id="btn-sensor-rad">
+                  <span class="sensor-dot rad"></span> RADIATION (RAD)
+                </button>
+              </div>
               <div class="mode-toggles">
                 <button class="route-tab-btn active" data-mode="safe" id="tab-safe-route">
                   <span class="btn-indicator safe"></span> SAFE A* PATH (10.9 km)
@@ -1424,6 +1569,7 @@
 
             <!-- The Interactive Radar Canvas -->
             <div class="radar-canvas-wrap">
+              <div id="radar-tooltip" class="radar-waypoint-tooltip"></div>
               <canvas id="route-radar-canvas"></canvas>
               
               <!-- Map Legend Overlay -->
@@ -1521,6 +1667,16 @@
 
         </div>
 
+        <!-- Mission Control Flight Hotkeys -->
+        <div class="hotkey-hints">
+          <div><span class="hotkey-badge">SPACE</span> SIMULATE</div>
+          <div><span class="hotkey-badge">R</span> RESET</div>
+          <div><span class="hotkey-badge">1</span> SAFE A*</div>
+          <div><span class="hotkey-badge">2</span> DIRECT DANGER</div>
+          <div><span class="hotkey-badge">3</span> COMPARE</div>
+          <div><span class="hotkey-badge">M</span> SOUND</div>
+          <div><span class="hotkey-badge">ESC</span> CLOSE</div>
+        </div>
       </div>
     </div>
 
@@ -2087,6 +2243,7 @@
         modal.classList.remove('visible');
       });
 
+      
       /* ========================================================================
          6. TACTICAL ROUTE ANALYSIS (A* ALGORITHM & LIVE REST API INTEGRATION)
          ======================================================================== */
@@ -2955,9 +3112,12 @@
 
       let activeRouteData = FALLBACK_ROUTE_DATA;
       let activeRouteMode = 'safe'; // 'safe', 'direct', 'both'
+      let activeSensorLayer = 'topo'; // 'topo', 'therm', 'spec', 'rad'
       let isSimulating = false;
       let simIndex = 0;
       let simTimer = null;
+      let hoveredWaypoint = null;
+      let hoveredProfilePct = null;
 
       const tacticalModal = document.getElementById('tactical-route-modal');
       const btnOpenTacticalMap = document.getElementById('btn-open-tactical-map');
@@ -2974,6 +3134,7 @@
       const radarCtx = radarCanvas.getContext('2d');
       const profileCanvas = document.getElementById('route-profile-canvas');
       const profileCtx = profileCanvas.getContext('2d');
+      const radarTooltip = document.getElementById('radar-tooltip');
 
       const tabSafeRoute = document.getElementById('tab-safe-route');
       const tabDirectRoute = document.getElementById('tab-direct-route');
@@ -2989,6 +3150,23 @@
       const evaProgress = document.getElementById('eva-progress');
       const evaO2 = document.getElementById('eva-o2');
       const evaDist = document.getElementById('eva-dist');
+
+      // Sensor buttons
+      const btnSensorTopo = document.getElementById('btn-sensor-topo');
+      const btnSensorTherm = document.getElementById('btn-sensor-therm');
+      const btnSensorSpec = document.getElementById('btn-sensor-spec');
+      const btnSensorRad = document.getElementById('btn-sensor-rad');
+      const sensorButtons = [btnSensorTopo, btnSensorTherm, btnSensorSpec, btnSensorRad].filter(Boolean);
+
+      sensorButtons.forEach(btn => {
+        btn.addEventListener('click', () => {
+          sensorButtons.forEach(b => b.classList.remove('active'));
+          btn.classList.add('active');
+          activeSensorLayer = btn.dataset.sensor;
+          audio.playChirp();
+          renderRadarMap();
+        });
+      });
 
       // Fetch dynamic data from API with fallback
       async function initializeRouteApi() {
@@ -3058,18 +3236,35 @@
         });
       });
 
+      // High-DPI Canvas Resizing
+      let displayRadarWidth = 600;
+      let displayRadarHeight = 400;
+      let displayProfileWidth = 380;
+      let displayProfileHeight = 110;
+
       function resizeTacticalCanvases() {
+        const dpr = window.devicePixelRatio || 1;
         const wrap = radarCanvas.parentElement;
         if (wrap) {
-          radarCanvas.width = wrap.clientWidth;
-          radarCanvas.height = wrap.clientHeight;
+          displayRadarWidth = wrap.clientWidth;
+          displayRadarHeight = wrap.clientHeight;
+          radarCanvas.width = Math.round(displayRadarWidth * dpr);
+          radarCanvas.height = Math.round(displayRadarHeight * dpr);
+          radarCtx.resetTransform();
+          radarCtx.scale(dpr, dpr);
         }
+
         const pwrap = profileCanvas.parentElement;
         if (pwrap) {
-          profileCanvas.width = pwrap.clientWidth;
-          profileCanvas.height = pwrap.clientHeight;
+          displayProfileWidth = pwrap.clientWidth;
+          displayProfileHeight = pwrap.clientHeight;
+          profileCanvas.width = Math.round(displayProfileWidth * dpr);
+          profileCanvas.height = Math.round(displayProfileHeight * dpr);
+          profileCtx.resetTransform();
+          profileCtx.scale(dpr, dpr);
         }
       }
+
       window.addEventListener('resize', () => {
         if (tacticalModal.classList.contains('visible')) {
           resizeTacticalCanvases();
@@ -3078,7 +3273,6 @@
       });
 
       // Coordinate normalization to radar canvas
-      // Jezero bbox: lat 18.375 - 18.475, lon 77.44 - 77.585
       const MIN_LAT = 18.375;
       const MAX_LAT = 18.475;
       const MIN_LON = 77.445;
@@ -3090,18 +3284,28 @@
         const availW = width - padX * 2;
         const availH = height - padY * 2;
 
-        // Longitude: 77.445 (West, Left) to 77.585 (East, Right)
         const x = padX + ((lon - MIN_LON) / (MAX_LON - MIN_LON)) * availW;
-        // Latitude: 18.375 (South, Bottom) to 18.475 (North, Top)
         const y = height - padY - ((lat - MIN_LAT) / (MAX_LAT - MIN_LAT)) * availH;
 
         return { x, y };
       }
 
+      function fromRadarCoords(x, y, width, height) {
+        const padX = width * 0.12;
+        const padY = height * 0.12;
+        const availW = width - padX * 2;
+        const availH = height - padY * 2;
+
+        const lon = MIN_LON + ((x - padX) / availW) * (MAX_LON - MIN_LON);
+        const lat = MIN_LAT + ((height - padY - y) / availH) * (MAX_LAT - MIN_LAT);
+
+        return { lat, lon };
+      }
+
       function renderRadarMap() {
         if (!radarCanvas.width || !activeRouteData) return;
-        const rw = radarCanvas.width;
-        const rh = radarCanvas.height;
+        const rw = displayRadarWidth;
+        const rh = displayRadarHeight;
 
         radarCtx.clearRect(0, 0, rw, rh);
 
@@ -3123,7 +3327,7 @@
         }
 
         // Radar Sweep Crosshairs
-        radarCtx.strokeStyle = 'rgba(56, 189, 248, 0.2)';
+        radarCtx.strokeStyle = 'rgba(56, 189, 248, 0.18)';
         radarCtx.beginPath();
         radarCtx.moveTo(rw * 0.5, 0);
         radarCtx.lineTo(rw * 0.5, rh);
@@ -3131,18 +3335,41 @@
         radarCtx.lineTo(rw, rh * 0.5);
         radarCtx.stroke();
 
-        // 2. Jezero Crater Rim / Topographical Contours
-        radarCtx.strokeStyle = 'rgba(212, 163, 115, 0.15)';
-        radarCtx.lineWidth = 1.2;
-        radarCtx.beginPath();
-        radarCtx.ellipse(rw * 0.52, rh * 0.5, rw * 0.44, rh * 0.42, -0.1, 0, Math.PI * 2);
-        radarCtx.stroke();
-        radarCtx.beginPath();
-        radarCtx.ellipse(rw * 0.52, rh * 0.5, rw * 0.32, rh * 0.3, -0.1, 0, Math.PI * 2);
-        radarCtx.stroke();
+        // 2. NASA Multi-Spectral / Sensor Layer Overlay
+        if (activeSensorLayer === 'topo') {
+          // Topographical Elevation Contours (MOLA Laser Altimetry)
+          radarCtx.strokeStyle = 'rgba(212, 163, 115, 0.16)';
+          radarCtx.lineWidth = 1.2;
+          for (let r = 0.15; r <= 0.45; r += 0.08) {
+            radarCtx.beginPath();
+            radarCtx.ellipse(rw * 0.52, rh * 0.5, rw * r, rh * (r * 0.92), -0.1, 0, Math.PI * 2);
+            radarCtx.stroke();
+          }
+        } else if (activeSensorLayer === 'therm') {
+          // Thermal Inertia (THEMIS Infrared: High bedrock inertia vs low dune silt)
+          const thermGrad = radarCtx.createRadialGradient(rw * 0.35, rh * 0.45, 10, rw * 0.35, rh * 0.45, rw * 0.38);
+          thermGrad.addColorStop(0, 'rgba(245, 158, 11, 0.22)');
+          thermGrad.addColorStop(0.5, 'rgba(217, 119, 6, 0.1)');
+          thermGrad.addColorStop(1, 'transparent');
+          radarCtx.fillStyle = thermGrad;
+          radarCtx.fillRect(0, 0, rw, rh);
+        } else if (activeSensorLayer === 'spec') {
+          // Spectral Mineralogy (CRISM: Hydrated clay mudstones & carbonates)
+          const specGrad = radarCtx.createRadialGradient(rw * 0.65, rh * 0.38, 5, rw * 0.65, rh * 0.38, rw * 0.28);
+          specGrad.addColorStop(0, 'rgba(16, 185, 129, 0.25)');
+          specGrad.addColorStop(0.6, 'rgba(16, 185, 129, 0.08)');
+          specGrad.addColorStop(1, 'transparent');
+          radarCtx.fillStyle = specGrad;
+          radarCtx.fillRect(0, 0, rw, rh);
+        } else if (activeSensorLayer === 'rad') {
+          // Radiation Exposure Map (RAD sensor: High cosmic ray scarp exposure)
+          radarCtx.fillStyle = 'rgba(239, 68, 68, 0.1)';
+          radarCtx.beginPath();
+          radarCtx.arc(rw * 0.48, rh * 0.48, rw * 0.28, 0, Math.PI * 2);
+          radarCtx.fill();
+        }
 
         // 3. Séítah Sand Dunes & Steep Scarp Hazard Zone
-        // Region where direct path hits 19.14° slope (lat 18.40-18.43, lon 77.49-77.54)
         const hzP1 = toRadarCoords(18.400, 77.540, rw, rh);
         const hzP2 = toRadarCoords(18.435, 77.540, rw, rh);
         const hzP3 = toRadarCoords(18.435, 77.490, rw, rh);
@@ -3183,7 +3410,7 @@
           radarCtx.setLineDash([]);
 
           // Highlight critical cliff spot (point with peak slope 19.14°)
-          const peakIdx = 57; // near peak slope
+          const peakIdx = 57;
           if (directCoords[peakIdx]) {
             const cp = toRadarCoords(directCoords[peakIdx].lat, directCoords[peakIdx].lon, rw, rh);
             radarCtx.beginPath();
@@ -3287,19 +3514,32 @@
             radarCtx.fillText('EVA-01 ASTRONAUT', simPt.x + 12, simPt.y - 6);
           }
         }
+
+        // 8. Hovered Waypoint Reticle
+        if (hoveredWaypoint !== null) {
+          const safeCoords = activeRouteData.safe_survival_path.coordinates;
+          const pt = safeCoords[hoveredWaypoint];
+          if (pt) {
+            const p = toRadarCoords(pt.lat, pt.lon, rw, rh);
+            radarCtx.beginPath();
+            radarCtx.arc(p.x, p.y, 10, 0, Math.PI * 2);
+            radarCtx.strokeStyle = '#fae1c3';
+            radarCtx.lineWidth = 1.8;
+            radarCtx.stroke();
+          }
+        }
       }
 
       function renderProfileChart() {
         if (!profileCanvas.width || !activeRouteData) return;
-        const pw = profileCanvas.width;
-        const ph = profileCanvas.height;
+        const pw = displayProfileWidth;
+        const ph = displayProfileHeight;
 
         profileCtx.clearRect(0, 0, pw, ph);
 
         const safeElev = activeRouteData.safe_survival_path.elevation_array;
         const directSlope = activeRouteData.direct_path.slope_array;
 
-        // Min & Max elevations: -2505 to -2355
         const minE = -2510;
         const maxE = -2350;
 
@@ -3348,12 +3588,87 @@
         });
         profileCtx.stroke();
         profileCtx.setLineDash([]);
+
+        // Hover indicator line
+        if (hoveredProfilePct !== null) {
+          const hx = hoveredProfilePct * pw;
+          profileCtx.strokeStyle = '#fae1c3';
+          profileCtx.lineWidth = 1.2;
+          profileCtx.beginPath();
+          profileCtx.moveTo(hx, 0);
+          profileCtx.lineTo(hx, ph);
+          profileCtx.stroke();
+        }
       }
 
       function renderAllTacticalViews() {
         renderRadarMap();
         renderProfileChart();
       }
+
+      // Mouse Hover Interaction on Radar Canvas
+      radarCanvas.addEventListener('mousemove', (e) => {
+        const rect = radarCanvas.getBoundingClientRect();
+        const mx = e.clientX - rect.left;
+        const my = e.clientY - rect.top;
+
+        const safeCoords = activeRouteData.safe_survival_path.coordinates;
+        let closestIdx = null;
+        let minDist = 20; // 20px threshold
+
+        safeCoords.forEach((pt, i) => {
+          const p = toRadarCoords(pt.lat, pt.lon, displayRadarWidth, displayRadarHeight);
+          const d = Math.hypot(mx - p.x, my - p.y);
+          if (d < minDist) {
+            minDist = d;
+            closestIdx = i;
+          }
+        });
+
+        if (closestIdx !== null) {
+          hoveredWaypoint = closestIdx;
+          const pt = safeCoords[closestIdx];
+          const elev = activeRouteData.safe_survival_path.elevation_array[closestIdx] || -2450;
+          const slope = activeRouteData.safe_survival_path.slope_array[closestIdx] || 1.2;
+
+          radarTooltip.style.display = 'block';
+          radarTooltip.style.left = mx + 'px';
+          radarTooltip.style.top = my + 'px';
+          radarTooltip.innerHTML = `<strong>WP #${closestIdx + 1}</strong> // ${pt.lat.toFixed(3)}°N, ${pt.lon.toFixed(3)}°E<br>ELEV: ${elev.toFixed(0)}m | SLOPE: ${slope.toFixed(1)}° (${slope < 15 ? 'SAFE' : 'HAZARD'})`;
+        } else {
+          hoveredWaypoint = null;
+          radarTooltip.style.display = 'none';
+        }
+
+        renderRadarMap();
+      });
+
+      radarCanvas.addEventListener('mouseleave', () => {
+        hoveredWaypoint = null;
+        radarTooltip.style.display = 'none';
+        renderRadarMap();
+      });
+
+      // Hover scrubbing on profile canvas
+      profileCanvas.addEventListener('mousemove', (e) => {
+        const rect = profileCanvas.getBoundingClientRect();
+        const mx = e.clientX - rect.left;
+        const pct = Math.max(0, Math.min(1, mx / displayProfileWidth));
+        hoveredProfilePct = pct;
+
+        const safeCoords = activeRouteData.safe_survival_path.coordinates;
+        hoveredWaypoint = Math.round(pct * (safeCoords.length - 1));
+
+        renderRadarMap();
+        renderProfileChart();
+      });
+
+      profileCanvas.addEventListener('mouseleave', () => {
+        hoveredProfilePct = null;
+        hoveredWaypoint = null;
+        renderRadarMap();
+        renderProfileChart();
+      });
 
       // Simulation Engine
       function startSimulation() {
@@ -3375,6 +3690,7 @@
           if (simIndex >= safeCoords.length) {
             simIndex = safeCoords.length - 1;
             pauseSimulation();
+            audio.playChirp();
             return;
           }
 
@@ -3393,7 +3709,7 @@
           evaDist.textContent = distCovered + ' / ' + (totalDist / 1000).toFixed(1) + ' km';
 
           renderRadarMap();
-        }, 420);
+        }, 380);
       }
 
       function pauseSimulation() {
@@ -3418,6 +3734,49 @@
 
       btnStartSim.addEventListener('click', startSimulation);
       btnResetSim.addEventListener('click', resetSimulation);
+
+      // Keyboard Shortcuts (Flight Controls)
+      window.addEventListener('keydown', (e) => {
+        // Spacebar to play/pause simulation
+        if (e.code === 'Space' && tacticalModal.classList.contains('visible')) {
+          e.preventDefault();
+          startSimulation();
+        }
+        // R to reset simulation
+        if ((e.key === 'r' || e.key === 'R') && tacticalModal.classList.contains('visible')) {
+          resetSimulation();
+        }
+        // M to toggle sound
+        if (e.key === 'm' || e.key === 'M') {
+          audio.init();
+          const on = audio.toggle();
+          btnSound.classList.toggle('active', on);
+        }
+        // ESC to close modal
+        if (e.key === 'Escape') {
+          if (tacticalModal.classList.contains('visible')) {
+            closeTacticalRouteModal();
+          } else if (modal.classList.contains('visible')) {
+            modal.classList.remove('visible');
+          }
+        }
+        // 1, 2, 3 route toggles
+        if (e.key === '1' && tacticalModal.classList.contains('visible')) {
+          tabSafeRoute.click();
+        } else if (e.key === '2' && tacticalModal.classList.contains('visible')) {
+          tabDirectRoute.click();
+        } else if (e.key === '3' && tacticalModal.classList.contains('visible')) {
+          tabBothRoutes.click();
+        }
+        // T to toggle tactical map
+        if (e.key === 't' || e.key === 'T') {
+          if (tacticalModal.classList.contains('visible')) {
+            closeTacticalRouteModal();
+          } else {
+            openTacticalRouteModal();
+          }
+        }
+      });
 
       // Initialize API load immediately
       initializeRouteApi();
