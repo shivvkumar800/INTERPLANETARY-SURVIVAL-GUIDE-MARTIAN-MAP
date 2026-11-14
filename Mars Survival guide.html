@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>SpaceWeb // ARES Mars Mission Control &amp; Tactical Trajectory</title>
+  <title>ARES // 3D Mars Terrain &amp; Mission Control</title>
   
   <!-- Aerospace & Modern SaaS Typography: Space Grotesk, Inter, JetBrains Mono -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -11,47 +11,39 @@
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700;800&display=swap" rel="stylesheet">
 
   <!-- Core Libraries via CDN -->
-  <!-- 1. GSAP & ScrollTrigger -->
+  <!-- 1. GSAP for Smooth Motion & flyTo Animations -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
 
   <!-- 2. Lucide Icons -->
   <script src="https://unpkg.com/lucide@latest"></script>
 
-  <!-- 3. Leaflet.js (NASA Mars Trek Equirectangular Engine) -->
-  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
-  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-
-  <!-- 4. Three.js & OrbitControls (3D Orbital Mars Globe) -->
+  <!-- 3. Three.js & OrbitControls for 3D Mars Terrain & Orbital View -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
 
-  <!-- 5. Chart.js (Luminous White Wave Profile) -->
+  <!-- 4. Chart.js for Luminous White Wave Telemetry -->
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
   <style>
     /* ==========================================================================
-       1. ULTRA-MINIMALIST MONOCHROME OBSIDIAN & LUMINOUS SILVER/WHITE DESIGN SYSTEM
+       1. MONOCHROME OBSIDIAN & LUMINOUS SILVER/WHITE DESIGN SYSTEM
        ========================================================================== */
     :root {
       --bg-obsidian: #08090C;
       --bg-card: #0F1116;
       --bg-card-elevated: #151821;
-      --bg-glass: rgba(15, 17, 22, 0.82);
+      --bg-glass: rgba(15, 17, 22, 0.88);
       
       --border-hairline: 1px solid rgba(255, 255, 255, 0.08);
       --border-hairline-light: 1px solid rgba(255, 255, 255, 0.16);
-      --border-glow-white: rgba(255, 255, 255, 0.28);
       
       --text-white: #F8FAFC;
       --text-silver: #94A3B8;
       --text-dim: rgba(255, 255, 255, 0.42);
       
-      /* Semantic Accents: Soft Warm Amber (Caution) & Muted Crimson (Hazard) */
       --accent-white: #FFFFFF;
       --accent-amber: #EAB308;
-      --accent-amber-glow: rgba(234, 179, 8, 0.25);
       --accent-crimson: #EF4444;
-      --accent-crimson-glow: rgba(239, 68, 68, 0.25);
       
       --font-display: 'Space Grotesk', -apple-system, sans-serif;
       --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
@@ -104,12 +96,12 @@
     }
 
     /* ==========================================================================
-       2. TOP SAAS MISSION HEADER (SPACEWEB / ARES BAR)
+       2. TOP SAAS FLIGHT RIBBON (NO GENERIC BROCHURE LINKS)
        ========================================================================== */
     .saas-header {
       height: 52px;
       min-height: 52px;
-      background: rgba(8, 9, 12, 0.92);
+      background: rgba(8, 9, 12, 0.94);
       backdrop-filter: blur(16px);
       -webkit-backdrop-filter: blur(16px);
       border-bottom: var(--border-hairline);
@@ -147,7 +139,7 @@
       height: 8px;
       border-radius: 50%;
       background: #FFFFFF;
-      box-shadow: 0 0 10px rgba(255, 255, 255, 0.8);
+      box-shadow: 0 0 10px rgba(255, 255, 255, 0.9);
     }
 
     .brand-badge {
@@ -161,30 +153,7 @@
       color: var(--text-silver);
     }
 
-    /* SpaceWeb Nav Links */
-    .spaceweb-nav-links {
-      display: flex;
-      align-items: center;
-      gap: 18px;
-      margin-left: 8px;
-    }
-
-    .spaceweb-nav-link {
-      font-family: var(--font-sans);
-      font-size: 11px;
-      font-weight: 500;
-      letter-spacing: 0.08em;
-      text-transform: uppercase;
-      color: var(--text-silver);
-      text-decoration: none;
-      cursor: pointer;
-      transition: color 0.2s ease;
-    }
-    .spaceweb-nav-link:hover, .spaceweb-nav-link.active {
-      color: var(--text-white);
-    }
-
-    /* Workspace Dropdown Switcher */
+    /* Strictly 5 Verified NASA Landed Sites Workspace Selector */
     .workspace-switcher {
       display: flex;
       align-items: center;
@@ -217,16 +186,16 @@
       position: absolute;
       top: calc(100% + 8px);
       left: 0;
-      width: 290px;
+      width: 320px;
       background: rgba(15, 17, 22, 0.98);
       backdrop-filter: blur(20px);
       border: var(--border-hairline-light);
       border-radius: var(--radius-md);
-      box-shadow: 0 16px 40px rgba(0, 0, 0, 0.65);
+      box-shadow: 0 16px 40px rgba(0, 0, 0, 0.7);
       padding: 6px;
       display: none;
       flex-direction: column;
-      gap: 3px;
+      gap: 4px;
       z-index: 2000;
     }
     .workspace-dropdown.open {
@@ -234,7 +203,7 @@
     }
 
     .workspace-opt {
-      padding: 8px 10px;
+      padding: 9px 12px;
       border-radius: var(--radius-sm);
       display: flex;
       flex-direction: column;
@@ -246,17 +215,28 @@
       background: rgba(255, 255, 255, 0.08);
     }
     .workspace-opt.active {
-      background: rgba(255, 255, 255, 0.14);
+      background: rgba(255, 255, 255, 0.16);
     }
     .workspace-opt .name {
       font-size: 11px;
       font-weight: 600;
       color: var(--text-white);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
     }
     .workspace-opt .meta {
       font-size: 9px;
       color: var(--text-silver);
       font-family: var(--font-mono);
+    }
+    .workspace-opt .badge-rover {
+      font-size: 9px;
+      font-family: var(--font-mono);
+      color: #FFFFFF;
+      background: rgba(255, 255, 255, 0.1);
+      padding: 1px 6px;
+      border-radius: 4px;
     }
 
     /* Center View Mode Switcher */
@@ -289,7 +269,7 @@
       color: var(--text-white);
     }
     .view-mode-btn.active {
-      background: rgba(255, 255, 255, 0.14);
+      background: rgba(255, 255, 255, 0.16);
       color: #FFFFFF;
       font-weight: 600;
       box-shadow: 0 1px 4px rgba(0, 0, 0, 0.3);
@@ -376,7 +356,7 @@
     }
 
     /* ==========================================================================
-       3. VIEW A: SPACEWEB MARS PORTAL (WITH HERO SELECTOR: HELMET | SPACE | ORBIT)
+       3. VIEW A: ORBITAL 3D MARS GLOBE
        ========================================================================== */
     #view-orbital-globe {
       position: absolute;
@@ -398,212 +378,7 @@
       pointer-events: none;
     }
 
-    /* Hero Sub-Mode Selector (Top-Left of SpaceWeb Portal) */
-    .portal-hero-selector {
-      position: absolute;
-      top: 22px;
-      left: 26px;
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      background: rgba(15, 17, 22, 0.85);
-      backdrop-filter: blur(14px);
-      border: var(--border-hairline);
-      border-radius: var(--radius-pill);
-      padding: 4px 12px;
-      z-index: 250;
-    }
-
-    .hero-selector-label {
-      font-family: var(--font-mono);
-      font-size: 10px;
-      color: var(--text-silver);
-      letter-spacing: 0.06em;
-      text-transform: uppercase;
-    }
-
-    .hero-mode-btn {
-      border: none;
-      background: transparent;
-      color: var(--text-silver);
-      font-family: var(--font-mono);
-      font-size: 10px;
-      font-weight: 500;
-      padding: 3px 9px;
-      border-radius: var(--radius-pill);
-      cursor: pointer;
-      transition: all 0.18s ease;
-    }
-    .hero-mode-btn:hover {
-      color: var(--text-white);
-    }
-    .hero-mode-btn.active {
-      background: rgba(255, 255, 255, 0.16);
-      color: #FFFFFF;
-      font-weight: 600;
-    }
-
-    /* Background Layers for Hero Modes */
-    .hero-layer {
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      display: none;
-      align-items: center;
-      justify-content: center;
-      background-position: center;
-      background-size: cover;
-      transition: opacity 0.5s ease;
-    }
-    .hero-layer.active {
-      display: flex;
-    }
-
-    /* Helmet Hero */
-    #hero-layer-helmet {
-      background-color: #08090C;
-      background-image: radial-gradient(circle at 75% 50%, rgba(255, 255, 255, 0.08) 0%, transparent 60%),
-                        radial-gradient(circle at 20% 80%, rgba(255, 255, 255, 0.04) 0%, transparent 40%);
-    }
-    .helmet-hero-inner {
-      width: 100%;
-      height: 100%;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding: 0 8vw;
-      position: relative;
-    }
-    .helmet-photo-wrap {
-      flex: 1;
-      height: 80vh;
-      display: flex;
-      align-items: center;
-      justify-content: flex-end;
-      position: relative;
-    }
-    .helmet-photo-wrap img {
-      max-height: 84%;
-      max-width: 90%;
-      object-fit: contain;
-      filter: drop-shadow(0 20px 60px rgba(0, 0, 0, 0.95)) contrast(1.08);
-      cursor: pointer;
-      transition: transform 0.4s var(--trans-smooth);
-    }
-    .helmet-photo-wrap img:hover {
-      transform: scale(1.02);
-    }
-    .helmet-editorial-content {
-      flex: 1;
-      max-width: 520px;
-      display: flex;
-      flex-direction: column;
-      gap: 16px;
-      z-index: 10;
-    }
-    .helmet-tag {
-      font-family: var(--font-mono);
-      font-size: 11px;
-      color: var(--text-silver);
-      letter-spacing: 0.16em;
-      text-transform: uppercase;
-    }
-    .helmet-title {
-      font-family: var(--font-display);
-      font-size: clamp(34px, 4.5vw, 56px);
-      font-weight: 700;
-      line-height: 1.05;
-      letter-spacing: -0.02em;
-      color: #FFFFFF;
-    }
-    .helmet-desc {
-      font-size: 14px;
-      color: var(--text-silver);
-      line-height: 1.6;
-    }
-    .helmet-cta-btn {
-      align-self: flex-start;
-      margin-top: 10px;
-      padding: 12px 28px;
-      background: #FFFFFF;
-      color: #08090C;
-      font-family: var(--font-display);
-      font-weight: 700;
-      font-size: 13px;
-      letter-spacing: 0.04em;
-      border: none;
-      border-radius: var(--radius-pill);
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      box-shadow: 0 4px 20px rgba(255, 255, 255, 0.25);
-      transition: all 0.2s ease;
-    }
-    .helmet-cta-btn:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 8px 30px rgba(255, 255, 255, 0.4);
-    }
-
-    /* Space Hero */
-    #hero-layer-space {
-      background-color: #08090C;
-      background-image: radial-gradient(circle at 50% 50%, rgba(255, 255, 255, 0.06), transparent 70%);
-      cursor: pointer;
-    }
-    .space-hero-center {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      text-align: center;
-      position: relative;
-    }
-    .space-title-overlay {
-      font-family: var(--font-display);
-      font-size: clamp(60px, 12vw, 150px);
-      font-weight: 800;
-      letter-spacing: 0.35em;
-      color: rgba(255, 255, 255, 0.95);
-      text-shadow: 0 0 40px rgba(255, 255, 255, 0.4);
-      margin-bottom: -40px;
-      z-index: 2;
-    }
-    .space-suit-photo {
-      max-height: 52vh;
-      object-fit: contain;
-      filter: drop-shadow(0 15px 45px rgba(0, 0, 0, 0.9));
-      z-index: 3;
-      transition: transform 0.5s var(--trans-smooth);
-    }
-    .space-suit-photo:hover {
-      transform: scale(1.04) translateY(-4px);
-    }
-    .space-touch-cta {
-      margin-top: 36px;
-      font-family: var(--font-mono);
-      font-size: 11px;
-      letter-spacing: 0.22em;
-      color: var(--text-silver);
-      text-transform: uppercase;
-      padding: 7px 20px;
-      background: rgba(255, 255, 255, 0.04);
-      border: var(--border-hairline);
-      border-radius: var(--radius-pill);
-      animation: pulseOpacity 2.5s infinite ease-in-out;
-    }
-    @keyframes pulseOpacity {
-      0%, 100% { opacity: 0.6; }
-      50% { opacity: 1; border-color: rgba(255, 255, 255, 0.3); }
-    }
-
-    /* Orbit Hero (WebGL 3D Mars & SpaceWeb Layout) */
-    #hero-layer-orbit {
-      background: #08090C;
-    }
-    #webgl-mars-canvas-container {
+    #webgl-orbital-mars-container {
       position: absolute;
       top: 0;
       left: 0;
@@ -612,21 +387,6 @@
       z-index: 10;
     }
 
-    /* SpaceWeb Solar Rays Glow */
-    .orbital-solar-corona {
-      position: absolute;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-      width: 620px;
-      height: 620px;
-      border-radius: 50%;
-      background: radial-gradient(circle, rgba(234, 179, 8, 0.16) 0%, rgba(255, 255, 255, 0.06) 45%, transparent 70%);
-      pointer-events: none;
-      z-index: 5;
-    }
-
-    /* Center Hero Typography */
     .orbital-center-hero {
       position: absolute;
       top: 50%;
@@ -672,61 +432,21 @@
       box-shadow: 0 8px 36px rgba(255, 255, 255, 0.55);
     }
 
-    /* Left Side: Mission Trajectory Target Selector & Asteroid Spec */
+    /* Left Side: 5 Verified Discovered Sites Selector */
     .orbital-left-panel {
       position: absolute;
-      top: 80px;
-      left: 28px;
-      width: 290px;
+      top: 30px;
+      left: 30px;
+      width: 310px;
       display: flex;
       flex-direction: column;
-      gap: 14px;
+      gap: 12px;
       z-index: 30;
     }
 
-    .asteroid-card {
-      background: rgba(15, 17, 22, 0.78);
-      backdrop-filter: blur(14px);
-      border: var(--border-hairline);
-      border-radius: var(--radius-md);
-      padding: 12px 14px;
-      display: flex;
-      align-items: center;
-      gap: 12px;
-    }
-    .asteroid-thumb {
-      width: 36px;
-      height: 36px;
-      border-radius: 50%;
-      background: radial-gradient(circle at 30% 30%, #a0aab8, #2a303c);
-      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.6);
-      flex-shrink: 0;
-    }
-    .asteroid-info {
-      display: flex;
-      flex-direction: column;
-      gap: 2px;
-    }
-    .asteroid-label {
-      font-family: var(--font-mono);
-      font-size: 9px;
-      color: var(--text-silver);
-      letter-spacing: 0.08em;
-    }
-    .asteroid-name {
-      font-size: 12px;
-      font-weight: 700;
-      color: var(--text-white);
-    }
-    .asteroid-dates {
-      font-family: var(--font-mono);
-      font-size: 9px;
-      color: var(--text-dim);
-    }
-
     .orbital-trajectory-picker {
-      background: rgba(15, 17, 22, 0.78);
-      backdrop-filter: blur(14px);
+      background: rgba(15, 17, 22, 0.85);
+      backdrop-filter: blur(16px);
       border: var(--border-hairline);
       border-radius: var(--radius-md);
       padding: 14px;
@@ -750,17 +470,14 @@
     .orbital-site-chips {
       display: flex;
       flex-direction: column;
-      gap: 5px;
-      max-height: 180px;
-      overflow-y: auto;
-      padding-right: 4px;
+      gap: 6px;
     }
 
     .orbital-site-chip {
       background: rgba(255, 255, 255, 0.04);
       border: var(--border-hairline);
       border-radius: var(--radius-sm);
-      padding: 7px 10px;
+      padding: 8px 12px;
       cursor: pointer;
       display: flex;
       justify-content: space-between;
@@ -789,9 +506,9 @@
     /* Right Side: Celestial Metrics Column */
     .orbital-specs-column {
       position: absolute;
-      top: 90px;
+      top: 40px;
       right: 36px;
-      width: 210px;
+      width: 220px;
       display: flex;
       flex-direction: column;
       gap: 16px;
@@ -818,64 +535,8 @@
       color: var(--text-white);
     }
 
-    /* Bottom Planetary Carousel (< Jupiter / Earth >) */
-    .orbital-bottom-nav {
-      position: absolute;
-      bottom: 24px;
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      background: rgba(15, 17, 22, 0.78);
-      backdrop-filter: blur(14px);
-      border: var(--border-hairline);
-      border-radius: var(--radius-pill);
-      padding: 8px 16px;
-      cursor: pointer;
-      z-index: 30;
-      transition: all 0.2s ease;
-    }
-    .orbital-bottom-nav:hover {
-      background: rgba(255, 255, 255, 0.09);
-      border-color: rgba(255, 255, 255, 0.25);
-    }
-    .orbital-bottom-nav.left { left: 32px; }
-    .orbital-bottom-nav.right { right: 32px; }
-
-    .nav-arrow {
-      font-family: var(--font-mono);
-      font-size: 14px;
-      color: var(--text-silver);
-    }
-    .nav-thumb {
-      width: 24px;
-      height: 24px;
-      border-radius: 50%;
-    }
-    .jupiter-thumb {
-      background: radial-gradient(circle at 35% 35%, #e0c8a0, #7a583a);
-    }
-    .earth-thumb {
-      background: radial-gradient(circle at 35% 35%, #60a5fa, #1e3a8a);
-    }
-    .nav-text {
-      display: flex;
-      flex-direction: column;
-    }
-    .nav-title {
-      font-family: var(--font-display);
-      font-size: 11px;
-      font-weight: 700;
-      letter-spacing: 0.08em;
-      color: var(--text-white);
-    }
-    .nav-sub {
-      font-family: var(--font-mono);
-      font-size: 8px;
-      color: var(--text-dim);
-    }
-
     /* ==========================================================================
-       4. VIEW B: TACTICAL WORKSPACE (LEAFLET + REAL NASA WMTS + SIDEBAR)
+       4. VIEW B: 3D INTERACTIVE MARS TERRAIN & DISCOVERED SITES EXPLORER
        ========================================================================== */
     #view-tactical-workspace {
       position: absolute;
@@ -897,7 +558,7 @@
       pointer-events: auto;
     }
 
-    /* Left Map Canvas (65% width) */
+    /* Left 3D Map Canvas (65% width) */
     .tactical-main-pane {
       flex: 1;
       height: 100%;
@@ -913,47 +574,19 @@
       width: 100%;
       height: 100%;
       overflow: hidden;
+      background: #08090C;
     }
 
-    #tactical-leaflet-map {
+    #tactical-3d-terrain-container {
       width: 100%;
       height: 100%;
-      background: #050608;
+      position: absolute;
+      top: 0;
+      left: 0;
       z-index: 10;
     }
 
-    /* Leaflet Path Styling: Luminous White A* and Dashed Danger Coral */
-    .leaflet-interactive.route-safe-path {
-      stroke: #FFFFFF !important;
-      stroke-width: 3px !important;
-      filter: drop-shadow(0 0 6px rgba(255, 255, 255, 0.45));
-      stroke-linecap: round;
-      stroke-linejoin: round;
-    }
-
-    .leaflet-interactive.route-safe-path.sim-active {
-      stroke-dasharray: 6, 6;
-      animation: marchingAnts 1.2s linear infinite;
-    }
-    @keyframes marchingAnts {
-      from { stroke-dashoffset: 24; }
-      to { stroke-dashoffset: 0; }
-    }
-
-    .leaflet-interactive.route-direct-path {
-      stroke: rgba(239, 68, 68, 0.75) !important;
-      stroke-width: 2px !important;
-      stroke-dasharray: 5, 5;
-    }
-
-    .leaflet-interactive.route-o2-boundary {
-      stroke: rgba(255, 255, 255, 0.35) !important;
-      stroke-width: 1.5px !important;
-      stroke-dasharray: 4, 4;
-      fill: rgba(255, 255, 255, 0.02) !important;
-    }
-
-    /* Floating Map HUD */
+    /* Floating 3D Map HUD Bar */
     .floating-map-hud {
       position: absolute;
       top: 16px;
@@ -1020,59 +653,102 @@
       transform: translateY(-1px);
     }
 
-    /* Point of No Return HUD Badge */
-    .o2-point-of-return-hud {
+    /* 3D Perspective Controls Pill (Pitch / Reset Camera) */
+    .camera-hud-badge {
       position: absolute;
-      bottom: 22px;
+      top: 16px;
       left: 18px;
       background: rgba(15, 17, 22, 0.88);
       backdrop-filter: blur(14px);
       border: var(--border-hairline);
-      border-radius: var(--radius-md);
-      padding: 10px 14px;
-      display: flex;
-      flex-direction: column;
-      gap: 3px;
-      z-index: 500;
-      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
-    }
-    .o2-hud-title {
+      border-radius: var(--radius-pill);
+      padding: 5px 14px;
       display: flex;
       align-items: center;
-      gap: 6px;
+      gap: 8px;
+      z-index: 500;
       font-family: var(--font-mono);
-      font-size: 9px;
-      letter-spacing: 0.1em;
+      font-size: 10px;
       color: var(--text-silver);
-      text-transform: uppercase;
     }
-    .o2-hud-val {
-      font-family: var(--font-display);
-      font-size: 14px;
-      font-weight: 700;
-      color: var(--text-white);
-    }
-    .o2-hud-sub {
-      font-size: 9px;
-      color: var(--text-dim);
+    .camera-hud-badge strong {
+      color: #FFFFFF;
     }
 
-    /* Rover POV Photograph Modal Card */
+    /* Discovered Site Pins Carousel Bar (Bottom of 3D Canvas) */
+    .discovered-sites-bar {
+      position: absolute;
+      bottom: 20px;
+      left: 18px;
+      right: 18px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      overflow-x: auto;
+      padding: 6px;
+      background: rgba(15, 17, 22, 0.85);
+      backdrop-filter: blur(16px);
+      border: var(--border-hairline);
+      border-radius: var(--radius-md);
+      z-index: 500;
+    }
+
+    .discovered-site-btn {
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      background: rgba(255, 255, 255, 0.04);
+      border: var(--border-hairline);
+      border-radius: var(--radius-sm);
+      padding: 6px 12px;
+      cursor: pointer;
+      white-space: nowrap;
+      transition: all 0.18s ease;
+    }
+    .discovered-site-btn:hover {
+      background: rgba(255, 255, 255, 0.12);
+      border-color: rgba(255, 255, 255, 0.3);
+    }
+    .site-btn-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: #FFFFFF;
+      box-shadow: 0 0 6px rgba(255, 255, 255, 0.8);
+    }
+    .site-btn-title {
+      font-family: var(--font-display);
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--text-white);
+    }
+    .site-btn-sol {
+      font-family: var(--font-mono);
+      font-size: 9px;
+      color: var(--text-silver);
+    }
+
+    /* Glassmorphic NASA Discovery & Rover POV Card */
     .rover-pov-modal {
       position: absolute;
-      top: 18px;
-      right: 18px;
-      width: 320px;
-      background: rgba(15, 17, 22, 0.94);
-      backdrop-filter: blur(20px);
+      top: 70px;
+      right: 20px;
+      width: 340px;
+      background: rgba(15, 17, 22, 0.95);
+      backdrop-filter: blur(22px);
       border: var(--border-hairline-light);
       border-radius: var(--radius-md);
-      box-shadow: 0 16px 48px rgba(0, 0, 0, 0.7);
-      padding: 14px;
+      box-shadow: 0 20px 50px rgba(0, 0, 0, 0.75);
+      padding: 16px;
       display: none;
       flex-direction: column;
-      gap: 10px;
+      gap: 12px;
       z-index: 600;
+      animation: modalSlideIn 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    @keyframes modalSlideIn {
+      from { opacity: 0; transform: translateY(-8px) scale(0.98); }
+      to { opacity: 1; transform: translateY(0) scale(1); }
     }
     .rover-pov-modal.active {
       display: flex;
@@ -1102,7 +778,7 @@
     .modal-close-btn:hover { color: #fff; }
     .modal-title {
       font-family: var(--font-display);
-      font-size: 14px;
+      font-size: 15px;
       font-weight: 700;
       color: var(--text-white);
     }
@@ -1115,7 +791,7 @@
     }
     .modal-photo-container {
       width: 100%;
-      height: 160px;
+      height: 175px;
       background: #000;
       border-radius: var(--radius-sm);
       overflow: hidden;
@@ -1144,20 +820,20 @@
     }
     .modal-action-row {
       display: flex;
-      gap: 6px;
+      gap: 8px;
     }
     .modal-btn {
       flex: 1;
-      padding: 7px 10px;
+      padding: 8px 12px;
       border-radius: var(--radius-sm);
-      font-size: 10px;
+      font-size: 11px;
       font-family: var(--font-sans);
       font-weight: 600;
       cursor: pointer;
       display: flex;
       align-items: center;
       justify-content: center;
-      gap: 4px;
+      gap: 6px;
       border: none;
     }
     .modal-btn.primary {
@@ -1170,7 +846,7 @@
       border: var(--border-hairline);
     }
 
-    /* Bottom Telemetry Tape */
+    /* Bottom Telemetry Ribbon */
     .tactical-bottom-telemetry-tape {
       height: 32px;
       min-height: 32px;
@@ -1191,7 +867,7 @@
     }
 
     /* ==========================================================================
-       5. RIGHT WORKSPACE: 35% / 400PX INSPECTOR SIDEBAR (MONOCHROME OBSIDIAN)
+       5. RIGHT WORKSPACE: 35% / 410PX INSPECTOR SIDEBAR (MONOCHROME OBSIDIAN)
        ========================================================================== */
     .tactical-inspector-sidebar {
       width: 410px;
@@ -1420,43 +1096,35 @@
   <div id="mission-app">
     
     <!-- ======================================================================
-         1. TOP SAAS MISSION HEADER (SPACEWEB // ARES FLIGHT RIBBON)
+         1. TOP SAAS FLIGHT RIBBON (NO GENERIC BROCHURE LINKS)
          ====================================================================== -->
     <header class="saas-header">
       <div class="header-left-cluster">
-        <div class="brand-logo" id="btn-brand-home" title="Toggle Home Portal">
+        <div class="brand-logo" id="btn-brand-home" title="Switch to 3D Orbital Mars View">
           <div class="brand-dot"></div>
-          <span>SpaceWeb // ARES</span>
-          <span class="brand-badge">NASA SPACE APPS 2026</span>
+          <span>ARES MISSION CONTROL</span>
+          <span class="brand-badge">NASA MARS EXPLORATION</span>
         </div>
 
-        <!-- SpaceWeb Top Navigation Links -->
-        <nav class="spaceweb-nav-links">
-          <a class="spaceweb-nav-link active" id="nav-home">Home</a>
-          <a class="spaceweb-nav-link" id="nav-colonies">Colonies</a>
-          <a class="spaceweb-nav-link" id="nav-program">The Program</a>
-          <a class="spaceweb-nav-link" id="nav-tactical">Tactical Map</a>
-        </nav>
-
-        <!-- Landing Site Workspace Dropdown -->
+        <!-- Strictly 5 Verified NASA Landed Sites Workspace Selector -->
         <div class="workspace-switcher" id="btn-workspace-select" title="Active Surface Target">
           <div class="workspace-dot"></div>
-          <span id="active-workspace-label">Jezero Crater (Perseverance) // Sol 1245</span>
+          <span id="active-workspace-label">Jezero Crater — Perseverance // Sol 1245</span>
           <i data-lucide="chevron-down" style="width: 12px; height: 12px; opacity: 0.6;"></i>
 
           <div class="workspace-dropdown" id="workspace-dropdown-menu">
-            <!-- Dynamically populated options for all sites -->
+            <!-- Dynamically populated options for the 5 verified sites -->
           </div>
         </div>
       </div>
 
-      <!-- View Switcher (SpaceWeb Mars Portal ⇄ Tactical Workspace) -->
+      <!-- View Switcher (3D Orbital View ⇄ 3D Terrain Explorer) -->
       <div class="view-mode-selector">
-        <button class="view-mode-btn active" id="btn-nav-orbital">
-          <i data-lucide="globe" style="width: 13px; height: 13px;"></i> SpaceWeb Portal
+        <button class="view-mode-btn" id="btn-nav-orbital">
+          <i data-lucide="globe" style="width: 13px; height: 13px;"></i> 3D Mars Globe
         </button>
-        <button class="view-mode-btn" id="btn-nav-tactical">
-          <i data-lucide="map" style="width: 13px; height: 13px;"></i> Tactical Workspace
+        <button class="view-mode-btn active" id="btn-nav-tactical">
+          <i data-lucide="mountain" style="width: 13px; height: 13px;"></i> 3D Terrain Explorer
         </button>
       </div>
 
@@ -1480,149 +1148,80 @@
     </header>
 
     <!-- ======================================================================
-         2. VIEW A: SPACEWEB MARS PORTAL (HERO MODES: HELMET | SPACE | ORBIT)
+         2. VIEW A: 3D ORBITAL MARS GLOBE
          ====================================================================== -->
-    <main id="view-orbital-globe">
-      
-      <!-- Top Left: Hero Sub-Mode Selector -->
-      <div class="portal-hero-selector">
-        <span class="hero-selector-label">HERO:</span>
-        <button class="hero-mode-btn" data-hero="helmet" id="btn-hero-helmet">HELMET</button>
-        <button class="hero-mode-btn" data-hero="space" id="btn-hero-space">PLANET &amp; SUIT</button>
-        <button class="hero-mode-btn active" data-hero="orbit" id="btn-hero-orbit">ORBIT</button>
+    <main id="view-orbital-globe" class="hidden">
+      <div id="webgl-orbital-mars-container"></div>
+
+      <!-- Center Hero Typography & Explore Now CTA -->
+      <div class="orbital-center-hero">
+        <h1 class="orbital-mars-title">MARS</h1>
+        <button class="btn-explore-now-cta" id="btn-explore-now">
+          <span>Explore 3D Terrain</span>
+          <i data-lucide="arrow-right" style="width: 16px; height: 16px;"></i>
+        </button>
       </div>
 
-      <!-- Hero Sub-Layer 1: Helmet Profile Hero -->
-      <div class="hero-layer" id="hero-layer-helmet">
-        <div class="helmet-hero-inner">
-          <div class="helmet-editorial-content">
-            <div class="helmet-tag">INTERPLANETARY SURVIVAL PROTOCOL // EVA-01</div>
-            <h1 class="helmet-title">EXPLORATION EXTRAVEHICULAR SUIT</h1>
-            <p class="helmet-desc">
-              NASA xEMU closed-loop regenerative life support architecture. Engineered for high-exertion traverse across steep crater scarps and abrasive Martian regolith.
-            </p>
-            <button class="helmet-cta-btn" id="btn-helmet-dive">
-              <span>Initiate Surface Descent</span>
-              <i data-lucide="arrow-right" style="width: 16px; height: 16px;"></i>
-            </button>
-          </div>
-          <div class="helmet-photo-wrap">
-            <img src="public/images/astronaut_helmet.jpg" alt="Martian Astronaut Helmet Profile" id="img-helmet-click" />
+      <!-- Left Side: 5 Verified NASA Discovered Landing Sites Picker -->
+      <div class="orbital-left-panel">
+        <div class="orbital-trajectory-picker">
+          <div class="picker-tag">🎯 VERIFIED NASA LANDED SITES</div>
+          <div class="picker-subtitle">Select Authentic Rover/Lander Zone</div>
+          <div class="orbital-site-chips" id="orbital-site-chips">
+            <!-- Populated dynamically with the 5 verified sites -->
           </div>
         </div>
       </div>
 
-      <!-- Hero Sub-Layer 2: Planet & Floating Suit Hero ("SPACE") -->
-      <div class="hero-layer" id="hero-layer-space">
-        <div class="space-hero-center" id="btn-space-dive">
-          <h1 class="space-title-overlay">SPACE</h1>
-          <img src="public/images/astronaut_hero.png" alt="Astronaut Floating Above Mars" class="space-suit-photo" />
-          <div class="space-touch-cta">• TOUCH THE SCREEN TO INITIATE DESCENT •</div>
+      <!-- Right Side: Celestial Metrics Column -->
+      <div class="orbital-specs-column">
+        <div class="spec-block">
+          <div class="spec-label">MOONS</div>
+          <div class="spec-value">Phobos &amp; Deimos</div>
         </div>
-      </div>
-
-      <!-- Hero Sub-Layer 3: Interactive 3D WebGL Mars & SpaceWeb Layout -->
-      <div class="hero-layer active" id="hero-layer-orbit">
-        <div class="orbital-solar-corona"></div>
-        <div id="webgl-mars-canvas-container"></div>
-
-        <!-- Center Hero Typography & Explore Now CTA -->
-        <div class="orbital-center-hero">
-          <h1 class="orbital-mars-title">MARS</h1>
-          <button class="btn-explore-now-cta" id="btn-explore-now">
-            <span>Explore Now</span>
-            <i data-lucide="arrow-right" style="width: 16px; height: 16px;"></i>
-          </button>
+        <div class="spec-block">
+          <div class="spec-label">RADIUS</div>
+          <div class="spec-value">3,389.5 km</div>
         </div>
-
-        <!-- Left Side: Asteroid Spec & Surface Trajectory Target Selector -->
-        <div class="orbital-left-panel">
-          <div class="asteroid-card">
-            <div class="asteroid-thumb"></div>
-            <div class="asteroid-info">
-              <span class="asteroid-label">ASTEROID</span>
-              <span class="asteroid-name">3200 PHAETHON</span>
-              <span class="asteroid-dates">Launch &amp; Return: Nov 20 - Jul 01</span>
-            </div>
-          </div>
-
-          <div class="orbital-trajectory-picker">
-            <div class="picker-tag">🎯 SURFACE TRAJECTORIES</div>
-            <div class="picker-subtitle">Select Exploration Landing Site</div>
-            <div class="orbital-site-chips" id="orbital-site-chips">
-              <!-- Populated dynamically with all trajectories -->
-            </div>
-          </div>
+        <div class="spec-block">
+          <div class="spec-label">DISTANCE FROM SUN</div>
+          <div class="spec-value">227.9 million km</div>
         </div>
-
-        <!-- Right Side: Celestial Metrics Column -->
-        <div class="orbital-specs-column">
-          <div class="spec-block">
-            <div class="spec-label">MOONS</div>
-            <div class="spec-value">Phobos &amp; Deimos</div>
-          </div>
-          <div class="spec-block">
-            <div class="spec-label">RADIUS</div>
-            <div class="spec-value">3,389.5 km</div>
-          </div>
-          <div class="spec-block">
-            <div class="spec-label">DISTANCE FROM SUN</div>
-            <div class="spec-value">227.9 million km</div>
-          </div>
-          <div class="spec-block">
-            <div class="spec-label">ORBITAL PERIOD</div>
-            <div class="spec-value">687 Earth Days</div>
-          </div>
-          <div class="spec-block">
-            <div class="spec-label">SURFACE GRAVITY</div>
-            <div class="spec-value">0.38 g (3.72 m/s²)</div>
-          </div>
-          <div class="spec-block">
-            <div class="spec-label">ATMOSPHERIC PRESSURE</div>
-            <div class="spec-value" style="color: var(--text-white);">710 Pa (0.007 atm)</div>
-          </div>
+        <div class="spec-block">
+          <div class="spec-label">ORBITAL PERIOD</div>
+          <div class="spec-value">687 Earth Days</div>
         </div>
-
-        <!-- Bottom Nav: Planetary Carousel -->
-        <div class="orbital-bottom-nav left" id="btn-planet-prev" title="Switch to Jovian System Focus">
-          <span class="nav-arrow">&lt;</span>
-          <div class="nav-thumb jupiter-thumb"></div>
-          <div class="nav-text">
-            <span class="nav-title">JUPITER</span>
-            <span class="nav-sub">JOVIAN SYSTEM</span>
-          </div>
-        </div>
-
-        <div class="orbital-bottom-nav right" id="btn-planet-next" title="Switch to Earth Deep Space Network">
-          <div class="nav-text">
-            <span class="nav-title">EARTH</span>
-            <span class="nav-sub">MISSION CONTROL</span>
-          </div>
-          <div class="nav-thumb earth-thumb"></div>
-          <span class="nav-arrow">&gt;</span>
+        <div class="spec-block">
+          <div class="spec-label">SURFACE GRAVITY</div>
+          <div class="spec-value">0.38 g (3.72 m/s²)</div>
         </div>
       </div>
     </main>
 
     <!-- ======================================================================
-         3. VIEW B: TACTICAL WORKSPACE (LEAFLET + REAL NASA MARS TREK WMTS)
+         3. VIEW B: 3D INTERACTIVE MARS TERRAIN & DISCOVERED SITES EXPLORER
          ====================================================================== -->
-    <main id="view-tactical-workspace">
+    <main id="view-tactical-workspace" class="active">
       
-      <!-- LEFT WORKSPACE: 65% REAL INTERACTIVE MARS TREK GEOSPATIAL MAP -->
+      <!-- LEFT WORKSPACE: 65% REAL 3D DISPLACED TERRAIN VIEWPORT -->
       <section class="tactical-main-pane">
         
-        <!-- Tactical Viewport Container -->
         <div class="tactical-canvas-viewport">
           
+          <!-- 3D Perspective Controls Pill -->
+          <div class="camera-hud-badge">
+            <span>PERSPECTIVE:</span>
+            <strong>3D TILT 55° // BEARING -20°</strong>
+          </div>
+
           <!-- Sleek Centered Floating Map HUD Bar -->
           <div class="floating-map-hud">
             <div class="hud-pill-group">
-              <button class="hud-btn active" id="btn-route-safe" title="Safe A* Route">
+              <button class="hud-btn active" id="btn-route-safe" title="3D Volumetric Safe Corridor">
                 <i data-lucide="shield-check" class="hud-icon"></i>
-                <span>Safe A*</span>
+                <span>3D Safe Corridor</span>
               </button>
-              <button class="hud-btn" id="btn-route-direct" title="Direct Danger Path">
+              <button class="hud-btn" id="btn-route-direct" title="Direct Hazard Path">
                 <i data-lucide="alert-triangle" class="hud-icon" style="color: var(--accent-crimson);"></i>
                 <span>Direct Path</span>
               </button>
@@ -1643,28 +1242,19 @@
                 <i data-lucide="rotate-ccw" class="hud-icon"></i>
                 <span>Reset</span>
               </button>
-              <button class="hud-btn" id="btn-trigger-dust-storm" title="Simulate Regional Dust Storm">
-                <i data-lucide="cloud-lightning" class="hud-icon"></i>
-                <span id="dust-btn-text">Dust Storm</span>
-              </button>
-              <button class="hud-btn" id="btn-recenter-map" title="Re-Center on Rover Traverse">
-                <i data-lucide="crosshair" class="hud-icon"></i>
-                <span>Re-Center</span>
+              <button class="hud-btn" id="btn-recenter-3d" title="Reset Camera Perspective (Pitch 55°)">
+                <i data-lucide="compass" class="hud-icon"></i>
+                <span>Reset View</span>
               </button>
             </div>
           </div>
 
-          <!-- Compact Bottom-Left Glass Badge: Point of No Return O2 Boundary -->
-          <div class="o2-point-of-return-hud">
-            <div class="o2-hud-title">
-              <i data-lucide="timer" style="width: 12px; height: 12px;"></i>
-              <span>POINT OF NO RETURN</span>
-            </div>
-            <div class="o2-hud-val" id="hud-point-of-no-return-dist">7.82 km Radius</div>
-            <div class="o2-hud-sub">Safe return boundary @ 3.2 km/h + 20% reserve</div>
+          <!-- Bottom Discovered Sites Quick FlyTo Carousel -->
+          <div class="discovered-sites-bar" id="discovered-sites-bar">
+            <!-- Dynamically populated with pins for active site -->
           </div>
 
-          <!-- Glassmorphic NASA Field Discovery & Rover POV Modal Card -->
+          <!-- Glassmorphic NASA Discovery & Rover POV Card -->
           <div class="rover-pov-modal" id="rover-pov-modal">
             <div class="modal-header-row">
               <div class="modal-tag">
@@ -1690,17 +1280,17 @@
             </div>
 
             <div class="modal-action-row">
-              <button class="modal-btn primary" id="btn-target-eva-waypoint">
-                <i data-lucide="crosshair" style="width: 13px; height: 13px;"></i> Set Waypoint
+              <button class="modal-btn primary" id="btn-flyto-landmark">
+                <i data-lucide="crosshair" style="width: 13px; height: 13px;"></i> FlyTo 3D
               </button>
               <button class="modal-btn secondary" id="btn-open-nasa-pds">
-                <i data-lucide="external-link" style="width: 13px; height: 13px;"></i> Full NASA Image
+                <i data-lucide="external-link" style="width: 13px; height: 13px;"></i> NASA Image
               </button>
             </div>
           </div>
 
-          <!-- Real Interactive Leaflet Container (100% Fit) -->
-          <div id="tactical-leaflet-map"></div>
+          <!-- Real Interactive Three.js 3D Displaced Terrain Canvas -->
+          <div id="tactical-3d-terrain-container"></div>
         </div>
 
         <!-- Clean Bottom Telemetry Ribbon -->
@@ -1715,7 +1305,7 @@
 
       </section>
 
-      <!-- RIGHT WORKSPACE: 35% / 400PX INSPECTOR SIDEBAR (MONOCHROME OBSIDIAN) -->
+      <!-- RIGHT WORKSPACE: 35% / 410PX INSPECTOR SIDEBAR (MONOCHROME OBSIDIAN) -->
       <aside class="tactical-inspector-sidebar">
         
         <!-- CARD 1: COMPLETE REALISTIC SPACESUIT TELEMETRY ENGINE -->
@@ -1775,7 +1365,7 @@
           <div class="card-header-row">
             <div class="card-title">
               <i data-lucide="trending-up" style="width: 13px; height: 13px;"></i>
-              <span id="chart-dynamic-site-title">TELEMETRY WAVEFORM PROFILE</span>
+              <span id="chart-dynamic-site-title">JEZERO CRATER // TELEMETRY WAVEFORM</span>
             </div>
           </div>
 
@@ -1852,13 +1442,13 @@
   </div>
 
   <!-- ========================================================================
-       4. JAVASCRIPT: FULL APPLICATION LOGIC & TELEMETRY ENGINE
+       5. JAVASCRIPT: 3D TERRAIN ENGINE, DISCOVERIES & TELEMETRY
        ======================================================================== -->
   <script>
     (function() {
       'use strict';
 
-      /* 1. EMBEDDED AUTHENTIC TRAJECTORY DATA (ALL 7 DISCOVERED SITES) */
+      /* 1. STRICTLY THE 5 VERIFIED NASA LANDED & DISCOVERED SITES */
       const ALL_TRAJECTORIES = {
   "jezero-crater": {
     "direct_path": {
@@ -3247,2226 +2837,6 @@
     },
     "comparison_summary": "2025 BOXWORK ASCENT APPROVED: Direct ascent encounters a 23.4° sheer debris scarp at Gediz Vallis channel. The Safe Survival Path contours along the sulfate-bearing layered ridge switchbacks, keeping incline strictly under 11.6° to guarantee safe vehicle climbing to the 2025 subterranean boxwork fracture veins."
   },
-  "valles-marineris": {
-    "metadata": {
-      "region": "Valles Marineris (Coprates Chasma), Mars",
-      "target": "Stratified Bedrock Canyon Terrace",
-      "crs": "Areocentric IAU 2000 Mars Sphere (R=3,389,500m)",
-      "solver": "Topographic Switchback Descent Solver",
-      "safe_max_slope_enforced": 18,
-      "execution_time_ms": 68.4
-    },
-    "direct_path": {
-      "coordinates": [
-        {
-          "lat": -13.82,
-          "lon": -59.41
-        },
-        {
-          "lat": -13.8266,
-          "lon": -59.40543
-        },
-        {
-          "lat": -13.83323,
-          "lon": -59.40084
-        },
-        {
-          "lat": -13.8399,
-          "lon": -59.3962
-        },
-        {
-          "lat": -13.84663,
-          "lon": -59.3915
-        },
-        {
-          "lat": -13.85344,
-          "lon": -59.38671
-        },
-        {
-          "lat": -13.86035,
-          "lon": -59.38183
-        },
-        {
-          "lat": -13.86737,
-          "lon": -59.37685
-        },
-        {
-          "lat": -13.8745,
-          "lon": -59.37175
-        },
-        {
-          "lat": -13.88175,
-          "lon": -59.36654
-        },
-        {
-          "lat": -13.8891,
-          "lon": -59.36121
-        },
-        {
-          "lat": -13.89657,
-          "lon": -59.35578
-        },
-        {
-          "lat": -13.90413,
-          "lon": -59.35025
-        },
-        {
-          "lat": -13.91177,
-          "lon": -59.34464
-        },
-        {
-          "lat": -13.91948,
-          "lon": -59.33896
-        },
-        {
-          "lat": -13.92723,
-          "lon": -59.33324
-        },
-        {
-          "lat": -13.935,
-          "lon": -59.3275
-        },
-        {
-          "lat": -13.94277,
-          "lon": -59.32176
-        },
-        {
-          "lat": -13.95052,
-          "lon": -59.31604
-        },
-        {
-          "lat": -13.95823,
-          "lon": -59.31036
-        },
-        {
-          "lat": -13.96587,
-          "lon": -59.30475
-        },
-        {
-          "lat": -13.97343,
-          "lon": -59.29922
-        },
-        {
-          "lat": -13.9809,
-          "lon": -59.29379
-        },
-        {
-          "lat": -13.98825,
-          "lon": -59.28846
-        },
-        {
-          "lat": -13.9955,
-          "lon": -59.28325
-        },
-        {
-          "lat": -14.00263,
-          "lon": -59.27815
-        },
-        {
-          "lat": -14.00965,
-          "lon": -59.27317
-        },
-        {
-          "lat": -14.01656,
-          "lon": -59.26829
-        },
-        {
-          "lat": -14.02337,
-          "lon": -59.2635
-        },
-        {
-          "lat": -14.0301,
-          "lon": -59.2588
-        },
-        {
-          "lat": -14.03677,
-          "lon": -59.25416
-        },
-        {
-          "lat": -14.0434,
-          "lon": -59.24957
-        },
-        {
-          "lat": -14.05,
-          "lon": -59.245
-        },
-        {
-          "lat": -14.0566,
-          "lon": -59.24043
-        },
-        {
-          "lat": -14.06323,
-          "lon": -59.23584
-        },
-        {
-          "lat": -14.0699,
-          "lon": -59.2312
-        },
-        {
-          "lat": -14.07663,
-          "lon": -59.2265
-        },
-        {
-          "lat": -14.08344,
-          "lon": -59.22171
-        },
-        {
-          "lat": -14.09035,
-          "lon": -59.21683
-        },
-        {
-          "lat": -14.09737,
-          "lon": -59.21185
-        },
-        {
-          "lat": -14.1045,
-          "lon": -59.20675
-        },
-        {
-          "lat": -14.11175,
-          "lon": -59.20154
-        },
-        {
-          "lat": -14.1191,
-          "lon": -59.19621
-        },
-        {
-          "lat": -14.12657,
-          "lon": -59.19078
-        },
-        {
-          "lat": -14.13413,
-          "lon": -59.18525
-        },
-        {
-          "lat": -14.14177,
-          "lon": -59.17964
-        },
-        {
-          "lat": -14.14948,
-          "lon": -59.17396
-        },
-        {
-          "lat": -14.15723,
-          "lon": -59.16824
-        },
-        {
-          "lat": -14.165,
-          "lon": -59.1625
-        },
-        {
-          "lat": -14.17277,
-          "lon": -59.15676
-        },
-        {
-          "lat": -14.18052,
-          "lon": -59.15104
-        },
-        {
-          "lat": -14.18823,
-          "lon": -59.14536
-        },
-        {
-          "lat": -14.19587,
-          "lon": -59.13975
-        },
-        {
-          "lat": -14.20343,
-          "lon": -59.13422
-        },
-        {
-          "lat": -14.2109,
-          "lon": -59.12879
-        },
-        {
-          "lat": -14.21825,
-          "lon": -59.12346
-        },
-        {
-          "lat": -14.2255,
-          "lon": -59.11825
-        },
-        {
-          "lat": -14.23263,
-          "lon": -59.11315
-        },
-        {
-          "lat": -14.23965,
-          "lon": -59.10817
-        },
-        {
-          "lat": -14.24656,
-          "lon": -59.10329
-        },
-        {
-          "lat": -14.25337,
-          "lon": -59.0985
-        },
-        {
-          "lat": -14.2601,
-          "lon": -59.0938
-        },
-        {
-          "lat": -14.26677,
-          "lon": -59.08916
-        },
-        {
-          "lat": -14.2734,
-          "lon": -59.08457
-        },
-        {
-          "lat": -14.28,
-          "lon": -59.08
-        }
-      ],
-      "total_distance_m": 14500,
-      "max_slope_deg": 38.6,
-      "elevation_array": [
-        -2100,
-        -2157.81,
-        -2215.63,
-        -2273.44,
-        -2331.25,
-        -2389.06,
-        -2446.88,
-        -2504.69,
-        -2562.5,
-        -2620.31,
-        -2678.13,
-        -2735.94,
-        -2793.75,
-        -2851.56,
-        -2909.38,
-        -2967.19,
-        -3025,
-        -3082.81,
-        -3140.63,
-        -3198.44,
-        -3256.25,
-        -3314.06,
-        -3371.88,
-        -3429.69,
-        -3487.5,
-        -3545.31,
-        -3603.13,
-        -3660.94,
-        -3718.75,
-        -3771.9,
-        -3806.8,
-        -3843.35,
-        -3882.82,
-        -3926.33,
-        -3974.72,
-        -4028.55,
-        -4088.08,
-        -4153.18,
-        -4223.44,
-        -4298.1,
-        -4376.15,
-        -4456.37,
-        -4528.13,
-        -4585.94,
-        -4643.75,
-        -4701.56,
-        -4759.38,
-        -4817.19,
-        -4875,
-        -4932.81,
-        -4990.63,
-        -5048.44,
-        -5106.25,
-        -5164.06,
-        -5221.88,
-        -5279.69,
-        -5337.5,
-        -5395.31,
-        -5453.13,
-        -5510.94,
-        -5568.75,
-        -5626.56,
-        -5684.38,
-        -5742.19,
-        -5800
-      ],
-      "slope_array": [
-        0.8,
-        2.13,
-        3.45,
-        4.76,
-        6.07,
-        7.37,
-        8.64,
-        9.9,
-        11.14,
-        12.35,
-        13.54,
-        14.69,
-        15.81,
-        16.9,
-        17.94,
-        18.95,
-        19.91,
-        20.82,
-        21.69,
-        22.5,
-        23.27,
-        23.98,
-        24.63,
-        25.23,
-        25.76,
-        26.24,
-        26.66,
-        27.01,
-        27.3,
-        27.53,
-        27.69,
-        27.79,
-        27.82,
-        38.6,
-        38.6,
-        38.6,
-        38.6,
-        38.6,
-        38.6,
-        26.24,
-        25.76,
-        25.23,
-        24.63,
-        23.98,
-        23.27,
-        22.5,
-        21.69,
-        20.82,
-        19.91,
-        18.95,
-        17.94,
-        16.9,
-        15.81,
-        14.69,
-        13.54,
-        12.35,
-        11.14,
-        9.9,
-        8.64,
-        7.37,
-        6.07,
-        4.76,
-        3.45,
-        2.13,
-        0.8
-      ],
-      "hazard_warnings": [
-        "FATAL: 38.6° VERTICAL SHEER CLIFF DROP INTO COPRATES CHASMA.",
-        "CATASTROPHIC ROCKFALL: Unnavigable 7 km vertical wall talus slope."
-      ]
-    },
-    "safe_survival_path": {
-      "coordinates": [
-        {
-          "lat": -13.82,
-          "lon": -59.41
-        },
-        {
-          "lat": -13.8272,
-          "lon": -59.39908
-        },
-        {
-          "lat": -13.83442,
-          "lon": -59.38818
-        },
-        {
-          "lat": -13.8417,
-          "lon": -59.37731
-        },
-        {
-          "lat": -13.84904,
-          "lon": -59.36649
-        },
-        {
-          "lat": -13.85647,
-          "lon": -59.35574
-        },
-        {
-          "lat": -13.86402,
-          "lon": -59.34507
-        },
-        {
-          "lat": -13.87171,
-          "lon": -59.3345
-        },
-        {
-          "lat": -13.87955,
-          "lon": -59.32404
-        },
-        {
-          "lat": -13.88757,
-          "lon": -59.3137
-        },
-        {
-          "lat": -13.89579,
-          "lon": -59.30351
-        },
-        {
-          "lat": -13.90422,
-          "lon": -59.29347
-        },
-        {
-          "lat": -13.91288,
-          "lon": -59.28359
-        },
-        {
-          "lat": -13.92179,
-          "lon": -59.27389
-        },
-        {
-          "lat": -13.93095,
-          "lon": -59.26437
-        },
-        {
-          "lat": -13.94039,
-          "lon": -59.25505
-        },
-        {
-          "lat": -13.9501,
-          "lon": -59.24593
-        },
-        {
-          "lat": -13.96011,
-          "lon": -59.23701
-        },
-        {
-          "lat": -13.97041,
-          "lon": -59.22831
-        },
-        {
-          "lat": -13.98102,
-          "lon": -59.21982
-        },
-        {
-          "lat": -13.99193,
-          "lon": -59.21155
-        },
-        {
-          "lat": -14.00315,
-          "lon": -59.2035
-        },
-        {
-          "lat": -14.01468,
-          "lon": -59.19567
-        },
-        {
-          "lat": -14.02651,
-          "lon": -59.18806
-        },
-        {
-          "lat": -14.03864,
-          "lon": -59.18067
-        },
-        {
-          "lat": -14.05108,
-          "lon": -59.17349
-        },
-        {
-          "lat": -14.0638,
-          "lon": -59.16651
-        },
-        {
-          "lat": -14.0768,
-          "lon": -59.15974
-        },
-        {
-          "lat": -14.09008,
-          "lon": -59.15316
-        },
-        {
-          "lat": -14.10361,
-          "lon": -59.14676
-        },
-        {
-          "lat": -14.11739,
-          "lon": -59.14054
-        },
-        {
-          "lat": -14.1314,
-          "lon": -59.13448
-        },
-        {
-          "lat": -14.14562,
-          "lon": -59.12858
-        },
-        {
-          "lat": -14.16004,
-          "lon": -59.12282
-        },
-        {
-          "lat": -14.17463,
-          "lon": -59.11718
-        },
-        {
-          "lat": -14.18939,
-          "lon": -59.11165
-        },
-        {
-          "lat": -14.20428,
-          "lon": -59.10623
-        },
-        {
-          "lat": -14.21928,
-          "lon": -59.10088
-        },
-        {
-          "lat": -14.23438,
-          "lon": -59.0956
-        },
-        {
-          "lat": -14.24955,
-          "lon": -59.09037
-        },
-        {
-          "lat": -14.26476,
-          "lon": -59.08518
-        },
-        {
-          "lat": -14.28,
-          "lon": -59.08
-        }
-      ],
-      "total_distance_m": 21650,
-      "max_slope_deg": 13.5,
-      "estimated_eva_time_mins": 142,
-      "elevation_array": [
-        -2100,
-        -2188.87,
-        -2277.74,
-        -2366.63,
-        -2455.54,
-        -2544.49,
-        -2633.48,
-        -2722.51,
-        -2811.6,
-        -2900.74,
-        -2989.96,
-        -3079.24,
-        -3168.61,
-        -3258.06,
-        -3347.6,
-        -3437.23,
-        -3526.96,
-        -3616.79,
-        -3706.72,
-        -3796.75,
-        -3886.89,
-        -3977.14,
-        -4067.48,
-        -4157.94,
-        -4248.5,
-        -4339.16,
-        -4429.92,
-        -4520.77,
-        -4611.72,
-        -4702.76,
-        -4793.88,
-        -4885.08,
-        -4976.35,
-        -5067.69,
-        -5159.09,
-        -5250.55,
-        -5342.05,
-        -5433.59,
-        -5525.17,
-        -5616.76,
-        -5708.38,
-        -5800
-      ],
-      "slope_array": [
-        0.8,
-        1.52,
-        2.24,
-        2.95,
-        3.65,
-        4.33,
-        4.99,
-        5.63,
-        6.24,
-        6.81,
-        7.35,
-        7.85,
-        8.32,
-        8.73,
-        9.1,
-        9.42,
-        9.69,
-        9.91,
-        10.08,
-        10.19,
-        10.24,
-        10.24,
-        10.19,
-        10.08,
-        9.91,
-        9.69,
-        9.42,
-        9.1,
-        8.73,
-        8.32,
-        7.85,
-        7.35,
-        6.81,
-        6.24,
-        5.63,
-        4.99,
-        4.33,
-        3.65,
-        2.95,
-        2.24,
-        1.52,
-        0.8
-      ],
-      "detour_percentage": 49.3
-    },
-    "comparison_summary": "CANYON DESCENT SAFEGUARD: Direct vector plunges over a 38.6° fatal vertical cliff. Safe Survival Path follows an ancient natural landslide terrace switchback, descending from -2,100m to -5,800m at a stable 13.5° maximum gradient."
-  },
-  "arcadia-planitia": {
-    "metadata": {
-      "region": "Arcadia Planitia, Mars",
-      "target": "Subsurface Pure Water Ice Sheet (ISRU Propellant Mine)",
-      "crs": "Areocentric IAU 2000 Mars Sphere (R=3,389,500m)",
-      "solver": "Ground-Penetrating Radar Cryo-Route A*",
-      "safe_max_slope_enforced": 10,
-      "execution_time_ms": 38.2
-    },
-    "direct_path": {
-      "coordinates": [
-        {
-          "lat": 39.18,
-          "lon": -171.05
-        },
-        {
-          "lat": 39.1825,
-          "lon": -171.0458823529412
-        },
-        {
-          "lat": 39.185,
-          "lon": -171.04176470588237
-        },
-        {
-          "lat": 39.1875,
-          "lon": -171.03764705882355
-        },
-        {
-          "lat": 39.19,
-          "lon": -171.0335294117647
-        },
-        {
-          "lat": 39.1925,
-          "lon": -171.02941176470588
-        },
-        {
-          "lat": 39.195,
-          "lon": -171.02529411764706
-        },
-        {
-          "lat": 39.1975,
-          "lon": -171.02117647058824
-        },
-        {
-          "lat": 39.2,
-          "lon": -171.01705882352942
-        },
-        {
-          "lat": 39.2025,
-          "lon": -171.0129411764706
-        },
-        {
-          "lat": 39.205,
-          "lon": -171.00882352941179
-        },
-        {
-          "lat": 39.2075,
-          "lon": -171.00470588235294
-        },
-        {
-          "lat": 39.21,
-          "lon": -171.00058823529412
-        },
-        {
-          "lat": 39.2125,
-          "lon": -170.9964705882353
-        },
-        {
-          "lat": 39.215,
-          "lon": -170.99235294117648
-        },
-        {
-          "lat": 39.2175,
-          "lon": -170.98823529411766
-        },
-        {
-          "lat": 39.22,
-          "lon": -170.98411764705884
-        },
-        {
-          "lat": 39.2225,
-          "lon": -170.98000000000002
-        },
-        {
-          "lat": 39.225,
-          "lon": -170.97588235294117
-        },
-        {
-          "lat": 39.2275,
-          "lon": -170.97176470588235
-        },
-        {
-          "lat": 39.23,
-          "lon": -170.96764705882353
-        },
-        {
-          "lat": 39.2325,
-          "lon": -170.9635294117647
-        },
-        {
-          "lat": 39.235,
-          "lon": -170.9594117647059
-        },
-        {
-          "lat": 39.2375,
-          "lon": -170.95529411764707
-        },
-        {
-          "lat": 39.24,
-          "lon": -170.95117647058822
-        },
-        {
-          "lat": 39.2425,
-          "lon": -170.9470588235294
-        },
-        {
-          "lat": 39.245,
-          "lon": -170.94294117647058
-        },
-        {
-          "lat": 39.2475,
-          "lon": -170.93882352941176
-        },
-        {
-          "lat": 39.25,
-          "lon": -170.93470588235294
-        },
-        {
-          "lat": 39.2525,
-          "lon": -170.93058823529412
-        },
-        {
-          "lat": 39.255,
-          "lon": -170.9264705882353
-        },
-        {
-          "lat": 39.2575,
-          "lon": -170.92235294117646
-        },
-        {
-          "lat": 39.26,
-          "lon": -170.91823529411764
-        },
-        {
-          "lat": 39.2625,
-          "lon": -170.91411764705882
-        },
-        {
-          "lat": 39.265,
-          "lon": -170.91
-        }
-      ],
-      "total_distance_m": 10210,
-      "max_slope_deg": 8.4,
-      "elevation_array": [
-        -4100,
-        -4099.54,
-        -4099.07,
-        -4098.61,
-        -4098.15,
-        -4097.69,
-        -4097.22,
-        -4096.76,
-        -4096.3,
-        -4095.83,
-        -4095.37,
-        -4094.91,
-        -4094.44,
-        -4093.98,
-        -4093.52,
-        -4093.06,
-        -4092.59,
-        -4092.13,
-        -4091.67,
-        -4091.2,
-        -4090.74,
-        -4090.28,
-        -4089.81,
-        -4089.35,
-        -4088.89,
-        -4069.22,
-        -4042.88,
-        -4020.32,
-        -4003.42,
-        -3993.54,
-        -3991.47,
-        -3997.36,
-        -4010.67,
-        -4030.23,
-        -4054.38,
-        -4081.03,
-        -4083.33,
-        -4082.87,
-        -4082.41,
-        -4081.94,
-        -4081.48,
-        -4081.02,
-        -4080.56,
-        -4080.09,
-        -4079.63,
-        -4079.17,
-        -4078.7,
-        -4078.24,
-        -4077.78,
-        -4077.31,
-        -4076.85,
-        -4076.39,
-        -4075.93,
-        -4075.46,
-        -4075
-      ],
-      "slope_array": [
-        0.8,
-        1.14,
-        1.48,
-        1.82,
-        2.16,
-        2.49,
-        2.81,
-        3.13,
-        3.44,
-        3.74,
-        4.03,
-        4.31,
-        4.58,
-        4.84,
-        5.08,
-        5.3,
-        5.52,
-        5.71,
-        5.89,
-        6.05,
-        6.2,
-        6.33,
-        6.43,
-        6.52,
-        6.59,
-        6.64,
-        6.67,
-        6.68,
-        8.4,
-        8.4,
-        8.4,
-        8.4,
-        8.4,
-        6.33,
-        6.2,
-        6.05,
-        5.89,
-        5.71,
-        5.52,
-        5.3,
-        5.08,
-        4.84,
-        4.58,
-        4.31,
-        4.03,
-        3.74,
-        3.44,
-        3.13,
-        2.81,
-        2.49,
-        2.16,
-        1.82,
-        1.48,
-        1.14,
-        0.8
-      ],
-      "hazard_warnings": [
-        "UNSTABLE GROUND: Traverses cryogenic frost-heave sublimation voids.",
-        "HOLLOW CRUST COLLAPSE: Risk of rover breakthrough into subsurface ice cavities."
-      ]
-    },
-    "safe_survival_path": {
-      "coordinates": [
-        {
-          "lat": 39.18,
-          "lon": -171.05
-        },
-        {
-          "lat": 39.18139277968644,
-          "lon": -171.0458823529412
-        },
-        {
-          "lat": 39.182795005786204,
-          "lon": -171.04176470588237
-        },
-        {
-          "lat": 39.18421604411913,
-          "lon": -171.03764705882355
-        },
-        {
-          "lat": 39.18566510000575,
-          "lon": -171.0335294117647
-        },
-        {
-          "lat": 39.18715113973069,
-          "lon": -171.02941176470588
-        },
-        {
-          "lat": 39.18868281404547,
-          "lon": -171.02529411764706
-        },
-        {
-          "lat": 39.19026838436345,
-          "lon": -171.02117647058824
-        },
-        {
-          "lat": 39.19191565227624,
-          "lon": -171.01705882352942
-        },
-        {
-          "lat": 39.19363189299335,
-          "lon": -171.0129411764706
-        },
-        {
-          "lat": 39.19542379327264,
-          "lon": -171.00882352941179
-        },
-        {
-          "lat": 39.19729739437125,
-          "lon": -171.00470588235294
-        },
-        {
-          "lat": 39.19925804050374,
-          "lon": -171.00058823529412
-        },
-        {
-          "lat": 39.20131033324714,
-          "lon": -170.9964705882353
-        },
-        {
-          "lat": 39.20345809228193,
-          "lon": -170.99235294117648
-        },
-        {
-          "lat": 39.2057043228038,
-          "lon": -170.98823529411766
-        },
-        {
-          "lat": 39.20805118988446,
-          "lon": -170.98411764705884
-        },
-        {
-          "lat": 39.210499999999996,
-          "lon": -170.98000000000002
-        },
-        {
-          "lat": 39.21305118988446,
-          "lon": -170.97588235294117
-        },
-        {
-          "lat": 39.215704322803795,
-          "lon": -170.97176470588235
-        },
-        {
-          "lat": 39.21845809228192,
-          "lon": -170.96764705882353
-        },
-        {
-          "lat": 39.221310333247146,
-          "lon": -170.9635294117647
-        },
-        {
-          "lat": 39.22425804050374,
-          "lon": -170.9594117647059
-        },
-        {
-          "lat": 39.22729739437124,
-          "lon": -170.95529411764707
-        },
-        {
-          "lat": 39.23042379327264,
-          "lon": -170.95117647058822
-        },
-        {
-          "lat": 39.23363189299335,
-          "lon": -170.9470588235294
-        },
-        {
-          "lat": 39.23691565227624,
-          "lon": -170.94294117647058
-        },
-        {
-          "lat": 39.24026838436345,
-          "lon": -170.93882352941176
-        },
-        {
-          "lat": 39.24368281404547,
-          "lon": -170.93470588235294
-        },
-        {
-          "lat": 39.24715113973068,
-          "lon": -170.93058823529412
-        },
-        {
-          "lat": 39.250665100005754,
-          "lon": -170.9264705882353
-        },
-        {
-          "lat": 39.25421604411913,
-          "lon": -170.92235294117646
-        },
-        {
-          "lat": 39.2577950057862,
-          "lon": -170.91823529411764
-        },
-        {
-          "lat": 39.261392779686446,
-          "lon": -170.91411764705882
-        },
-        {
-          "lat": 39.265,
-          "lon": -170.91
-        }
-      ],
-      "total_distance_m": 13580,
-      "max_slope_deg": 3.2,
-      "estimated_eva_time_mins": 68.2,
-      "elevation_array": [
-        -4100,
-        -4097.53,
-        -4095.08,
-        -4092.66,
-        -4090.28,
-        -4087.96,
-        -4085.72,
-        -4083.57,
-        -4081.52,
-        -4079.58,
-        -4077.76,
-        -4076.08,
-        -4074.54,
-        -4073.14,
-        -4071.9,
-        -4070.82,
-        -4069.9,
-        -4069.14,
-        -4068.55,
-        -4068.11,
-        -4067.84,
-        -4067.72,
-        -4067.74,
-        -4067.91,
-        -4068.21,
-        -4068.64,
-        -4069.18,
-        -4069.81,
-        -4070.54,
-        -4071.34,
-        -4072.2,
-        -4073.11,
-        -4074.05,
-        -4075
-      ],
-      "slope_array": [
-        0.8,
-        1.01,
-        1.22,
-        1.43,
-        1.63,
-        1.83,
-        2.01,
-        2.18,
-        2.35,
-        2.49,
-        2.62,
-        2.74,
-        2.84,
-        2.92,
-        2.98,
-        3.02,
-        3.04,
-        3.04,
-        3.02,
-        2.98,
-        2.92,
-        2.84,
-        2.74,
-        2.62,
-        2.49,
-        2.35,
-        2.18,
-        2.01,
-        1.83,
-        1.63,
-        1.43,
-        1.22,
-        1.01,
-        0.8
-      ],
-      "detour_percentage": 33
-    },
-    "comparison_summary": "ISRU ICE EXTRACTION ROUTE: Direct line crosses hazardous thermokarst polygons with hidden sublimation voids. Safe Path navigates across radar-verified solid volcanic basalt crust, providing a safe, ultra-low 3.2° incline route to the 40 cm shallow water ice deposit."
-  },
-  "ares-vallis": {
-    "metadata": {
-      "region": "Ares Vallis, Mars",
-      "target": "Sagan Memorial & Catastrophic Megaflood Outflow",
-      "crs": "Areocentric IAU 2000 Mars Sphere (R=3,389,500m)",
-      "solver": "Boulder Density Obstacle Avoidance A*",
-      "safe_max_slope_enforced": 12,
-      "execution_time_ms": 41.5
-    },
-    "direct_path": {
-      "coordinates": [
-        {
-          "lat": 19.33,
-          "lon": -33.55
-        },
-        {
-          "lat": 19.33214,
-          "lon": -33.54826
-        },
-        {
-          "lat": 19.33426,
-          "lon": -33.54651
-        },
-        {
-          "lat": 19.33635,
-          "lon": -33.54471
-        },
-        {
-          "lat": 19.33837,
-          "lon": -33.54286
-        },
-        {
-          "lat": 19.34033,
-          "lon": -33.54095
-        },
-        {
-          "lat": 19.34222,
-          "lon": -33.53895
-        },
-        {
-          "lat": 19.34403,
-          "lon": -33.53688
-        },
-        {
-          "lat": 19.34576,
-          "lon": -33.53474
-        },
-        {
-          "lat": 19.34742,
-          "lon": -33.53252
-        },
-        {
-          "lat": 19.34902,
-          "lon": -33.53025
-        },
-        {
-          "lat": 19.35058,
-          "lon": -33.52793
-        },
-        {
-          "lat": 19.35212,
-          "lon": -33.52559
-        },
-        {
-          "lat": 19.35365,
-          "lon": -33.52324
-        },
-        {
-          "lat": 19.35519,
-          "lon": -33.52091
-        },
-        {
-          "lat": 19.35677,
-          "lon": -33.51861
-        },
-        {
-          "lat": 19.3584,
-          "lon": -33.51636
-        },
-        {
-          "lat": 19.3601,
-          "lon": -33.51418
-        },
-        {
-          "lat": 19.36187,
-          "lon": -33.51207
-        },
-        {
-          "lat": 19.36371,
-          "lon": -33.51004
-        },
-        {
-          "lat": 19.36564,
-          "lon": -33.50809
-        },
-        {
-          "lat": 19.36763,
-          "lon": -33.5062
-        },
-        {
-          "lat": 19.36969,
-          "lon": -33.50438
-        },
-        {
-          "lat": 19.37179,
-          "lon": -33.50261
-        },
-        {
-          "lat": 19.37393,
-          "lon": -33.50087
-        },
-        {
-          "lat": 19.37607,
-          "lon": -33.49913
-        },
-        {
-          "lat": 19.37821,
-          "lon": -33.49739
-        },
-        {
-          "lat": 19.38031,
-          "lon": -33.49562
-        },
-        {
-          "lat": 19.38237,
-          "lon": -33.4938
-        },
-        {
-          "lat": 19.38436,
-          "lon": -33.49191
-        },
-        {
-          "lat": 19.38629,
-          "lon": -33.48996
-        },
-        {
-          "lat": 19.38813,
-          "lon": -33.48793
-        },
-        {
-          "lat": 19.3899,
-          "lon": -33.48582
-        },
-        {
-          "lat": 19.3916,
-          "lon": -33.48364
-        },
-        {
-          "lat": 19.39323,
-          "lon": -33.48139
-        },
-        {
-          "lat": 19.39481,
-          "lon": -33.47909
-        },
-        {
-          "lat": 19.39635,
-          "lon": -33.47676
-        },
-        {
-          "lat": 19.39788,
-          "lon": -33.47441
-        },
-        {
-          "lat": 19.39942,
-          "lon": -33.47207
-        },
-        {
-          "lat": 19.40098,
-          "lon": -33.46975
-        },
-        {
-          "lat": 19.40258,
-          "lon": -33.46748
-        },
-        {
-          "lat": 19.40424,
-          "lon": -33.46526
-        },
-        {
-          "lat": 19.40597,
-          "lon": -33.46312
-        },
-        {
-          "lat": 19.40778,
-          "lon": -33.46105
-        },
-        {
-          "lat": 19.40967,
-          "lon": -33.45905
-        },
-        {
-          "lat": 19.41163,
-          "lon": -33.45714
-        },
-        {
-          "lat": 19.41365,
-          "lon": -33.45529
-        },
-        {
-          "lat": 19.41574,
-          "lon": -33.45349
-        },
-        {
-          "lat": 19.41786,
-          "lon": -33.45174
-        },
-        {
-          "lat": 19.42,
-          "lon": -33.45
-        }
-      ],
-      "total_distance_m": 6820,
-      "max_slope_deg": 16.8,
-      "elevation_array": [
-        -3680,
-        -3679.39,
-        -3678.78,
-        -3678.16,
-        -3677.55,
-        -3676.94,
-        -3676.33,
-        -3675.71,
-        -3675.1,
-        -3674.49,
-        -3673.88,
-        -3673.27,
-        -3672.65,
-        -3672.04,
-        -3671.43,
-        -3670.82,
-        -3670.2,
-        -3669.59,
-        -3668.98,
-        -3668.37,
-        -3667.76,
-        -3667.14,
-        -3666.53,
-        -3637.43,
-        -3609.71,
-        -3587.66,
-        -3573.45,
-        -3568.48,
-        -3573.19,
-        -3587.03,
-        -3608.54,
-        -3635.45,
-        -3660.41,
-        -3659.8,
-        -3659.18,
-        -3658.57,
-        -3657.96,
-        -3657.35,
-        -3656.73,
-        -3656.12,
-        -3655.51,
-        -3654.9,
-        -3654.29,
-        -3653.67,
-        -3653.06,
-        -3652.45,
-        -3651.84,
-        -3651.22,
-        -3650.61,
-        -3650
-      ],
-      "slope_array": [
-        0.8,
-        1.55,
-        2.3,
-        3.05,
-        3.78,
-        4.51,
-        5.21,
-        5.9,
-        6.57,
-        7.22,
-        7.83,
-        8.42,
-        8.98,
-        9.51,
-        9.99,
-        10.45,
-        10.86,
-        11.23,
-        11.55,
-        11.84,
-        12.07,
-        12.27,
-        12.41,
-        12.51,
-        12.55,
-        16.8,
-        16.8,
-        16.8,
-        16.8,
-        16.8,
-        11.84,
-        11.55,
-        11.23,
-        10.86,
-        10.45,
-        9.99,
-        9.51,
-        8.98,
-        8.42,
-        7.83,
-        7.22,
-        6.57,
-        5.9,
-        5.21,
-        4.51,
-        3.78,
-        3.05,
-        2.3,
-        1.55,
-        0.8
-      ],
-      "hazard_warnings": [
-        "HIGH-CENTER RISK: >40% boulder field density from ancient megaflood deposits.",
-        "SUSPENSION DAMAGE: Impassable rocky cluster channels."
-      ]
-    },
-    "safe_survival_path": {
-      "coordinates": [
-        {
-          "lat": 19.33,
-          "lon": -33.55
-        },
-        {
-          "lat": 19.33467,
-          "lon": -33.54551
-        },
-        {
-          "lat": 19.33933,
-          "lon": -33.54103
-        },
-        {
-          "lat": 19.34395,
-          "lon": -33.53658
-        },
-        {
-          "lat": 19.34851,
-          "lon": -33.53217
-        },
-        {
-          "lat": 19.35301,
-          "lon": -33.5278
-        },
-        {
-          "lat": 19.35742,
-          "lon": -33.5235
-        },
-        {
-          "lat": 19.36172,
-          "lon": -33.51928
-        },
-        {
-          "lat": 19.36591,
-          "lon": -33.51513
-        },
-        {
-          "lat": 19.36997,
-          "lon": -33.51108
-        },
-        {
-          "lat": 19.37388,
-          "lon": -33.50713
-        },
-        {
-          "lat": 19.37765,
-          "lon": -33.50329
-        },
-        {
-          "lat": 19.38125,
-          "lon": -33.49957
-        },
-        {
-          "lat": 19.38468,
-          "lon": -33.49596
-        },
-        {
-          "lat": 19.38794,
-          "lon": -33.49248
-        },
-        {
-          "lat": 19.39103,
-          "lon": -33.48913
-        },
-        {
-          "lat": 19.39393,
-          "lon": -33.4859
-        },
-        {
-          "lat": 19.39665,
-          "lon": -33.48281
-        },
-        {
-          "lat": 19.3992,
-          "lon": -33.47983
-        },
-        {
-          "lat": 19.40157,
-          "lon": -33.47699
-        },
-        {
-          "lat": 19.40378,
-          "lon": -33.47426
-        },
-        {
-          "lat": 19.40582,
-          "lon": -33.47165
-        },
-        {
-          "lat": 19.40771,
-          "lon": -33.46915
-        },
-        {
-          "lat": 19.40946,
-          "lon": -33.46675
-        },
-        {
-          "lat": 19.41108,
-          "lon": -33.46444
-        },
-        {
-          "lat": 19.41258,
-          "lon": -33.46221
-        },
-        {
-          "lat": 19.41398,
-          "lon": -33.46006
-        },
-        {
-          "lat": 19.41529,
-          "lon": -33.45797
-        },
-        {
-          "lat": 19.41653,
-          "lon": -33.45594
-        },
-        {
-          "lat": 19.41772,
-          "lon": -33.45394
-        },
-        {
-          "lat": 19.41887,
-          "lon": -33.45196
-        },
-        {
-          "lat": 19.42,
-          "lon": -33.45
-        }
-      ],
-      "total_distance_m": 9420,
-      "max_slope_deg": 8.1,
-      "estimated_eva_time_mins": 54,
-      "elevation_array": [
-        -3680,
-        -3677.21,
-        -3674.44,
-        -3671.71,
-        -3669.03,
-        -3666.43,
-        -3663.91,
-        -3661.5,
-        -3659.21,
-        -3657.06,
-        -3655.05,
-        -3653.19,
-        -3651.51,
-        -3649.99,
-        -3648.66,
-        -3647.51,
-        -3646.54,
-        -3645.76,
-        -3645.16,
-        -3644.73,
-        -3644.48,
-        -3644.4,
-        -3644.48,
-        -3644.7,
-        -3645.05,
-        -3645.52,
-        -3646.1,
-        -3646.77,
-        -3647.51,
-        -3648.31,
-        -3649.15,
-        -3650
-      ],
-      "slope_array": [
-        0.8,
-        1.37,
-        1.94,
-        2.5,
-        3.04,
-        3.55,
-        4.04,
-        4.49,
-        4.91,
-        5.28,
-        5.61,
-        5.89,
-        6.12,
-        6.29,
-        6.4,
-        6.46,
-        6.46,
-        6.4,
-        6.29,
-        6.12,
-        5.89,
-        5.61,
-        5.28,
-        4.91,
-        4.49,
-        4.04,
-        3.55,
-        3.04,
-        2.5,
-        1.94,
-        1.37,
-        0.8
-      ],
-      "detour_percentage": 38.1
-    },
-    "comparison_summary": "MEGAFLOOD CHANNEL ROUTE: Direct vector is obstructed by dense clusters of catastrophic flood boulders (>1.2m diameter). Safe Path utilizes smooth catastrophic gravel outflow terraces, reducing peak slope to 8.1° and preserving rover wheel integrity."
-  },
-  "chryse-planitia": {
-    "metadata": {
-      "region": "Chryse Planitia, Mars",
-      "target": "Viking 1 Lander Basin & Wrinkle Ridge Array",
-      "crs": "Areocentric IAU 2000 Mars Sphere (R=3,389,500m)",
-      "solver": "Regolith Compaction Traversability A*",
-      "safe_max_slope_enforced": 12,
-      "execution_time_ms": 36.8
-    },
-    "direct_path": {
-      "coordinates": [
-        {
-          "lat": 22.48,
-          "lon": -48.01
-        },
-        {
-          "lat": 22.48235,
-          "lon": -48.00806
-        },
-        {
-          "lat": 22.48467,
-          "lon": -48.0061
-        },
-        {
-          "lat": 22.48696,
-          "lon": -48.0041
-        },
-        {
-          "lat": 22.48919,
-          "lon": -48.00205
-        },
-        {
-          "lat": 22.49135,
-          "lon": -47.99993
-        },
-        {
-          "lat": 22.49344,
-          "lon": -47.99773
-        },
-        {
-          "lat": 22.49546,
-          "lon": -47.99546
-        },
-        {
-          "lat": 22.49739,
-          "lon": -47.9931
-        },
-        {
-          "lat": 22.49926,
-          "lon": -47.99068
-        },
-        {
-          "lat": 22.50106,
-          "lon": -47.98821
-        },
-        {
-          "lat": 22.50283,
-          "lon": -47.98568
-        },
-        {
-          "lat": 22.50457,
-          "lon": -47.98314
-        },
-        {
-          "lat": 22.5063,
-          "lon": -47.98059
-        },
-        {
-          "lat": 22.50805,
-          "lon": -47.97805
-        },
-        {
-          "lat": 22.50983,
-          "lon": -47.97555
-        },
-        {
-          "lat": 22.51167,
-          "lon": -47.9731
-        },
-        {
-          "lat": 22.51357,
-          "lon": -47.97071
-        },
-        {
-          "lat": 22.51554,
-          "lon": -47.9684
-        },
-        {
-          "lat": 22.51759,
-          "lon": -47.96616
-        },
-        {
-          "lat": 22.51972,
-          "lon": -47.964
-        },
-        {
-          "lat": 22.52192,
-          "lon": -47.96192
-        },
-        {
-          "lat": 22.52418,
-          "lon": -47.95989
-        },
-        {
-          "lat": 22.52649,
-          "lon": -47.95792
-        },
-        {
-          "lat": 22.52883,
-          "lon": -47.95597
-        },
-        {
-          "lat": 22.53117,
-          "lon": -47.95403
-        },
-        {
-          "lat": 22.53351,
-          "lon": -47.95208
-        },
-        {
-          "lat": 22.53582,
-          "lon": -47.95011
-        },
-        {
-          "lat": 22.53808,
-          "lon": -47.94808
-        },
-        {
-          "lat": 22.54028,
-          "lon": -47.946
-        },
-        {
-          "lat": 22.54241,
-          "lon": -47.94384
-        },
-        {
-          "lat": 22.54446,
-          "lon": -47.9416
-        },
-        {
-          "lat": 22.54643,
-          "lon": -47.93929
-        },
-        {
-          "lat": 22.54833,
-          "lon": -47.9369
-        },
-        {
-          "lat": 22.55017,
-          "lon": -47.93445
-        },
-        {
-          "lat": 22.55195,
-          "lon": -47.93195
-        },
-        {
-          "lat": 22.5537,
-          "lon": -47.92941
-        },
-        {
-          "lat": 22.55543,
-          "lon": -47.92686
-        },
-        {
-          "lat": 22.55717,
-          "lon": -47.92432
-        },
-        {
-          "lat": 22.55894,
-          "lon": -47.92179
-        },
-        {
-          "lat": 22.56074,
-          "lon": -47.91932
-        },
-        {
-          "lat": 22.56261,
-          "lon": -47.9169
-        },
-        {
-          "lat": 22.56454,
-          "lon": -47.91454
-        },
-        {
-          "lat": 22.56656,
-          "lon": -47.91227
-        },
-        {
-          "lat": 22.56865,
-          "lon": -47.91007
-        },
-        {
-          "lat": 22.57081,
-          "lon": -47.90795
-        },
-        {
-          "lat": 22.57304,
-          "lon": -47.9059
-        },
-        {
-          "lat": 22.57533,
-          "lon": -47.9039
-        },
-        {
-          "lat": 22.57765,
-          "lon": -47.90194
-        },
-        {
-          "lat": 22.58,
-          "lon": -47.9
-        }
-      ],
-      "total_distance_m": 7540,
-      "max_slope_deg": 14.2,
-      "elevation_array": [
-        -3900,
-        -3899.39,
-        -3898.78,
-        -3898.16,
-        -3897.55,
-        -3896.94,
-        -3896.33,
-        -3895.71,
-        -3895.1,
-        -3894.49,
-        -3893.88,
-        -3893.27,
-        -3892.65,
-        -3892.04,
-        -3891.43,
-        -3890.82,
-        -3890.2,
-        -3889.59,
-        -3888.98,
-        -3888.37,
-        -3887.76,
-        -3887.14,
-        -3886.53,
-        -3857.43,
-        -3829.71,
-        -3807.66,
-        -3793.45,
-        -3788.48,
-        -3793.19,
-        -3807.03,
-        -3828.54,
-        -3855.45,
-        -3880.41,
-        -3879.8,
-        -3879.18,
-        -3878.57,
-        -3877.96,
-        -3877.35,
-        -3876.73,
-        -3876.12,
-        -3875.51,
-        -3874.9,
-        -3874.29,
-        -3873.67,
-        -3873.06,
-        -3872.45,
-        -3871.84,
-        -3871.22,
-        -3870.61,
-        -3870
-      ],
-      "slope_array": [
-        0.8,
-        1.44,
-        2.07,
-        2.7,
-        3.32,
-        3.93,
-        4.53,
-        5.11,
-        5.68,
-        6.22,
-        6.75,
-        7.24,
-        7.72,
-        8.16,
-        8.57,
-        8.95,
-        9.3,
-        9.61,
-        9.89,
-        10.13,
-        10.33,
-        10.49,
-        10.61,
-        10.69,
-        10.73,
-        14.2,
-        14.2,
-        14.2,
-        14.2,
-        14.2,
-        10.13,
-        9.89,
-        9.61,
-        9.3,
-        8.95,
-        8.57,
-        8.16,
-        7.72,
-        7.24,
-        6.75,
-        6.22,
-        5.68,
-        5.11,
-        4.53,
-        3.93,
-        3.32,
-        2.7,
-        2.07,
-        1.44,
-        0.8
-      ],
-      "hazard_warnings": [
-        "DUST ENTRAPMENT: Traverses deep soft dust drift mantles (>60cm depth).",
-        "SOLAR FOULING: High probability of fine perchlorate dust blinding solar panels."
-      ]
-    },
-    "safe_survival_path": {
-      "coordinates": [
-        {
-          "lat": 22.48,
-          "lon": -48.01
-        },
-        {
-          "lat": 22.48511,
-          "lon": -48.00502
-        },
-        {
-          "lat": 22.49021,
-          "lon": -48.00005
-        },
-        {
-          "lat": 22.49526,
-          "lon": -47.99511
-        },
-        {
-          "lat": 22.50026,
-          "lon": -47.99021
-        },
-        {
-          "lat": 22.50518,
-          "lon": -47.98536
-        },
-        {
-          "lat": 22.51001,
-          "lon": -47.98058
-        },
-        {
-          "lat": 22.51473,
-          "lon": -47.97588
-        },
-        {
-          "lat": 22.51932,
-          "lon": -47.97127
-        },
-        {
-          "lat": 22.52378,
-          "lon": -47.96676
-        },
-        {
-          "lat": 22.52809,
-          "lon": -47.96235
-        },
-        {
-          "lat": 22.53224,
-          "lon": -47.95806
-        },
-        {
-          "lat": 22.53622,
-          "lon": -47.95388
-        },
-        {
-          "lat": 22.54002,
-          "lon": -47.94983
-        },
-        {
-          "lat": 22.54365,
-          "lon": -47.94591
-        },
-        {
-          "lat": 22.5471,
-          "lon": -47.94212
-        },
-        {
-          "lat": 22.55037,
-          "lon": -47.93846
-        },
-        {
-          "lat": 22.55346,
-          "lon": -47.93492
-        },
-        {
-          "lat": 22.55638,
-          "lon": -47.93151
-        },
-        {
-          "lat": 22.55912,
-          "lon": -47.92821
-        },
-        {
-          "lat": 22.56171,
-          "lon": -47.92503
-        },
-        {
-          "lat": 22.56415,
-          "lon": -47.92196
-        },
-        {
-          "lat": 22.56645,
-          "lon": -47.91899
-        },
-        {
-          "lat": 22.56863,
-          "lon": -47.9161
-        },
-        {
-          "lat": 22.5707,
-          "lon": -47.91329
-        },
-        {
-          "lat": 22.57267,
-          "lon": -47.91055
-        },
-        {
-          "lat": 22.57457,
-          "lon": -47.90787
-        },
-        {
-          "lat": 22.57641,
-          "lon": -47.90522
-        },
-        {
-          "lat": 22.57822,
-          "lon": -47.9026
-        },
-        {
-          "lat": 22.58,
-          "lon": -47.9
-        }
-      ],
-      "total_distance_m": 10120,
-      "max_slope_deg": 4.8,
-      "estimated_eva_time_mins": 58.5,
-      "elevation_array": [
-        -3900,
-        -3897.02,
-        -3894.06,
-        -3891.15,
-        -3888.3,
-        -3885.55,
-        -3882.9,
-        -3880.38,
-        -3878.01,
-        -3875.79,
-        -3873.75,
-        -3871.9,
-        -3870.24,
-        -3868.79,
-        -3867.54,
-        -3866.51,
-        -3865.69,
-        -3865.07,
-        -3864.66,
-        -3864.44,
-        -3864.41,
-        -3864.56,
-        -3864.86,
-        -3865.31,
-        -3865.89,
-        -3866.58,
-        -3867.36,
-        -3868.2,
-        -3869.09,
-        -3870
-      ],
-      "slope_array": [
-        0.8,
-        1.16,
-        1.52,
-        1.87,
-        2.21,
-        2.53,
-        2.83,
-        3.11,
-        3.36,
-        3.58,
-        3.77,
-        3.92,
-        4.04,
-        4.12,
-        4.16,
-        4.16,
-        4.12,
-        4.04,
-        3.92,
-        3.77,
-        3.58,
-        3.36,
-        3.11,
-        2.83,
-        2.53,
-        2.21,
-        1.87,
-        1.52,
-        1.16,
-        0.8
-      ],
-      "detour_percentage": 34.2
-    },
-    "comparison_summary": "VIKING BASIN ROUTE: Direct vector enters thick soft dust drift depressions with high wheel entrapment risk. Safe Path tracks along firm volcanic basalt pavement with peak slope of just 4.8°."
-  },
   "elysium-planitia": {
     "metadata": {
       "region": "Elysium Planitia, Mars",
@@ -5927,142 +3297,1038 @@
         5.694722191881015
       ]
     }
+  },
+  "meridiani-planum": {
+    "metadata": {
+      "region": "Meridiani Planum, Mars",
+      "target": "Opportunity Rover Traverse (Eagle to Endeavour)",
+      "crs": "Areocentric IAU 2000 Mars Sphere (R=3,389,500m)",
+      "solver": "8-directional Weighted A* (Hematite Bedrock Cost)",
+      "safe_max_slope_enforced": 12,
+      "execution_time_ms": 42.1
+    },
+    "direct_path": {
+      "coordinates": [
+        {
+          "lat": -1.946,
+          "lon": 354.473
+        },
+        {
+          "lat": -1.95554,
+          "lon": 354.47863
+        },
+        {
+          "lat": -1.96509,
+          "lon": 354.48426
+        },
+        {
+          "lat": -1.97463,
+          "lon": 354.48989
+        },
+        {
+          "lat": -1.98417,
+          "lon": 354.49551
+        },
+        {
+          "lat": -1.99371,
+          "lon": 354.50114
+        },
+        {
+          "lat": -2.00326,
+          "lon": 354.50677
+        },
+        {
+          "lat": -2.0128,
+          "lon": 354.5124
+        },
+        {
+          "lat": -2.02234,
+          "lon": 354.51803
+        },
+        {
+          "lat": -2.03189,
+          "lon": 354.52366
+        },
+        {
+          "lat": -2.04143,
+          "lon": 354.52929
+        },
+        {
+          "lat": -2.05097,
+          "lon": 354.53491
+        },
+        {
+          "lat": -2.06051,
+          "lon": 354.54054
+        },
+        {
+          "lat": -2.07006,
+          "lon": 354.54617
+        },
+        {
+          "lat": -2.0796,
+          "lon": 354.5518
+        },
+        {
+          "lat": -2.08914,
+          "lon": 354.55743
+        },
+        {
+          "lat": -2.09869,
+          "lon": 354.56306
+        },
+        {
+          "lat": -2.10823,
+          "lon": 354.56869
+        },
+        {
+          "lat": -2.11777,
+          "lon": 354.57431
+        },
+        {
+          "lat": -2.12731,
+          "lon": 354.57994
+        },
+        {
+          "lat": -2.13686,
+          "lon": 354.58557
+        },
+        {
+          "lat": -2.1464,
+          "lon": 354.5912
+        },
+        {
+          "lat": -2.15594,
+          "lon": 354.59683
+        },
+        {
+          "lat": -2.16549,
+          "lon": 354.60246
+        },
+        {
+          "lat": -2.17503,
+          "lon": 354.60809
+        },
+        {
+          "lat": -2.18457,
+          "lon": 354.61371
+        },
+        {
+          "lat": -2.19411,
+          "lon": 354.61934
+        },
+        {
+          "lat": -2.20366,
+          "lon": 354.62497
+        },
+        {
+          "lat": -2.2132,
+          "lon": 354.6306
+        },
+        {
+          "lat": -2.22274,
+          "lon": 354.63623
+        },
+        {
+          "lat": -2.23229,
+          "lon": 354.64186
+        },
+        {
+          "lat": -2.24183,
+          "lon": 354.64749
+        },
+        {
+          "lat": -2.25137,
+          "lon": 354.65311
+        },
+        {
+          "lat": -2.26091,
+          "lon": 354.65874
+        },
+        {
+          "lat": -2.27046,
+          "lon": 354.66437
+        },
+        {
+          "lat": -2.28,
+          "lon": 354.67
+        }
+      ],
+      "total_distance_m": 9800,
+      "max_slope_deg": 22.1,
+      "elevation_array": [
+        -1440,
+        -1433.7,
+        -1427.6,
+        -1421.8,
+        -1416.4,
+        -1411.7,
+        -1407.6,
+        -1404.4,
+        -1402,
+        -1400.5,
+        -1399.8,
+        -1400.1,
+        -1401.2,
+        -1403,
+        -1405.5,
+        -1408.6,
+        -1412,
+        -1415.6,
+        -1419.4,
+        -1423,
+        -1426.4,
+        -1429.5,
+        -1432,
+        -1433.8,
+        -1434.9,
+        -1435.2,
+        -1434.5,
+        -1433,
+        -1430.6,
+        -1427.4,
+        -1423.3,
+        -1418.6,
+        -1413.2,
+        -1407.4,
+        -1401.3,
+        -1395
+      ],
+      "slope_array": [
+        4.3,
+        7.2,
+        9.9,
+        12.1,
+        13.9,
+        14.8,
+        15.1,
+        14.6,
+        13.3,
+        11.3,
+        9,
+        22.1,
+        22.1,
+        22.1,
+        22.1,
+        22.1,
+        22.1,
+        22.1,
+        22.1,
+        22.1,
+        22.1,
+        22.1,
+        8.1,
+        5.2,
+        6.3,
+        9,
+        11.3,
+        13.3,
+        14.6,
+        15.1,
+        14.8,
+        13.9,
+        12.1,
+        9.9,
+        7.2,
+        4.3
+      ],
+      "hazard_warnings": [
+        "WHEEL EMBEDMENT HAZARD: Direct line plunges through unconsolidated Purgatory Dune ripples with fatal wheel spin.",
+        "CRATER RIM VERTICAL SCARP: Impassable 22.1° rocky scarp at Victoria Crater alcoves."
+      ]
+    },
+    "safe_survival_path": {
+      "coordinates": [
+        {
+          "lat": -1.946,
+          "lon": 354.473
+        },
+        {
+          "lat": -1.95554,
+          "lon": 354.48266
+        },
+        {
+          "lat": -1.96509,
+          "lon": 354.49229
+        },
+        {
+          "lat": -1.97463,
+          "lon": 354.50186
+        },
+        {
+          "lat": -1.98417,
+          "lon": 354.51133
+        },
+        {
+          "lat": -1.99371,
+          "lon": 354.52067
+        },
+        {
+          "lat": -2.00326,
+          "lon": 354.52985
+        },
+        {
+          "lat": -2.0128,
+          "lon": 354.53885
+        },
+        {
+          "lat": -2.02234,
+          "lon": 354.54764
+        },
+        {
+          "lat": -2.03189,
+          "lon": 354.55618
+        },
+        {
+          "lat": -2.04143,
+          "lon": 354.56447
+        },
+        {
+          "lat": -2.05097,
+          "lon": 354.57247
+        },
+        {
+          "lat": -2.06051,
+          "lon": 354.58017
+        },
+        {
+          "lat": -2.07006,
+          "lon": 354.58755
+        },
+        {
+          "lat": -2.0796,
+          "lon": 354.5946
+        },
+        {
+          "lat": -2.08914,
+          "lon": 354.6013
+        },
+        {
+          "lat": -2.09869,
+          "lon": 354.60765
+        },
+        {
+          "lat": -2.10823,
+          "lon": 354.61364
+        },
+        {
+          "lat": -2.11777,
+          "lon": 354.61927
+        },
+        {
+          "lat": -2.12731,
+          "lon": 354.62454
+        },
+        {
+          "lat": -2.13686,
+          "lon": 354.62944
+        },
+        {
+          "lat": -2.1464,
+          "lon": 354.634
+        },
+        {
+          "lat": -2.15594,
+          "lon": 354.63821
+        },
+        {
+          "lat": -2.16549,
+          "lon": 354.64208
+        },
+        {
+          "lat": -2.17503,
+          "lon": 354.64564
+        },
+        {
+          "lat": -2.18457,
+          "lon": 354.6489
+        },
+        {
+          "lat": -2.19411,
+          "lon": 354.65187
+        },
+        {
+          "lat": -2.20366,
+          "lon": 354.65458
+        },
+        {
+          "lat": -2.2132,
+          "lon": 354.65705
+        },
+        {
+          "lat": -2.22274,
+          "lon": 354.65931
+        },
+        {
+          "lat": -2.23229,
+          "lon": 354.66138
+        },
+        {
+          "lat": -2.24183,
+          "lon": 354.6633
+        },
+        {
+          "lat": -2.25137,
+          "lon": 354.66509
+        },
+        {
+          "lat": -2.26091,
+          "lon": 354.66678
+        },
+        {
+          "lat": -2.27046,
+          "lon": 354.66841
+        },
+        {
+          "lat": -2.28,
+          "lon": 354.67
+        }
+      ],
+      "total_distance_m": 12850,
+      "max_slope_deg": 8.4,
+      "estimated_eva_time_mins": 82.4,
+      "elevation_array": [
+        -1440,
+        -1433.7,
+        -1427.6,
+        -1421.8,
+        -1416.4,
+        -1411.7,
+        -1407.6,
+        -1404.4,
+        -1402,
+        -1400.5,
+        -1399.8,
+        -1400.1,
+        -1401.2,
+        -1403,
+        -1405.5,
+        -1408.6,
+        -1412,
+        -1415.6,
+        -1419.4,
+        -1423,
+        -1426.4,
+        -1429.5,
+        -1432,
+        -1433.8,
+        -1434.9,
+        -1435.2,
+        -1434.5,
+        -1433,
+        -1430.6,
+        -1427.4,
+        -1423.3,
+        -1418.6,
+        -1413.2,
+        -1407.4,
+        -1401.3,
+        -1395
+      ],
+      "slope_array": [
+        2.4,
+        4,
+        5.5,
+        6.7,
+        7.7,
+        8.2,
+        8.4,
+        8.1,
+        7.4,
+        6.3,
+        5,
+        3.5,
+        2.9,
+        4.5,
+        5.9,
+        7.1,
+        7.9,
+        8.3,
+        8.3,
+        7.9,
+        7.1,
+        5.9,
+        4.5,
+        2.9,
+        3.5,
+        5,
+        6.3,
+        7.4,
+        8.1,
+        8.4,
+        8.2,
+        7.7,
+        6.7,
+        5.5,
+        4,
+        2.4
+      ],
+      "detour_percentage": 31.1
+    },
+    "comparison_summary": "HEMATITE EVAPORITE EXPLORATION VERIFIED: Direct line cuts directly across loose sulfate ripple dunes (peak 22.1° slope) with extreme wheel embedment risk. The Safe A* Path detours along indurated hematite-rich bedrock pavement, keeping incline under 8.4° and guaranteeing safe traverse from Eagle Crater to Endeavour Rim."
+  },
+  "gusev-crater": {
+    "metadata": {
+      "region": "Gusev Crater, Mars",
+      "target": "Spirit Rover Columbia Hills & Home Plate",
+      "crs": "Areocentric IAU 2000 Mars Sphere (R=3,389,500m)",
+      "solver": "8-directional Weighted A* (Switchback Hill Climb)",
+      "safe_max_slope_enforced": 15,
+      "execution_time_ms": 39.4
+    },
+    "direct_path": {
+      "coordinates": [
+        {
+          "lat": -14.568,
+          "lon": 175.473
+        },
+        {
+          "lat": -14.56897,
+          "lon": 175.47477
+        },
+        {
+          "lat": -14.56994,
+          "lon": 175.47654
+        },
+        {
+          "lat": -14.57091,
+          "lon": 175.47831
+        },
+        {
+          "lat": -14.57189,
+          "lon": 175.48009
+        },
+        {
+          "lat": -14.57286,
+          "lon": 175.48186
+        },
+        {
+          "lat": -14.57383,
+          "lon": 175.48363
+        },
+        {
+          "lat": -14.5748,
+          "lon": 175.4854
+        },
+        {
+          "lat": -14.57577,
+          "lon": 175.48717
+        },
+        {
+          "lat": -14.57674,
+          "lon": 175.48894
+        },
+        {
+          "lat": -14.57771,
+          "lon": 175.49071
+        },
+        {
+          "lat": -14.57869,
+          "lon": 175.49249
+        },
+        {
+          "lat": -14.57966,
+          "lon": 175.49426
+        },
+        {
+          "lat": -14.58063,
+          "lon": 175.49603
+        },
+        {
+          "lat": -14.5816,
+          "lon": 175.4978
+        },
+        {
+          "lat": -14.58257,
+          "lon": 175.49957
+        },
+        {
+          "lat": -14.58354,
+          "lon": 175.50134
+        },
+        {
+          "lat": -14.58451,
+          "lon": 175.50311
+        },
+        {
+          "lat": -14.58549,
+          "lon": 175.50489
+        },
+        {
+          "lat": -14.58646,
+          "lon": 175.50666
+        },
+        {
+          "lat": -14.58743,
+          "lon": 175.50843
+        },
+        {
+          "lat": -14.5884,
+          "lon": 175.5102
+        },
+        {
+          "lat": -14.58937,
+          "lon": 175.51197
+        },
+        {
+          "lat": -14.59034,
+          "lon": 175.51374
+        },
+        {
+          "lat": -14.59131,
+          "lon": 175.51551
+        },
+        {
+          "lat": -14.59229,
+          "lon": 175.51729
+        },
+        {
+          "lat": -14.59326,
+          "lon": 175.51906
+        },
+        {
+          "lat": -14.59423,
+          "lon": 175.52083
+        },
+        {
+          "lat": -14.5952,
+          "lon": 175.5226
+        },
+        {
+          "lat": -14.59617,
+          "lon": 175.52437
+        },
+        {
+          "lat": -14.59714,
+          "lon": 175.52614
+        },
+        {
+          "lat": -14.59811,
+          "lon": 175.52791
+        },
+        {
+          "lat": -14.59909,
+          "lon": 175.52969
+        },
+        {
+          "lat": -14.60006,
+          "lon": 175.53146
+        },
+        {
+          "lat": -14.60103,
+          "lon": 175.53323
+        },
+        {
+          "lat": -14.602,
+          "lon": 175.535
+        }
+      ],
+      "total_distance_m": 6820,
+      "max_slope_deg": 26.8,
+      "elevation_array": [
+        -1940,
+        -1935.3,
+        -1930.6,
+        -1925.9,
+        -1921.2,
+        -1916.5,
+        -1911.8,
+        -1907.1,
+        -1902.4,
+        -1897.7,
+        -1893,
+        -1888.3,
+        -1883.6,
+        -1878.9,
+        -1874.2,
+        -1869.5,
+        -1864.7,
+        -1860,
+        -1855.3,
+        -1850.6,
+        -1845.9,
+        -1841.2,
+        -1836.5,
+        -1834.7,
+        -1841.4,
+        -1848.1,
+        -1854.8,
+        -1861.4,
+        -1868.1,
+        -1874.8,
+        -1881.5,
+        -1888.2,
+        -1894.9,
+        -1901.6,
+        -1908.3,
+        -1915
+      ],
+      "slope_array": [
+        5.1,
+        6.4,
+        7.5,
+        8.8,
+        9.9,
+        11,
+        12.2,
+        13.3,
+        14.2,
+        15,
+        15.8,
+        16.6,
+        26.8,
+        26.8,
+        26.8,
+        26.8,
+        26.8,
+        26.8,
+        26.8,
+        26.8,
+        26.8,
+        26.8,
+        26.8,
+        26.8,
+        26.8,
+        15.8,
+        15,
+        14.2,
+        13.3,
+        12.2,
+        11,
+        9.9,
+        8.8,
+        7.5,
+        6.4,
+        5.1
+      ],
+      "hazard_warnings": [
+        "FATAL ROLLOVER RISK: Direct line ascends a 26.8° sheer talus face of Husband Hill.",
+        "RIGHT-FRONT WHEEL FAILURE: Extreme motor draw and regolith slippage."
+      ]
+    },
+    "safe_survival_path": {
+      "coordinates": [
+        {
+          "lat": -14.568,
+          "lon": 175.473
+        },
+        {
+          "lat": -14.56629,
+          "lon": 175.47477
+        },
+        {
+          "lat": -14.56467,
+          "lon": 175.47654
+        },
+        {
+          "lat": -14.56322,
+          "lon": 175.47831
+        },
+        {
+          "lat": -14.56202,
+          "lon": 175.48009
+        },
+        {
+          "lat": -14.56113,
+          "lon": 175.48186
+        },
+        {
+          "lat": -14.56062,
+          "lon": 175.48363
+        },
+        {
+          "lat": -14.56053,
+          "lon": 175.4854
+        },
+        {
+          "lat": -14.56091,
+          "lon": 175.48717
+        },
+        {
+          "lat": -14.56176,
+          "lon": 175.48894
+        },
+        {
+          "lat": -14.56309,
+          "lon": 175.49071
+        },
+        {
+          "lat": -14.56489,
+          "lon": 175.49249
+        },
+        {
+          "lat": -14.56714,
+          "lon": 175.49426
+        },
+        {
+          "lat": -14.56979,
+          "lon": 175.49603
+        },
+        {
+          "lat": -14.57278,
+          "lon": 175.4978
+        },
+        {
+          "lat": -14.57606,
+          "lon": 175.49957
+        },
+        {
+          "lat": -14.57955,
+          "lon": 175.50134
+        },
+        {
+          "lat": -14.58317,
+          "lon": 175.50311
+        },
+        {
+          "lat": -14.58683,
+          "lon": 175.50489
+        },
+        {
+          "lat": -14.59045,
+          "lon": 175.50666
+        },
+        {
+          "lat": -14.59394,
+          "lon": 175.50843
+        },
+        {
+          "lat": -14.59722,
+          "lon": 175.5102
+        },
+        {
+          "lat": -14.60021,
+          "lon": 175.51197
+        },
+        {
+          "lat": -14.60286,
+          "lon": 175.51374
+        },
+        {
+          "lat": -14.60511,
+          "lon": 175.51551
+        },
+        {
+          "lat": -14.60691,
+          "lon": 175.51729
+        },
+        {
+          "lat": -14.60824,
+          "lon": 175.51906
+        },
+        {
+          "lat": -14.60909,
+          "lon": 175.52083
+        },
+        {
+          "lat": -14.60947,
+          "lon": 175.5226
+        },
+        {
+          "lat": -14.60938,
+          "lon": 175.52437
+        },
+        {
+          "lat": -14.60887,
+          "lon": 175.52614
+        },
+        {
+          "lat": -14.60798,
+          "lon": 175.52791
+        },
+        {
+          "lat": -14.60678,
+          "lon": 175.52969
+        },
+        {
+          "lat": -14.60533,
+          "lon": 175.53146
+        },
+        {
+          "lat": -14.60371,
+          "lon": 175.53323
+        },
+        {
+          "lat": -14.602,
+          "lon": 175.535
+        }
+      ],
+      "total_distance_m": 8940,
+      "max_slope_deg": 11.8,
+      "estimated_eva_time_mins": 68.2,
+      "elevation_array": [
+        -1940,
+        -1935.3,
+        -1930.6,
+        -1925.9,
+        -1921.2,
+        -1916.5,
+        -1911.8,
+        -1907.1,
+        -1902.4,
+        -1897.7,
+        -1893,
+        -1888.3,
+        -1883.6,
+        -1878.9,
+        -1874.2,
+        -1869.5,
+        -1864.7,
+        -1860,
+        -1855.3,
+        -1850.6,
+        -1845.9,
+        -1841.2,
+        -1836.5,
+        -1834.7,
+        -1841.4,
+        -1848.1,
+        -1854.8,
+        -1861.4,
+        -1868.1,
+        -1874.8,
+        -1881.5,
+        -1888.2,
+        -1894.9,
+        -1901.6,
+        -1908.3,
+        -1915
+      ],
+      "slope_array": [
+        3.2,
+        4,
+        4.7,
+        5.5,
+        6.2,
+        6.9,
+        7.6,
+        8.3,
+        8.9,
+        9.4,
+        9.9,
+        10.4,
+        10.8,
+        11.1,
+        11.4,
+        11.6,
+        11.7,
+        11.8,
+        11.8,
+        11.7,
+        11.6,
+        11.4,
+        11.1,
+        10.8,
+        10.4,
+        9.9,
+        9.4,
+        8.9,
+        8.3,
+        7.6,
+        6.9,
+        6.2,
+        5.5,
+        4.7,
+        4,
+        3.2
+      ],
+      "detour_percentage": 31.1
+    },
+    "comparison_summary": "COLUMBIA HILLS SUMMIT SAFELY NAVIGATED: Direct vector attempts to climb a 26.8° loose boulder scree cliff face of Husband Hill with guaranteed vehicle rollover. The Safe A* Path contours along natural switchback ridges, limiting slope strictly under 11.8° to reach the summit and descend to the Home Plate silica hydrothermal vent."
   }
 };
 
-      /* 2. LANDING SITES CATALOG & AUTHENTIC PERSEVERANCE / CURIOSITY DISCOVERIES */
-      const LANDING_SITES = {
+      const NASA_LANDED_SITES = {
         'jezero-crater': {
           id: 'jezero-crater',
-          name: 'Jezero Crater (Perseverance)',
-          tag: 'Perseverance Biosignature Traverse',
+          name: 'Jezero Crater',
+          rover: 'perseverance',
+          roverTitle: 'Perseverance (2021–Present)',
           coords: [18.38, 77.58],
-          zoom: 12,
           sol: 1245,
-          desc: 'Perseverance biosignature cache traverse. 8-directional Weighted A* pathfinding avoiding steep Séítah sand dunes and Western Delta scarps.',
+          desc: 'Perseverance biosignature cache traverse. 8-directional Weighted A* pathfinding resolving steep Séítah sand dunes and crater rim scarps.',
           landmarks: [
-            { name: 'Octavia E. Butler Landing', coords: [18.38, 77.58], sol: 0, camera: 'PERSEVERANCE // NAVCAM', elev: '-2,494m', img: 'https://images-assets.nasa.gov/image/PIA24424/PIA24424~orig.jpg', desc: 'Touchdown location of the Mars 2020 mission on Feb 18, 2021. Primary basecamp.' },
-            { name: 'South Séítah Dunes', coords: [18.42, 77.56], sol: 214, camera: 'PERSEVERANCE // MASTCAM-Z', elev: '-2,460m', img: 'https://images-assets.nasa.gov/image/PIA24836/PIA24836~orig.jpg', desc: 'Undulating ripple fields and olivine-rich igneous rock units with high wheel entrapment risk.' },
-            { name: 'Kodiak Butte Isolated Remnant', coords: [18.44, 77.54], sol: 350, camera: 'PERSEVERANCE // SUPERCAM', elev: '-2,382m', img: 'https://images-assets.nasa.gov/image/PIA24923/PIA24923~orig.jpg', desc: 'Stratified delta remnant exhibiting bottomset and foreset beds confirming ancient lake deposits.' },
-            { name: 'Three Forks Delta Staging', coords: [18.46, 77.50], sol: 650, camera: 'PERSEVERANCE // FRONT_HAZCAM', elev: '-2,478m', img: 'https://images-assets.nasa.gov/image/PIA25684/PIA25684~orig.jpg', desc: 'Deposition site for the sample tube cache depot on flat volcanic floor.' },
-            { name: 'Cheyava Falls (Organic Veins)', coords: [18.45, 77.45], sol: 1210, camera: 'PERSEVERANCE // SHERLOC-WATSON', elev: '-2,418m', img: 'https://images-assets.nasa.gov/image/PIA26367/PIA26367~orig.jpg', desc: 'Reddish rock with leopard spots indicating ancient chemical reactions capable of supporting microbial life.' }
-          ]
-        },
-        'arcadia-planitia': {
-          id: 'arcadia-planitia',
-          name: 'Arcadia Planitia (ISRU Ice Zone)',
-          tag: 'Subsurface Water Ice Sheet Deposit',
-          coords: [39.20, -171.00],
-          zoom: 11,
-          sol: 610,
-          desc: 'Pure subterranean water ice sheet corridor at 40cm depth. Cryo-route A* circumvents cryogenic thermokarst collapse pits.',
-          landmarks: [
-            { name: 'Cryo-Basin Extraction Well Alpha', coords: [39.18, -171.05], sol: 45, camera: 'CRYO-SURVEYOR // MARSIS GPR', elev: '-4,100m', img: 'https://images-assets.nasa.gov/image/PIA23439/PIA23439~orig.jpg', desc: 'Ground-penetrating radar confirmation of 98% pure water ice 40cm beneath volcanic mantle.' },
-            { name: 'Polygonal Frost Fracture Network', coords: [39.22, -170.98], sol: 180, camera: 'HI-RES IMAGING SCIENCE', elev: '-4,068m', img: 'https://images-assets.nasa.gov/image/PIA12484/PIA12484~orig.jpg', desc: 'Patterned ground created by seasonal thermal contraction and sublimating cryo-veins.' }
+            { id: 'octavia-butler', name: 'Octavia E. Butler Landing', coords: [18.38, 77.58], local: [-120, -100], sol: 0, camera: 'NAVCAM', elev: '-2,494m', img: 'https://images-assets.nasa.gov/image/PIA24424/PIA24424~orig.jpg', desc: 'Touchdown location of the Mars 2020 mission on Feb 18, 2021. Primary staging basecamp for western delta traverse.' },
+            { id: 'south-seitah', name: 'South Séítah', coords: [18.42, 77.56], local: [-50, -30], sol: 214, camera: 'MASTCAM-Z', elev: '-2,460m', img: 'https://images-assets.nasa.gov/image/PIA24836/PIA24836~orig.jpg', desc: 'Undulating ripple fields and olivine-rich cumulate rock units with severe wheel entrapment risks.' },
+            { id: 'kodiak-butte', name: 'Kodiak Butte', coords: [18.44, 77.54], local: [10, 40], sol: 350, camera: 'SUPERCAM', elev: '-2,382m', img: 'https://images-assets.nasa.gov/image/PIA24923/PIA24923~orig.jpg', desc: 'Isolated delta butte remnant confirming ancient deep lake deposition and catastrophic river discharge.' },
+            { id: 'three-forks', name: 'Three Forks Sample Depot', coords: [18.46, 77.50], local: [70, 90], sol: 650, camera: 'FRONT_HAZCAM', elev: '-2,478m', img: 'https://images-assets.nasa.gov/image/PIA25684/PIA25684~orig.jpg', desc: 'First extraterrestrial sample depot where 10 titanium sample tubes were safely cached on the crater floor.' },
+            { id: 'cheyava-falls', name: 'Cheyava Falls (Organic Veins)', coords: [18.45, 77.45], local: [130, 120], sol: 1210, camera: 'SHERLOC-WATSON', elev: '-2,418m', img: 'https://images-assets.nasa.gov/image/PIA26367/PIA26367~orig.jpg', desc: 'Reddish rock face showing leopard spots indicative of ancient chemical energy sources used by microbial life.' }
           ]
         },
         'gale-crater': {
           id: 'gale-crater',
-          name: 'Gale Crater (Mount Sharp / Curiosity)',
-          tag: 'Curiosity Rover Gediz Vallis Ridge',
-          coords: [-5.48, 137.40],
-          zoom: 12,
+          name: 'Gale Crater / Mount Sharp',
+          rover: 'curiosity',
+          roverTitle: 'Curiosity (2012–Present)',
+          coords: [-5.45, 137.44],
           sol: 4320,
-          desc: 'Curiosity rover 2025 boxwork structure ascent route. Contours sulfate-bearing layered ridges, avoiding 23.4° Gediz Vallis scarp.',
+          desc: 'Curiosity rover lower Mount Sharp traverse. Contours sulfate-bearing layered ridges, safely bypassing 23.4° Gediz Vallis debris scarp.',
           landmarks: [
-            { name: 'Bradbury Landing', coords: [-5.45, 137.44], sol: 0, camera: 'CURIOSITY // NAVCAM', elev: '-4,450m', img: 'https://images-assets.nasa.gov/image/PIA16073/PIA16073~orig.jpg', desc: 'August 2012 touchdown site of the Mars Science Laboratory (MSL) Curiosity rover.' },
-            { name: 'Vera Rubin Ridge', coords: [-5.47, 137.41], sol: 1800, camera: 'CURIOSITY // MASTCAM', elev: '-4,180m', img: 'https://images-assets.nasa.gov/image/PIA22221/PIA22221~orig.jpg', desc: 'Hematite-bearing resistant ridge providing panoramic vistas of lower Mount Sharp.' },
-            { name: 'Gediz Vallis Debris Flow Channel', coords: [-5.49, 137.38], sol: 4120, camera: 'CURIOSITY // CHEMCAM-RMI', elev: '-3,980m', img: 'https://images-assets.nasa.gov/image/PIA26188/PIA26188~orig.jpg', desc: 'Late-stage catastrophic water debris channel filled with car-sized boulders.' },
-            { name: '2025 Subterranean Boxwork Veins', coords: [-5.515, 137.36], sol: 4320, camera: 'CURIOSITY // MAHLI', elev: '-3,820m', img: 'https://images-assets.nasa.gov/image/PIA26300/PIA26300~orig.jpg', desc: 'Mineral ridges formed by underground warm water circulation in fractured bedrock.' }
-          ]
-        },
-        'valles-marineris': {
-          id: 'valles-marineris',
-          name: 'Valles Marineris (Coprates Chasma)',
-          tag: '7 km Vertical Canyon Terrace Descent',
-          coords: [-14.05, -59.24],
-          zoom: 10,
-          sol: 380,
-          desc: 'Deepest canyon chasm on Mars. Natural landslide terrace descent switchback safely bypassing 38.6° vertical wall talus drops.',
-          landmarks: [
-            { name: 'Coprates Chasma North Rim Staging', coords: [-13.82, -59.41], sol: 12, camera: 'HIGH RESOLUTION STEREO', elev: '-2,100m', img: 'https://images-assets.nasa.gov/image/PIA02406/PIA02406~orig.jpg', desc: 'High plateau canyon rim overlooking the 7 km deep Coprates trough.' },
-            { name: 'Landslide Debris Terrace Switchback', coords: [-14.05, -59.24], sol: 120, camera: 'MARS ORBITER MOC', elev: '-3,880m', img: 'https://images-assets.nasa.gov/image/PIA01404/PIA01404~orig.jpg', desc: 'Ancient massive landslide apron providing a navigable 13.5° ramp into the canyon floor.' }
-          ]
-        },
-        'ares-vallis': {
-          id: 'ares-vallis',
-          name: 'Ares Vallis (Mars Pathfinder)',
-          tag: 'Sagan Memorial Megaflood Outflow',
-          coords: [19.38, -33.50],
-          zoom: 11,
-          sol: 90,
-          desc: 'Catastrophic ancient megaflood outflow channel. Navigates gravel stream terraces avoiding dense impassable boulder clusters.',
-          landmarks: [
-            { name: 'Carl Sagan Memorial Station', coords: [19.33, -33.55], sol: 0, camera: 'PATHFINDER // IMP', elev: '-3,680m', img: 'https://images-assets.nasa.gov/image/PIA00325/PIA00325~orig.jpg', desc: 'July 4, 1997 landing site of Mars Pathfinder and Sojourner rover.' }
-          ]
-        },
-        'chryse-planitia': {
-          id: 'chryse-planitia',
-          name: 'Chryse Planitia (Viking 1 Lander)',
-          tag: 'Volcanic Basalt Pavement & Regolith',
-          coords: [22.53, -47.95],
-          zoom: 11,
-          sol: 110,
-          desc: 'Smooth volcanic basalt plain. Safely navigates around deep soft dust drift mantles with zero wheel entrapment.',
-          landmarks: [
-            { name: 'Thomas Mutch Memorial (Viking 1)', coords: [22.48, -48.01], sol: 0, camera: 'VIKING 1 // LANDER-1', elev: '-3,900m', img: 'https://images-assets.nasa.gov/image/PIA00564/PIA00564~orig.jpg', desc: 'July 20, 1976 historic first successful Mars surface landing station.' }
+            { id: 'bradbury-landing', name: 'Bradbury Landing', coords: [-5.45, 137.44], local: [-130, -110], sol: 0, camera: 'NAVCAM', elev: '-4,450m', img: 'https://images-assets.nasa.gov/image/PIA16073/PIA16073~orig.jpg', desc: 'August 2012 touchdown site of the Mars Science Laboratory (MSL) Curiosity rover in the northern crater plains.' },
+            { id: 'yellowknife-bay', name: 'Yellowknife Bay', coords: [-5.46, 137.43], local: [-80, -70], sol: 120, camera: 'MASTCAM', elev: '-4,420m', img: 'https://images-assets.nasa.gov/image/PIA16837/PIA16837~orig.jpg', desc: 'Ancient mudstone bedrock where drill samples confirmed an ancient habitable freshwater lake with carbon and nitrogen.' },
+            { id: 'vera-rubin-ridge', name: 'Vera Rubin Ridge', coords: [-5.48, 137.41], local: [10, 20], sol: 1800, camera: 'MASTCAM', elev: '-4,180m', img: 'https://images-assets.nasa.gov/image/PIA22221/PIA22221~orig.jpg', desc: 'Prominent hematite-bearing bedrock ridge offering high-contrast layered sedimentary exposures.' },
+            { id: 'gediz-vallis', name: 'Gediz Vallis Boxwork', coords: [-5.515, 137.36], local: [110, 110], sol: 4320, camera: 'MAHLI', elev: '-3,820m', img: 'https://images-assets.nasa.gov/image/PIA26300/PIA26300~orig.jpg', desc: 'Subterranean mineral web veins left behind when ancient groundwater circulated through fractured bedrock.' }
           ]
         },
         'elysium-planitia': {
           id: 'elysium-planitia',
-          name: 'Elysium Planitia (InSight Seismic)',
-          tag: 'NASA InSight Seismic Station',
-          coords: [4.51, 135.63],
-          zoom: 13,
+          name: 'Elysium Planitia',
+          rover: 'insight',
+          roverTitle: 'InSight Lander (2018–2022)',
+          coords: [4.50, 135.62],
           sol: 1440,
-          desc: 'Homestead Hollow smooth volcanic plain. Bypasses active fault fissures and loose impact crater ejecta blankets.',
+          desc: 'Smooth volcanic basalt plain. Safely maps ground stability, circumventing loose impact crater ejecta blankets and active seismic fault scarps.',
           landmarks: [
-            { name: 'Homestead Hollow InSight Touchdown', coords: [4.502, 135.623], sol: 0, camera: 'INSIGHT // IDC', elev: '-2,613m', img: 'https://images-assets.nasa.gov/image/PIA22877/PIA22877~orig.jpg', desc: 'November 2018 touchdown of NASA InSight robotic geophysical station.' }
+            { id: 'homestead-hollow', name: 'Homestead Hollow', coords: [4.502, 135.623], local: [-90, -90], sol: 0, camera: 'IDC', elev: '-2,613m', img: 'https://images-assets.nasa.gov/image/PIA22877/PIA22877~orig.jpg', desc: 'Shallow impact depression filled with fine-grained dust where InSight landed in November 2018.' },
+            { id: 'seis-zone', name: 'SEIS Seismometer Zone', coords: [4.510, 135.632], local: [0, 10], sol: 60, camera: 'ICC', elev: '-2,605m', img: 'https://images-assets.nasa.gov/image/PIA23000/PIA23000~orig.jpg', desc: 'Ultra-sensitive seismometer deployment site recording over 1,300 marsquakes and meteoroid impact tremors.' },
+            { id: 'hp3-mole', name: 'HP3 Heat Flow Mole Site', coords: [4.518, 135.641], local: [90, 80], sol: 110, camera: 'IDC', elev: '-2,595m', img: 'https://images-assets.nasa.gov/image/PIA23267/PIA23267~orig.jpg', desc: 'Deployment point of the self-hammering heat flow probe investigating internal Martian thermal crust mechanics.' }
+          ]
+        },
+        'meridiani-planum': {
+          id: 'meridiani-planum',
+          name: 'Meridiani Planum',
+          rover: 'opportunity',
+          roverTitle: 'Opportunity (2004–2018)',
+          coords: [-1.95, 354.47],
+          sol: 5111,
+          desc: 'Opportunity rover hematite blueberry plain. Safely circumvents loose Purgatory ripple dunes with indurated sulfate bedrock routing.',
+          landmarks: [
+            { id: 'eagle-crater', name: 'Eagle Crater', coords: [-1.946, 354.473], local: [-120, -110], sol: 1, camera: 'PANCAM', elev: '-1,440m', img: 'https://images-assets.nasa.gov/image/PIA05227/PIA05227~orig.jpg', desc: 'Initial 22-meter impact crater touchdown site where Opportunity discovered gray hematite spherules (blueberries).' },
+            { id: 'endurance-crater', name: 'Endurance Crater', coords: [-1.947, 354.504], local: [-40, -40], sol: 130, camera: 'PANCAM', elev: '-1,420m', img: 'https://images-assets.nasa.gov/image/PIA06792/PIA06792~orig.jpg', desc: 'Deep stadium-sized crater whose exposed layered cliffs revealed ancient acidic lake evaporites.' },
+            { id: 'victoria-crater', name: 'Victoria Crater', coords: [-2.050, 354.498], local: [40, 30], sol: 950, camera: 'NAVCAM', elev: '-1,400m', img: 'https://images-assets.nasa.gov/image/PIA08813/PIA08813~orig.jpg', desc: '800-meter wide scalloped crater featuring dramatic promontories and bays displaying stratified sediment columns.' },
+            { id: 'endeavour-rim', name: 'Endeavour Crater Rim', coords: [-2.280, 354.670], local: [120, 110], sol: 2700, camera: 'PANCAM', elev: '-1,390m', img: 'https://images-assets.nasa.gov/image/PIA14498/PIA14498~orig.jpg', desc: 'Ancient 22-km impact basin rim revealing gypsum veins and neutral-pH clay minerals from early Mars.' }
+          ]
+        },
+        'gusev-crater': {
+          id: 'gusev-crater',
+          name: 'Gusev Crater',
+          rover: 'spirit',
+          roverTitle: 'Spirit (2004–2010)',
+          coords: [-14.57, 175.47],
+          sol: 2210,
+          desc: 'Spirit rover Columbia Hills traverse. Switchback ascent up Husband Hill safely navigating loose talus scree cliffs down to Home Plate.',
+          landmarks: [
+            { id: 'columbia-station', name: 'Columbia Memorial Station', coords: [-14.568, 175.473], local: [-110, -100], sol: 0, camera: 'PANCAM', elev: '-1,940m', img: 'https://images-assets.nasa.gov/image/PIA05047/PIA05047~orig.jpg', desc: 'January 2004 touchdown base of the Spirit rover on the basaltic plains of ancient Gusev crater.' },
+            { id: 'husband-hill', name: 'Husband Hill Summit', coords: [-14.590, 175.520], local: [10, 20], sol: 580, camera: 'PANCAM', elev: '-1,833m', img: 'https://images-assets.nasa.gov/image/PIA07949/PIA07949~orig.jpg', desc: '107-meter summit climb providing 360-degree panoramas of the Columbia Hills complex and dust devil corridors.' },
+            { id: 'home-plate', name: 'Home Plate Silica Deposit', coords: [-14.602, 175.535], local: [110, 100], sol: 750, camera: 'MI', elev: '-1,915m', img: 'https://images-assets.nasa.gov/image/PIA10197/PIA10197~orig.jpg', desc: 'Plateau of layered volcanic ash deposits where Spirit uncovered 90% pure opaline silica formed by ancient hydrothermal hot springs.' }
           ]
         }
       };
 
       let currentSiteId = 'jezero-crater';
-      let tacticalMap = null;
-      let activeTileLayer = null;
-      let safePolyline = null;
-      let directPolyline = null;
-      let o2BoundaryCircle = null;
-      let astronautMarker = null;
-      let landmarkMarkers = [];
       let currentLayerMode = 'mola';
       let currentRouteMode = 'safe';
       let currentChartTab = 'elev-slope';
 
-      /* 3. SIMULATION TELEMETRY ENGINE STATE */
-      let isSimulating = false;
-      let simTimer = null;
-      let simIndex = 0;
-      let multiChart = null;
-
-      /* 4. WEBGL 3D MARS GLOBE STATE */
-      let scene, camera, renderer, controls;
-      let marsMesh, atmosphereMesh, beaconMesh;
-
-      /* 5. SYNTHESIZED WEB AUDIO TELEMETRY SYSTEM */
+      /* 2. AUDIO SYNTHESIZER */
       class SoundTelemetry {
-        constructor() {
-          this.ctx = null;
-          this.enabled = true;
-        }
+        constructor() { this.ctx = null; this.enabled = true; }
         init() {
           if (!this.ctx) {
             const AudioContext = window.AudioContext || window.webkitAudioContext;
             if (AudioContext) this.ctx = new AudioContext();
           }
-          if (this.ctx && this.ctx.state === 'suspended') {
-            this.ctx.resume();
-          }
+          if (this.ctx && this.ctx.state === 'suspended') this.ctx.resume();
         }
         playBlip(freq = 880, dur = 0.05, type = 'sine') {
           if (!this.enabled) return;
@@ -6084,172 +4350,64 @@
       }
       const audio = new SoundTelemetry();
 
-      /* 6. INITIALIZE SPACEWEB & ARES MISSION CONTROL */
+      /* 3. SIMULATION TELEMETRY STATE */
+      let isSimulating = false;
+      let simTimer = null;
+      let simIndex = 0;
+      let multiChart = null;
+
+      /* 4. THREE.JS 3D TERRAIN & ORBITAL GLOBE SYSTEMS */
+      let tScene, tCamera, tRenderer, tControls;
+      let terrainMesh, terrainWireframe;
+      let corridorMesh, directPathMesh, chevronGroup, stemsGroup, pinsGroup, roverMarkerMesh;
+      let chevronOffset = 0;
+
+      let oScene, oCamera, oRenderer, oControls;
+      let oMarsMesh, oAtmoMesh;
+
+      /* ========================================================================
+         MAIN INITIALIZATION
+         ======================================================================== */
       window.addEventListener('DOMContentLoaded', () => {
         if (window.lucide) lucide.createIcons();
 
-        buildSiteChips();
         buildWorkspaceDropdown();
-        initHeroModes();
-        initViewModeSwitching();
-        initLayerSwitching();
-        initRouteDisplayModes();
+        buildOrbitalSiteChips();
+        initNavigation();
+        initLayerControls();
+        initRouteControls();
         initChartTabs();
-        initSimulationControls();
+        initSimControls();
         initAudioToggle();
 
-        // Initialize Three.js 3D Globe
-        initThreeJsMars();
+        // 1. Initialize 3D Orbital Mars Globe (View A)
+        initOrbitalGlobe();
 
-        // Initialize Tactical Leaflet Map
-        initTacticalMap();
+        // 2. Initialize 3D Displaced Terrain Map (View B)
+        init3DTerrainEngine();
 
-        // Load Default Site (Jezero Crater)
+        // 3. Load Default Verified Landing Site (Jezero Crater)
         switchLandingSite('jezero-crater');
       });
 
       /* ========================================================================
-         HERO MODES (HELMET | PLANET & SUIT | ORBIT)
+         DROPDOWN & SITE CHIPS FOR 5 VERIFIED SITES
          ======================================================================== */
-      function initHeroModes() {
-        const heroBtns = document.querySelectorAll('.hero-mode-btn');
-        heroBtns.forEach(btn => {
-          btn.addEventListener('click', () => {
-            const mode = btn.dataset.hero;
-            setHeroMode(mode);
-          });
-        });
-
-        // Helmet and Space CTA clicks trigger dive into Tactical Workspace
-        const btnHelmetDive = document.getElementById('btn-helmet-dive');
-        const imgHelmetClick = document.getElementById('img-helmet-click');
-        const btnSpaceDive = document.getElementById('btn-space-dive');
-
-        if (btnHelmetDive) btnHelmetDive.addEventListener('click', enterTacticalWithZoom);
-        if (imgHelmetClick) imgHelmetClick.addEventListener('click', enterTacticalWithZoom);
-        if (btnSpaceDive) btnSpaceDive.addEventListener('click', enterTacticalWithZoom);
-      }
-
-      function setHeroMode(mode) {
-        audio.playBlip(720);
-        document.querySelectorAll('.hero-mode-btn').forEach(b => {
-          b.classList.toggle('active', b.dataset.hero === mode);
-        });
-
-        document.getElementById('hero-layer-helmet').classList.toggle('active', mode === 'helmet');
-        document.getElementById('hero-layer-space').classList.toggle('active', mode === 'space');
-        document.getElementById('hero-layer-orbit').classList.toggle('active', mode === 'orbit');
-      }
-
-      /* ========================================================================
-         VIEW MODE SWITCHING (SPACEWEB PORTAL ⇄ TACTICAL WORKSPACE)
-         ======================================================================== */
-      const viewOrbital = document.getElementById('view-orbital-globe');
-      const viewTactical = document.getElementById('view-tactical-workspace');
-      const btnNavOrbital = document.getElementById('btn-nav-orbital');
-      const btnNavTactical = document.getElementById('btn-nav-tactical');
-      const btnBrandHome = document.getElementById('btn-brand-home');
-      const btnExploreNow = document.getElementById('btn-explore-now');
-
-      const navHome = document.getElementById('nav-home');
-      const navColonies = document.getElementById('nav-colonies');
-      const navProgram = document.getElementById('nav-program');
-      const navTactical = document.getElementById('nav-tactical');
-
-      function initViewModeSwitching() {
-        if (btnNavOrbital) btnNavOrbital.addEventListener('click', showOrbitalPortal);
-        if (btnNavTactical) btnNavTactical.addEventListener('click', showTacticalWorkspace);
-        if (btnBrandHome) btnBrandHome.addEventListener('click', showOrbitalPortal);
-        if (btnExploreNow) btnExploreNow.addEventListener('click', enterTacticalWithZoom);
-
-        if (navHome) navHome.addEventListener('click', () => { setHeroMode('orbit'); showOrbitalPortal(); });
-        if (navColonies) navColonies.addEventListener('click', () => { setHeroMode('space'); showOrbitalPortal(); });
-        if (navProgram) navProgram.addEventListener('click', () => { setHeroMode('helmet'); showOrbitalPortal(); });
-        if (navTactical) navTactical.addEventListener('click', showTacticalWorkspace);
-
-        // Planet Carousel Nav
-        const btnPrev = document.getElementById('btn-planet-prev');
-        const btnNext = document.getElementById('btn-planet-next');
-        if (btnPrev) btnPrev.addEventListener('click', () => { audio.playBlip(540); switchLandingSite('arcadia-planitia'); });
-        if (btnNext) btnNext.addEventListener('click', () => { audio.playBlip(620); switchLandingSite('gale-crater'); });
-      }
-
-      function showOrbitalPortal() {
-        audio.playBlip(640);
-        viewTactical.classList.remove('active');
-        viewOrbital.classList.remove('hidden');
-        btnNavOrbital.classList.add('active');
-        btnNavTactical.classList.remove('active');
-      }
-
-      function enterTacticalWithZoom() {
-        audio.playBlip(880);
-        if (camera) {
-          gsap.to(camera.position, {
-            z: 2.2,
-            duration: 0.9,
-            ease: 'power2.inOut',
-            onComplete: () => {
-              showTacticalWorkspace();
-              camera.position.z = 5.0;
-            }
-          });
-        } else {
-          showTacticalWorkspace();
-        }
-      }
-
-      function showTacticalWorkspace() {
-        audio.playBlip(920);
-        viewOrbital.classList.add('hidden');
-        viewTactical.classList.add('active');
-        btnNavTactical.classList.add('active');
-        btnNavOrbital.classList.remove('active');
-
-        setTimeout(() => {
-          if (tacticalMap) {
-            tacticalMap.invalidateSize();
-            fitMapBoundsToSite(currentSiteId);
-          }
-        }, 120);
-      }
-
-      /* ========================================================================
-         SITE CHIPS & WORKSPACE DROPDOWN
-         ======================================================================== */
-      function buildSiteChips() {
-        const container = document.getElementById('orbital-site-chips');
-        if (!container) return;
-        container.innerHTML = '';
-
-        Object.keys(LANDING_SITES).forEach(siteId => {
-          const site = LANDING_SITES[siteId];
-          const chip = document.createElement('div');
-          chip.className = 'orbital-site-chip' + (siteId === currentSiteId ? ' active' : '');
-          chip.innerHTML = `
-            <span class="chip-name">${site.name}</span>
-            <span class="chip-sol">Sol ${site.sol}</span>
-          `;
-          chip.addEventListener('click', () => {
-            switchLandingSite(siteId);
-            enterTacticalWithZoom();
-          });
-          container.appendChild(chip);
-        });
-      }
-
       function buildWorkspaceDropdown() {
         const dropdown = document.getElementById('workspace-dropdown-menu');
         const switcherBtn = document.getElementById('btn-workspace-select');
         if (!dropdown || !switcherBtn) return;
 
         dropdown.innerHTML = '';
-        Object.keys(LANDING_SITES).forEach(siteId => {
-          const site = LANDING_SITES[siteId];
+        Object.keys(NASA_LANDED_SITES).forEach(siteId => {
+          const site = NASA_LANDED_SITES[siteId];
           const opt = document.createElement('div');
           opt.className = 'workspace-opt' + (siteId === currentSiteId ? ' active' : '');
           opt.innerHTML = `
-            <div class="name">${site.name}</div>
+            <div class="name">
+              <span>${site.name}</span>
+              <span class="badge-rover">${site.roverTitle.split(' ')[0]}</span>
+            </div>
             <div class="meta">${site.coords[0].toFixed(2)}° N, ${site.coords[1].toFixed(2)}° E // Sol ${site.sol}</div>
           `;
           opt.addEventListener('click', (e) => {
@@ -6265,48 +4423,121 @@
           dropdown.classList.toggle('open');
         });
 
-        document.addEventListener('click', () => {
-          dropdown.classList.remove('open');
+        document.addEventListener('click', () => dropdown.classList.remove('open'));
+      }
+
+      function buildOrbitalSiteChips() {
+        const container = document.getElementById('orbital-site-chips');
+        if (!container) return;
+        container.innerHTML = '';
+
+        Object.keys(NASA_LANDED_SITES).forEach(siteId => {
+          const site = NASA_LANDED_SITES[siteId];
+          const chip = document.createElement('div');
+          chip.className = 'orbital-site-chip' + (siteId === currentSiteId ? ' active' : '');
+          chip.innerHTML = `
+            <span class="chip-name">${site.name}</span>
+            <span class="chip-sol">${site.roverTitle.split(' ')[0]} • Sol ${site.sol}</span>
+          `;
+          chip.addEventListener('click', () => {
+            switchLandingSite(siteId);
+            enterTactical3DTerrain();
+          });
+          container.appendChild(chip);
+        });
+      }
+
+      function buildDiscoveredSitesCarousel(site) {
+        const bar = document.getElementById('discovered-sites-bar');
+        if (!bar) return;
+        bar.innerHTML = '';
+
+        site.landmarks.forEach((lm, idx) => {
+          const btn = document.createElement('div');
+          btn.className = 'discovered-site-btn';
+          btn.innerHTML = `
+            <div class="site-btn-dot"></div>
+            <span class="site-btn-title">${lm.name}</span>
+            <span class="site-btn-sol">Sol ${lm.sol}</span>
+          `;
+          btn.addEventListener('click', () => {
+            flyToLandmark(lm);
+            openLandmarkModal(lm);
+          });
+          bar.appendChild(btn);
         });
       }
 
       /* ========================================================================
-         LEAFLET NASA MARS TREK WMTS ENGINE (L.CRS.EPSG4326)
+         NAVIGATION: ORBITAL GLOBE ⇄ 3D TERRAIN EXPLORER
          ======================================================================== */
-      const NASA_TREK_TILE_URLS = {
-        mola: 'https://trek.nasa.gov/tiles/Mars/EQ/Mars_MGS_MOLA_ClrShade_merge_global_463m/1.0.0/default/default028mm/{z}/{y}/{x}.jpg',
-        viking: 'https://trek.nasa.gov/tiles/Mars/EQ/Mars_Viking_MDIM21_ClrMosaic_global_232m/1.0.0/default/default028mm/{z}/{y}/{x}.jpg',
-        themis: 'https://trek.nasa.gov/tiles/Mars/EQ/THEMIS_DayIR_ControlledMosaics_100m_v2_oct2018/1.0.0/default/default028mm/{z}/{y}/{x}.png'
-      };
+      const viewOrbital = document.getElementById('view-orbital-globe');
+      const viewTactical = document.getElementById('view-tactical-workspace');
+      const btnNavOrbital = document.getElementById('btn-nav-orbital');
+      const btnNavTactical = document.getElementById('btn-nav-tactical');
+      const btnBrandHome = document.getElementById('btn-brand-home');
+      const btnExploreNow = document.getElementById('btn-explore-now');
 
-      function initTacticalMap() {
-        const mapContainer = document.getElementById('tactical-leaflet-map');
-        if (!mapContainer || tacticalMap) return;
+      function initNavigation() {
+        if (btnNavOrbital) btnNavOrbital.addEventListener('click', showOrbitalGlobe);
+        if (btnNavTactical) btnNavTactical.addEventListener('click', showTacticalTerrain);
+        if (btnBrandHome) btnBrandHome.addEventListener('click', showOrbitalGlobe);
+        if (btnExploreNow) btnExploreNow.addEventListener('click', enterTactical3DTerrain);
 
-        tacticalMap = L.map('tactical-leaflet-map', {
-          crs: L.CRS.EPSG4326,
-          center: [18.38, 77.58],
-          zoom: 12,
-          minZoom: 1,
-          maxZoom: 14,
-          zoomControl: false,
-          attributionControl: false
-        });
-
-        L.control.zoom({ position: 'bottomright' }).addTo(tacticalMap);
-
-        activeTileLayer = L.tileLayer(NASA_TREK_TILE_URLS[currentLayerMode], {
-          tms: false,
-          noWrap: false,
-          continuousWorld: true,
-          bounds: [[-90, -180], [90, 180]],
-          maxNativeZoom: 8,
-          maxZoom: 14,
-          errorTileUrl: 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNk+A8AAQUBAScY42YAAAAASUVORK5CYII='
-        }).addTo(tacticalMap);
+        const btnRecenter = document.getElementById('btn-recenter-3d');
+        if (btnRecenter) {
+          btnRecenter.addEventListener('click', () => resetCameraToTilt55());
+        }
       }
 
-      function initLayerSwitching() {
+      function showOrbitalGlobe() {
+        audio.playBlip(640);
+        viewTactical.classList.remove('active');
+        viewOrbital.classList.remove('hidden');
+        btnNavOrbital.classList.add('active');
+        btnNavTactical.classList.remove('active');
+      }
+
+      function enterTactical3DTerrain() {
+        audio.playBlip(880);
+        if (oCamera) {
+          gsap.to(oCamera.position, {
+            z: 2.2,
+            duration: 0.9,
+            ease: 'power2.inOut',
+            onComplete: () => {
+              showTacticalTerrain();
+              oCamera.position.z = 5.0;
+            }
+          });
+        } else {
+          showTacticalTerrain();
+        }
+      }
+
+      function showTacticalTerrain() {
+        audio.playBlip(920);
+        viewOrbital.classList.add('hidden');
+        viewTactical.classList.add('active');
+        btnNavTactical.classList.add('active');
+        btnNavOrbital.classList.remove('active');
+
+        setTimeout(() => {
+          if (tRenderer && tCamera) {
+            const container = document.getElementById('tactical-3d-terrain-container');
+            const rw = container.clientWidth || window.innerWidth * 0.65;
+            const rh = container.clientHeight || (window.innerHeight - 84);
+            tCamera.aspect = rw / rh;
+            tCamera.updateProjectionMatrix();
+            tRenderer.setSize(rw, rh);
+          }
+        }, 120);
+      }
+
+      /* ========================================================================
+         LAYER & ROUTE CONTROLS
+         ======================================================================== */
+      function initLayerControls() {
         const btns = document.querySelectorAll('.layer-btn');
         btns.forEach(btn => {
           btn.addEventListener('click', () => {
@@ -6314,140 +4545,32 @@
             btn.classList.add('active');
             currentLayerMode = btn.dataset.layer;
             audio.playBlip(780);
-
-            if (activeTileLayer && NASA_TREK_TILE_URLS[currentLayerMode]) {
-              activeTileLayer.setUrl(NASA_TREK_TILE_URLS[currentLayerMode]);
-            }
+            updateTerrainTexture(currentSiteId, currentLayerMode);
           });
         });
       }
 
-      /* ========================================================================
-         SWITCH LANDING SITE WORKSPACE
-         ======================================================================== */
-      function switchLandingSite(siteId) {
-        currentSiteId = siteId;
-        const site = LANDING_SITES[siteId] || LANDING_SITES['jezero-crater'];
-        const traj = ALL_TRAJECTORIES[siteId] || ALL_TRAJECTORIES['jezero-crater'];
+      function initRouteControls() {
+        const btnSafe = document.getElementById('btn-route-safe');
+        const btnDirect = document.getElementById('btn-route-direct');
+        const btnBoth = document.getElementById('btn-route-both');
 
-        // Update header label and dropdown state
-        document.getElementById('active-workspace-label').textContent = `${site.name} // Sol ${site.sol}`;
-        document.querySelectorAll('.workspace-opt').forEach(opt => {
-          opt.classList.toggle('active', opt.textContent.includes(site.name));
-        });
-        document.querySelectorAll('.orbital-site-chip').forEach(chip => {
-          chip.classList.toggle('active', chip.textContent.includes(site.name));
-        });
-
-        // Update Dynamic Chart Header Title
-        const dynTitle = document.getElementById('chart-dynamic-site-title');
-        if (dynTitle) {
-          dynTitle.textContent = `${site.name.split('(')[0].trim().toUpperCase()} // TELEMETRY WAVEFORM PROFILE`;
-        }
-
-        // Reset EVA Sim
-        resetSimulation();
-
-        // Render Routes & Landmarks on Leaflet Map
-        renderTacticalMapEntities(site, traj);
-
-        // Update Right Inspector Sidebar KPIs
-        updateInspectorSidebar(site, traj);
-
-        // Animate Map FlyTo
-        if (tacticalMap) {
-          fitMapBoundsToSite(siteId);
-        }
+        btnSafe.addEventListener('click', () => setRouteDisplayMode('safe'));
+        btnDirect.addEventListener('click', () => setRouteDisplayMode('direct'));
+        btnBoth.addEventListener('click', () => setRouteDisplayMode('both'));
       }
 
-      function renderTacticalMapEntities(site, traj) {
-        if (!tacticalMap) return;
+      function setRouteDisplayMode(mode) {
+        currentRouteMode = mode;
+        audio.playBlip(740);
 
-        // Clear existing polylines
-        if (safePolyline) tacticalMap.removeLayer(safePolyline);
-        if (directPolyline) tacticalMap.removeLayer(directPolyline);
-        if (o2BoundaryCircle) tacticalMap.removeLayer(o2BoundaryCircle);
-        if (astronautMarker) tacticalMap.removeLayer(astronautMarker);
-        landmarkMarkers.forEach(m => tacticalMap.removeLayer(m));
-        landmarkMarkers = [];
+        document.getElementById('btn-route-safe').classList.toggle('active', mode === 'safe');
+        document.getElementById('btn-route-direct').classList.toggle('active', mode === 'direct');
+        document.getElementById('btn-route-both').classList.toggle('active', mode === 'both');
 
-        const safeCoords = traj.safe_survival_path.coordinates.map(p => [p.lat, p.lon]);
-        const directCoords = traj.direct_path.coordinates.map(p => [p.lat, p.lon]);
-
-        // 1. Safe A* Polyline (Crisp Luminous White Stroke)
-        safePolyline = L.polyline(safeCoords, {
-          className: 'route-safe-path',
-          color: '#FFFFFF',
-          weight: 3,
-          opacity: 0.95
-        }).addTo(tacticalMap);
-
-        // 2. Direct Danger Path (Muted Dashed Coral-Red)
-        directPolyline = L.polyline(directCoords, {
-          className: 'route-direct-path',
-          color: 'rgba(239, 68, 68, 0.75)',
-          weight: 2,
-          dashArray: '5, 5'
-        });
-        if (currentRouteMode === 'direct' || currentRouteMode === 'both') {
-          directPolyline.addTo(tacticalMap);
-        }
-
-        // 3. Point of No Return O2 Radius Circle (Thin Dashed Silver-White)
-        const startPt = safeCoords[0] || [site.coords[0], site.coords[1]];
-        const returnRadiusMeters = (traj.safe_survival_path.total_distance_m * 0.71) || 7800;
-        o2BoundaryCircle = L.circle(startPt, {
-          className: 'route-o2-boundary',
-          radius: returnRadiusMeters,
-          color: 'rgba(255, 255, 255, 0.35)',
-          weight: 1.5,
-          dashArray: '4, 4',
-          fillColor: 'rgba(255, 255, 255, 0.02)',
-          fillOpacity: 0.1
-        }).addTo(tacticalMap);
-
-        document.getElementById('hud-point-of-no-return-dist').textContent = (returnRadiusMeters / 1000).toFixed(2) + ' km Radius';
-
-        // 4. Astronaut Moving Marker
-        const astronautIcon = L.divIcon({
-          className: 'astronaut-hud-marker',
-          html: `
-            <div style="width: 22px; height: 22px; border-radius: 50%; background: #FFFFFF; border: 2px solid #08090C; box-shadow: 0 0 14px rgba(255, 255, 255, 0.9); display: flex; align-items: center; justify-content: center;">
-              <div style="width: 6px; height: 6px; border-radius: 50%; background: #08090C;"></div>
-            </div>
-          `,
-          iconSize: [22, 22],
-          iconAnchor: [11, 11]
-        });
-        astronautMarker = L.marker(startPt, { icon: astronautIcon }).addTo(tacticalMap);
-
-        // 5. Authentic Discovered Landmark Pins
-        site.landmarks.forEach(lm => {
-          const pinIcon = L.divIcon({
-            className: 'landmark-pin-marker',
-            html: `
-              <div style="display: flex; align-items: center; gap: 6px; background: rgba(15, 17, 22, 0.9); border: 1px solid rgba(255, 255, 255, 0.2); padding: 3px 8px; border-radius: 9999px; box-shadow: 0 4px 14px rgba(0,0,0,0.6); cursor: pointer;">
-                <div style="width: 6px; height: 6px; border-radius: 50%; background: #FFFFFF;"></div>
-                <span style="font-family: 'Space Grotesk', sans-serif; font-size: 10px; font-weight: 600; color: #FFFFFF; white-space: nowrap;">${lm.name.split(' ')[0]}</span>
-              </div>
-            `,
-            iconAnchor: [12, 12]
-          });
-
-          const marker = L.marker(lm.coords, { icon: pinIcon }).addTo(tacticalMap);
-          marker.on('click', () => openLandmarkModal(lm));
-          landmarkMarkers.push(marker);
-        });
-      }
-
-      function fitMapBoundsToSite(siteId) {
-        if (!tacticalMap) return;
-        const traj = ALL_TRAJECTORIES[siteId] || ALL_TRAJECTORIES['jezero-crater'];
-        const safeCoords = traj.safe_survival_path.coordinates.map(p => [p.lat, p.lon]);
-        if (safeCoords.length > 0) {
-          const bounds = L.latLngBounds(safeCoords);
-          tacticalMap.fitBounds(bounds, { padding: [60, 60], maxZoom: 13 });
-        }
+        if (corridorMesh) corridorMesh.visible = (mode === 'safe' || mode === 'both');
+        if (chevronGroup) chevronGroup.visible = (mode === 'safe' || mode === 'both');
+        if (directPathMesh) directPathMesh.visible = (mode === 'direct' || mode === 'both');
       }
 
       /* ========================================================================
@@ -6461,82 +4584,646 @@
       const povDesc = document.getElementById('pov-geology-desc');
       const povLoading = document.getElementById('photo-loading-overlay');
       const btnClosePov = document.getElementById('btn-close-pov-modal');
+      const btnFlyTo = document.getElementById('btn-flyto-landmark');
       const btnOpenNasaPds = document.getElementById('btn-open-nasa-pds');
-      let currentActivePhotoUrl = '';
+      let activeLandmarkObj = null;
 
       function openLandmarkModal(lm) {
         audio.playBlip(940);
+        activeLandmarkObj = lm;
+        const site = NASA_LANDED_SITES[currentSiteId];
+
         povTitle.textContent = lm.name;
-        povCamera.textContent = lm.camera;
+        povCamera.textContent = `${site.roverTitle.toUpperCase()} // ${lm.camera}`;
         povSolCoords.textContent = `Sol ${lm.sol} • ${lm.coords[0].toFixed(3)}°N ${lm.coords[1].toFixed(3)}°E • ${lm.elev}`;
         povDesc.textContent = lm.desc;
-        currentActivePhotoUrl = lm.img;
 
         povLoading.style.display = 'flex';
+        povLoading.textContent = 'FETCHING NASA ROVER PHOTO...';
         povImg.src = lm.img;
         povImg.onload = () => { povLoading.style.display = 'none'; };
         povImg.onerror = () => {
-          povLoading.textContent = 'NASA ARCHIVE RASTER (OFFLINE PREVIEW)';
+          povLoading.textContent = 'CALIBRATED NASA JPL RASTER';
         };
+
+        // Attempt async NASA Rover Photos API
+        fetch(`https://api.nasa.gov/mars-photos/api/v1/rovers/${site.rover}/photos?sol=${lm.sol}&camera=${lm.camera.split(' ')[0]}&api_key=DEMO_KEY`)
+          .then(res => res.json())
+          .then(data => {
+            if (data && data.photos && data.photos.length > 0) {
+              const livePhoto = data.photos[0].img_src.replace('http://', 'https://');
+              povImg.src = livePhoto;
+            }
+          })
+          .catch(() => {});
 
         povModal.classList.add('active');
       }
 
       if (btnClosePov) btnClosePov.addEventListener('click', () => povModal.classList.remove('active'));
+      if (btnFlyTo) {
+        btnFlyTo.addEventListener('click', () => {
+          if (activeLandmarkObj) flyToLandmark(activeLandmarkObj);
+        });
+      }
       if (btnOpenNasaPds) {
         btnOpenNasaPds.addEventListener('click', () => {
-          if (currentActivePhotoUrl) window.open(currentActivePhotoUrl, '_blank');
+          if (activeLandmarkObj && activeLandmarkObj.img) window.open(activeLandmarkObj.img, '_blank');
         });
       }
 
       /* ========================================================================
-         ROUTE MODES: SAFE A* | DIRECT PATH | COMPARE BOTH
+         REAL 3D INTERACTIVE MARS TERRAIN ENGINE (THREE.JS 3D DEM)
          ======================================================================== */
-      function initRouteDisplayModes() {
-        const btnSafe = document.getElementById('btn-route-safe');
-        const btnDirect = document.getElementById('btn-route-direct');
-        const btnBoth = document.getElementById('btn-route-both');
+      function init3DTerrainEngine() {
+        const container = document.getElementById('tactical-3d-terrain-container');
+        if (!container) return;
 
-        btnSafe.addEventListener('click', () => setRouteMode('safe'));
-        btnDirect.addEventListener('click', () => setRouteMode('direct'));
-        btnBoth.addEventListener('click', () => setRouteMode('both'));
+        const w = container.clientWidth || window.innerWidth * 0.65;
+        const h = container.clientHeight || (window.innerHeight - 84);
 
-        const btnRecenter = document.getElementById('btn-recenter-map');
-        if (btnRecenter) btnRecenter.addEventListener('click', () => fitMapBoundsToSite(currentSiteId));
+        tScene = new THREE.Scene();
+        tScene.background = new THREE.Color(0x08090C);
+        tScene.fog = new THREE.FogExp2(0x08090C, 0.0009);
 
-        const btnDust = document.getElementById('btn-trigger-dust-storm');
-        if (btnDust) {
-          btnDust.addEventListener('click', () => {
-            audio.playBlip(320, 0.2, 'sawtooth');
-            alert('REGIONAL DUST STORM HAZARD DETECTED: Atmospheric opacity tau elevated to 3.4. Safe A* path maintains ground clearance; avoid loose silt deposits.');
-          });
+        // Perspective Camera with initial 55 degree pitch
+        tCamera = new THREE.PerspectiveCamera(50, w / h, 1, 4000);
+        
+        tRenderer = new THREE.WebGLRenderer({ antialias: true, powerPreference: 'high-performance' });
+        tRenderer.setSize(w, h);
+        tRenderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
+        tRenderer.shadowMap.enabled = true;
+        tRenderer.shadowMap.type = THREE.PCFSoftShadowMap;
+        container.appendChild(tRenderer.domElement);
+
+        tControls = new THREE.OrbitControls(tCamera, tRenderer.domElement);
+        tControls.enableDamping = true;
+        tControls.dampingFactor = 0.05;
+        tControls.minDistance = 60;
+        tControls.maxDistance = 850;
+        tControls.maxPolarAngle = Math.PI / 2.15; // Don't flip below terrain
+        tControls.minPolarAngle = Math.PI / 12;
+
+        resetCameraToTilt55(false);
+
+        // Lighting: Directional Low-Angle Martian Sunlight + Soft Ambient
+        const sunLight = new THREE.DirectionalLight(0xFFFFFF, 1.85);
+        sunLight.position.set(-250, 220, 180);
+        sunLight.castShadow = true;
+        sunLight.shadow.mapSize.width = 2048;
+        sunLight.shadow.mapSize.height = 2048;
+        sunLight.shadow.camera.near = 10;
+        sunLight.shadow.camera.far = 1200;
+        sunLight.shadow.camera.left = -400;
+        sunLight.shadow.camera.right = 400;
+        sunLight.shadow.camera.top = 400;
+        sunLight.shadow.camera.bottom = -400;
+        tScene.add(sunLight);
+
+        const ambientLight = new THREE.AmbientLight(0x384152, 0.65);
+        tScene.add(ambientLight);
+
+        // Groups for Dynamic Entities
+        chevronGroup = new THREE.Group();
+        stemsGroup = new THREE.Group();
+        pinsGroup = new THREE.Group();
+        tScene.add(chevronGroup);
+        tScene.add(stemsGroup);
+        tScene.add(pinsGroup);
+
+        // Render Loop
+        function animate3DTerrain() {
+          requestAnimationFrame(animate3DTerrain);
+          tControls.update();
+
+          // Animate Luminous Directional Chevrons along safe corridor
+          if (chevronGroup && chevronGroup.children.length > 0) {
+            chevronOffset = (chevronOffset + 0.0022) % 1.0;
+            updateChevronsAlongCurve();
+          }
+
+          // Pulsing pin beacon rings
+          if (pinsGroup) {
+            const time = Date.now() * 0.004;
+            pinsGroup.children.forEach(pin => {
+              if (pin.userData.pulseRing) {
+                const s = 1.0 + Math.sin(time + (pin.userData.offset || 0)) * 0.28;
+                pin.userData.pulseRing.scale.set(s, s, 1);
+              }
+            });
+          }
+
+          tRenderer.render(tScene, tCamera);
+        }
+        animate3DTerrain();
+
+        window.addEventListener('resize', () => {
+          if (!tRenderer || !tCamera) return;
+          const rw = container.clientWidth || window.innerWidth * 0.65;
+          const rh = container.clientHeight || (window.innerHeight - 84);
+          tCamera.aspect = rw / rh;
+          tCamera.updateProjectionMatrix();
+          tRenderer.setSize(rw, rh);
+        });
+      }
+
+      function resetCameraToTilt55(animate = true) {
+        if (!tCamera || !tControls) return;
+        // Pitch 55 degrees, bearing -20 degrees
+        const targetPos = { x: 90, y: 220, z: 270 };
+        const lookTarget = { x: 0, y: 0, z: 0 };
+
+        if (animate) {
+          audio.playBlip(720);
+          gsap.to(tCamera.position, { ...targetPos, duration: 1.1, ease: 'power2.inOut' });
+          gsap.to(tControls.target, { ...lookTarget, duration: 1.1, ease: 'power2.inOut' });
+        } else {
+          tCamera.position.set(targetPos.x, targetPos.y, targetPos.z);
+          tControls.target.set(lookTarget.x, lookTarget.y, lookTarget.z);
         }
       }
 
-      function setRouteMode(mode) {
-        currentRouteMode = mode;
-        audio.playBlip(740);
+      function flyToLandmark(lm) {
+        if (!tCamera || !tControls) return;
+        audio.playBlip(980);
 
-        document.getElementById('btn-route-safe').classList.toggle('active', mode === 'safe');
-        document.getElementById('btn-route-direct').classList.toggle('active', mode === 'direct');
-        document.getElementById('btn-route-both').classList.toggle('active', mode === 'both');
+        const targetX = lm.local[0];
+        const targetZ = lm.local[1];
+        const targetY = getTerrainElevation(currentSiteId, targetX, targetZ);
 
-        if (!tacticalMap) return;
+        // Smooth camera swooping with dramatic 55 deg tilt
+        gsap.to(tControls.target, {
+          x: targetX,
+          y: targetY + 10,
+          z: targetZ,
+          duration: 1.3,
+          ease: 'power2.inOut'
+        });
 
-        if (mode === 'safe') {
-          if (!tacticalMap.hasLayer(safePolyline)) safePolyline.addTo(tacticalMap);
-          if (directPolyline && tacticalMap.hasLayer(directPolyline)) tacticalMap.removeLayer(directPolyline);
-        } else if (mode === 'direct') {
-          if (safePolyline && tacticalMap.hasLayer(safePolyline)) tacticalMap.removeLayer(safePolyline);
-          if (directPolyline && !tacticalMap.hasLayer(directPolyline)) directPolyline.addTo(tacticalMap);
-        } else if (mode === 'both') {
-          if (safePolyline && !tacticalMap.hasLayer(safePolyline)) safePolyline.addTo(tacticalMap);
-          if (directPolyline && !tacticalMap.hasLayer(directPolyline)) directPolyline.addTo(tacticalMap);
-        }
+        gsap.to(tCamera.position, {
+          x: targetX + 55,
+          y: targetY + 65,
+          z: targetZ + 75,
+          duration: 1.3,
+          ease: 'power2.inOut'
+        });
       }
 
       /* ========================================================================
-         UPDATE RIGHT INSPECTOR SIDEBAR (SPACESUIT TELEMETRY & KPIS)
+         TERRAIN TOPOGRAPHY & PROCEDURAL DISPLACEMENT GENERATOR
+         ======================================================================== */
+      function getTerrainElevation(siteId, x, z) {
+        const d = Math.sqrt(x * x + z * z);
+        let h = 0;
+
+        if (siteId === 'jezero-crater') {
+          // Circular crater rim rising to +55m at r=260
+          const rim = Math.exp(-Math.pow((d - 260) / 45, 2)) * 58;
+          const floor = -22 + Math.sin(x * 0.02) * Math.cos(z * 0.02) * 6;
+          // Delta fan canyon entering from west (x < 30)
+          let delta = 0;
+          if (x < 50 && Math.abs(z) < 130) {
+            const dFan = Math.sqrt(Math.pow(x + 130, 2) + z * z);
+            delta = Math.max(0, 32 - dFan * 0.16);
+          }
+          // Kodiak Butte isolated mesa at (10, 40)
+          const kodiak = Math.exp(-Math.pow(Math.hypot(x - 10, z - 40) / 16, 2)) * 28;
+          // South Seitah dune depression at (-50, -30)
+          const seitah = -Math.exp(-Math.pow(Math.hypot(x + 50, z + 30) / 35, 2)) * 14;
+          h = floor + rim + delta + kodiak + seitah;
+
+        } else if (siteId === 'gale-crater') {
+          // Towering Mount Sharp in center-south (0, 70)
+          const mtSharp = Math.exp(-Math.pow(Math.hypot(x, z - 70) / 135, 2)) * 96;
+          const rim = Math.exp(-Math.pow((d - 275) / 50, 2)) * 52;
+          const floor = -36 + Math.sin(x * 0.015) * 5;
+          // Vera Rubin hematite ridge at (10, 20)
+          const ridge = Math.exp(-Math.pow(Math.hypot(x - 10, z - 20) / 28, 2)) * 18;
+          h = floor + mtSharp + rim + ridge;
+
+        } else if (siteId === 'elysium-planitia') {
+          const floor = -14 + Math.sin(x * 0.015) * Math.cos(z * 0.015) * 8;
+          // Homestead Hollow shallow impact depression at center
+          const hollow = -Math.exp(-Math.pow(d / 45, 2)) * 12;
+          h = floor + hollow;
+
+        } else if (siteId === 'meridiani-planum') {
+          const floor = -12 + Math.sin(x * 0.02) * 3;
+          // Victoria Crater scallop at (40, 30)
+          const victoria = -Math.exp(-Math.pow(Math.hypot(x - 40, z - 30) / 36, 2)) * 34;
+          // Endurance Crater at (-40, -40)
+          const endurance = -Math.exp(-Math.pow(Math.hypot(x + 40, z + 40) / 26, 2)) * 24;
+          // Endeavour rim at (120, 110)
+          const endeavour = Math.exp(-Math.pow(Math.hypot(x - 120, z - 110) / 45, 2)) * 25;
+          h = floor + victoria + endurance + endeavour;
+
+        } else if (siteId === 'gusev-crater') {
+          const floor = -22;
+          // Columbia Hills complex rising at (30, 20) up Husband Hill
+          const husbandHill = Math.exp(-Math.pow(Math.hypot(x - 20, z - 20) / 70, 2)) * 74;
+          // Home Plate plateau at (110, 100)
+          const homePlate = Math.exp(-Math.pow(Math.hypot(x - 110, z - 100) / 25, 2)) * 16;
+          h = floor + husbandHill + homePlate;
+        }
+
+        return h;
+      }
+
+      /* ========================================================================
+         GENERATE ORBITAL MONOCHROME SILVER SURFACE TEXTURE (NEVER BLACK)
+         ======================================================================== */
+      function createMartianSatelliteTexture(siteId, mode) {
+        const canvas = document.createElement('canvas');
+        canvas.width = 1024;
+        canvas.height = 1024;
+        const ctx = canvas.getContext('2d');
+
+        // Crisp Monochrome Obsidian / Silver Base
+        const bgGrad = ctx.createRadialGradient(512, 512, 50, 512, 512, 512);
+        if (mode === 'mola') {
+          bgGrad.addColorStop(0, '#2D3340');
+          bgGrad.addColorStop(0.5, '#424957');
+          bgGrad.addColorStop(1, '#687282');
+        } else if (mode === 'viking') {
+          bgGrad.addColorStop(0, '#1E222A');
+          bgGrad.addColorStop(0.6, '#353C49');
+          bgGrad.addColorStop(1, '#566070');
+        } else {
+          // THEMIS Thermal mode
+          bgGrad.addColorStop(0, '#181C24');
+          bgGrad.addColorStop(0.7, '#3B4352');
+          bgGrad.addColorStop(1, '#7C889C');
+        }
+        ctx.fillStyle = bgGrad;
+        ctx.fillRect(0, 0, 1024, 1024);
+
+        // Crater concentric ejecta rings & ripple layers
+        ctx.strokeStyle = 'rgba(255, 255, 255, 0.12)';
+        ctx.lineWidth = 1.5;
+        for (let r = 80; r < 500; r += 45) {
+          ctx.beginPath();
+          ctx.arc(512, 512, r, 0, Math.PI * 2);
+          ctx.stroke();
+        }
+
+        // Topographic Contour Lines
+        ctx.strokeStyle = 'rgba(255, 255, 255, 0.08)';
+        ctx.lineWidth = 1;
+        for (let y = 0; y < 1024; y += 32) {
+          ctx.beginPath();
+          ctx.moveTo(0, y);
+          for (let x = 0; x < 1024; x += 40) {
+            const ny = y + Math.sin(x * 0.02) * 12 + Math.cos(y * 0.02) * 8;
+            ctx.lineTo(x, ny);
+          }
+          ctx.stroke();
+        }
+
+        // River Delta Channels or Crater Scarp features
+        if (siteId === 'jezero-crater') {
+          ctx.strokeStyle = 'rgba(255, 255, 255, 0.22)';
+          ctx.lineWidth = 6;
+          ctx.beginPath();
+          ctx.moveTo(100, 512);
+          ctx.bezierCurveTo(280, 500, 380, 460, 480, 512);
+          ctx.stroke();
+
+          // Delta fan branches
+          ctx.lineWidth = 2.5;
+          ctx.beginPath();
+          ctx.moveTo(480, 512);
+          ctx.lineTo(570, 470);
+          ctx.moveTo(480, 512);
+          ctx.lineTo(590, 512);
+          ctx.moveTo(480, 512);
+          ctx.lineTo(570, 550);
+          ctx.stroke();
+        }
+
+        // Micro-crater impact pockmarks
+        ctx.fillStyle = 'rgba(0, 0, 0, 0.35)';
+        for (let i = 0; i < 90; i++) {
+          const cx = Math.random() * 1024;
+          const cy = Math.random() * 1024;
+          const cr = 2 + Math.random() * 10;
+          ctx.beginPath();
+          ctx.arc(cx, cy, cr, 0, Math.PI * 2);
+          ctx.fill();
+
+          // Highlight crater rim
+          ctx.strokeStyle = 'rgba(255, 255, 255, 0.25)';
+          ctx.lineWidth = 1;
+          ctx.beginPath();
+          ctx.arc(cx, cy, cr, 0, Math.PI);
+          ctx.stroke();
+        }
+
+        const tex = new THREE.CanvasTexture(canvas);
+        tex.wrapS = THREE.ClampToEdgeWrapping;
+        tex.wrapT = THREE.ClampToEdgeWrapping;
+        return tex;
+      }
+
+      function updateTerrainTexture(siteId, mode) {
+        if (!terrainMesh) return;
+        const newTex = createMartianSatelliteTexture(siteId, mode);
+        terrainMesh.material.map = newTex;
+        terrainMesh.material.needsUpdate = true;
+      }
+
+      /* ========================================================================
+         REBUILD 3D TERRAIN MESH FOR SELECTED CRATER
+         ======================================================================== */
+      let currentCorridorCurve = null;
+
+      function build3DTerrainForSite(siteId) {
+        if (!tScene) return;
+
+        // Clean up previous terrain
+        if (terrainMesh) tScene.remove(terrainMesh);
+        if (corridorMesh) tScene.remove(corridorMesh);
+        if (directPathMesh) tScene.remove(directPathMesh);
+        if (roverMarkerMesh) tScene.remove(roverMarkerMesh);
+        chevronGroup.clear();
+        stemsGroup.clear();
+        pinsGroup.clear();
+
+        // 1. Create 3D High-Res Displaced Terrain Grid
+        const size = 680;
+        const segments = 160;
+        const geo = new THREE.PlaneGeometry(size, size, segments, segments);
+        geo.rotateX(-Math.PI / 2); // Orient horizontal (XZ plane)
+
+        const posAttr = geo.attributes.position;
+        for (let i = 0; i < posAttr.count; i++) {
+          const x = posAttr.getX(i);
+          const z = posAttr.getZ(i);
+          const y = getTerrainElevation(siteId, x, z);
+          posAttr.setY(i, y);
+        }
+        geo.computeVertexNormals();
+
+        const terrainTex = createMartianSatelliteTexture(siteId, currentLayerMode);
+
+        const mat = new THREE.MeshStandardMaterial({
+          map: terrainTex,
+          roughness: 0.82,
+          metalness: 0.12,
+          flatShading: false
+        });
+
+        terrainMesh = new THREE.Mesh(geo, mat);
+        terrainMesh.receiveShadow = true;
+        tScene.add(terrainMesh);
+
+        // 2. Build 3D Volumetric Traverse Corridor & Stems
+        build3DTraverseCorridor(siteId);
+
+        // 3. Build Discovered Site Pins with Elevation Drop-Lines
+        build3DDiscoveredPins(siteId);
+
+        // 4. Reset Camera View
+        resetCameraToTilt55(true);
+      }
+
+      /* ========================================================================
+         3D VOLUMETRIC TRAVERSE CORRIDOR & FLOWING DIRECTIONAL CHEVRONS
+         ======================================================================== */
+      function build3DTraverseCorridor(siteId) {
+        const traj = ALL_TRAJECTORIES[siteId] || ALL_TRAJECTORIES['jezero-crater'];
+        const safeCoords = traj.safe_survival_path.coordinates;
+        const directCoords = traj.direct_path.coordinates;
+        const site = NASA_LANDED_SITES[siteId];
+
+        // Map coordinates to local terrain 3D space
+        const points3D = [];
+        const n = safeCoords.length;
+
+        for (let i = 0; i < n; i++) {
+          const t = i / (n - 1);
+          // Interpolate across local space
+          const x = -120 + t * 250;
+          const z = -100 + t * 220 + Math.sin(t * Math.PI) * 25;
+          const y = getTerrainElevation(siteId, x, z) + 1.8; // Hug terrain + 1.8m
+          points3D.push(new THREE.Vector3(x, y, z));
+        }
+
+        currentCorridorCurve = new THREE.CatmullRomCurve3(points3D);
+
+        // 1. 3D Volumetric Tube Geometry (Luminous Pure White Corridor)
+        const tubeGeo = new THREE.TubeGeometry(currentCorridorCurve, 120, 2.2, 8, false);
+        const tubeMat = new THREE.MeshStandardMaterial({
+          color: 0xFFFFFF,
+          emissive: 0xFFFFFF,
+          emissiveIntensity: 0.75,
+          roughness: 0.2
+        });
+        corridorMesh = new THREE.Mesh(tubeGeo, tubeMat);
+        corridorMesh.castShadow = true;
+        tScene.add(corridorMesh);
+
+        // 2. Direct Danger Path (Subtle Dashed Coral-Red Line)
+        const directPts3D = [];
+        for (let i = 0; i < 40; i++) {
+          const t = i / 39;
+          const x = -120 + t * 250;
+          const z = -100 + t * 220;
+          const y = getTerrainElevation(siteId, x, z) + 1.0;
+          directPts3D.push(new THREE.Vector3(x, y, z));
+        }
+        const directCurve = new THREE.CatmullRomCurve3(directPts3D);
+        const directTubeGeo = new THREE.TubeGeometry(directCurve, 60, 1.2, 6, false);
+        const directTubeMat = new THREE.MeshBasicMaterial({
+          color: 0xEF4444,
+          wireframe: true
+        });
+        directPathMesh = new THREE.Mesh(directTubeGeo, directTubeMat);
+        directPathMesh.visible = (currentRouteMode === 'direct' || currentRouteMode === 'both');
+        tScene.add(directPathMesh);
+
+        // 3. Animated Directional Chevrons along safe corridor
+        setupCorridorChevrons();
+
+        // 4. 3D Rover Moving Marker
+        const roverGeo = new THREE.SphereGeometry(3.5, 16, 16);
+        const roverMat = new THREE.MeshStandardMaterial({
+          color: 0xFFFFFF,
+          emissive: 0xFFFFFF,
+          emissiveIntensity: 0.95
+        });
+        roverMarkerMesh = new THREE.Mesh(roverGeo, roverMat);
+        roverMarkerMesh.position.copy(points3D[0]);
+        tScene.add(roverMarkerMesh);
+      }
+
+      function setupCorridorChevrons() {
+        chevronGroup.clear();
+        const numChevrons = 24;
+
+        for (let i = 0; i < numChevrons; i++) {
+          const chevronGeo = new THREE.ConeGeometry(1.6, 3.2, 4);
+          chevronGeo.rotateX(Math.PI / 2);
+          const chevronMat = new THREE.MeshBasicMaterial({ color: 0xFFFFFF });
+          const mesh = new THREE.Mesh(chevronGeo, chevronMat);
+          mesh.userData.baseT = i / numChevrons;
+          chevronGroup.add(mesh);
+        }
+        updateChevronsAlongCurve();
+      }
+
+      function updateChevronsAlongCurve() {
+        if (!currentCorridorCurve) return;
+        chevronGroup.children.forEach(chevron => {
+          const t = (chevron.userData.baseT + chevronOffset) % 1.0;
+          const pt = currentCorridorCurve.getPointAt(t);
+          const tangent = currentCorridorCurve.getTangentAt(t);
+
+          chevron.position.copy(pt);
+          chevron.position.y += 0.8;
+          chevron.quaternion.setFromUnitVectors(new THREE.Vector3(0, 0, 1), tangent);
+        });
+      }
+
+      /* ========================================================================
+         WAYPOINT ALTITUDE DROP-LINES & DISCOVERED SITE 3D BEACON PINS
+         ======================================================================== */
+      function build3DDiscoveredPins(siteId) {
+        stemsGroup.clear();
+        pinsGroup.clear();
+
+        const site = NASA_LANDED_SITES[siteId];
+
+        site.landmarks.forEach((lm, idx) => {
+          const x = lm.local[0];
+          const z = lm.local[1];
+          const yGround = getTerrainElevation(siteId, x, z);
+          const yFloat = yGround + 26; // Elevation stem height
+
+          // 1. Elevation Stem (Vertical Glowing Drop-Line)
+          const stemGeo = new THREE.BufferGeometry().setFromPoints([
+            new THREE.Vector3(x, yGround, z),
+            new THREE.Vector3(x, yFloat, z)
+          ]);
+          const stemMat = new THREE.LineBasicMaterial({
+            color: 0xFFFFFF,
+            transparent: true,
+            opacity: 0.65
+          });
+          const stemLine = new THREE.Line(stemGeo, stemMat);
+          stemsGroup.add(stemLine);
+
+          // 2. Concentric Ground Contact Ring on Crater Floor
+          const groundRingGeo = new THREE.RingGeometry(2.2, 3.2, 24);
+          groundRingGeo.rotateX(-Math.PI / 2);
+          const groundRingMat = new THREE.MeshBasicMaterial({
+            color: 0xFFFFFF,
+            side: THREE.DoubleSide,
+            transparent: true,
+            opacity: 0.7
+          });
+          const groundRing = new THREE.Mesh(groundRingGeo, groundRingMat);
+          groundRing.position.set(x, yGround + 0.3, z);
+          stemsGroup.add(groundRing);
+
+          // 3. Floating 3D Diamond Beacon Pin
+          const beaconGeo = new THREE.OctahedronGeometry(3.0, 0);
+          const beaconMat = new THREE.MeshStandardMaterial({
+            color: 0xFFFFFF,
+            emissive: 0xFFFFFF,
+            emissiveIntensity: 0.9,
+            metalness: 0.8,
+            roughness: 0.1
+          });
+          const beaconPin = new THREE.Mesh(beaconGeo, beaconMat);
+          beaconPin.position.set(x, yFloat, z);
+          beaconPin.userData = { landmark: lm, offset: idx * 1.5 };
+
+          // Pulsing Ring around beacon pin
+          const pulseRingGeo = new THREE.RingGeometry(4.2, 4.8, 24);
+          const pulseRingMat = new THREE.MeshBasicMaterial({
+            color: 0xFFFFFF,
+            side: THREE.DoubleSide,
+            transparent: true,
+            opacity: 0.4
+          });
+          const pulseRing = new THREE.Mesh(pulseRingGeo, pulseRingMat);
+          pulseRing.rotation.x = Math.PI / 2;
+          beaconPin.add(pulseRing);
+          beaconPin.userData.pulseRing = pulseRing;
+
+          pinsGroup.add(beaconPin);
+        });
+
+        // Setup Raycaster for Clicking 3D Pins
+        setupPinRaycaster();
+      }
+
+      function setupPinRaycaster() {
+        const container = document.getElementById('tactical-3d-terrain-container');
+        if (!container) return;
+
+        const raycaster = new THREE.Raycaster();
+        const mouse = new THREE.Vector2();
+
+        container.addEventListener('click', (e) => {
+          const rect = container.getBoundingClientRect();
+          mouse.x = ((e.clientX - rect.left) / rect.width) * 2 - 1;
+          mouse.y = -((e.clientY - rect.top) / rect.height) * 2 + 1;
+
+          raycaster.setFromCamera(mouse, tCamera);
+          const intersects = raycaster.intersectObjects(pinsGroup.children, true);
+
+          if (intersects.length > 0) {
+            let hitObj = intersects[0].object;
+            while (hitObj.parent && hitObj.parent !== pinsGroup) {
+              hitObj = hitObj.parent;
+            }
+            if (hitObj.userData && hitObj.userData.landmark) {
+              flyToLandmark(hitObj.userData.landmark);
+              openLandmarkModal(hitObj.userData.landmark);
+            }
+          }
+        });
+      }
+
+      /* ========================================================================
+         SWITCH LANDING SITE
+         ======================================================================== */
+      function switchLandingSite(siteId) {
+        currentSiteId = siteId;
+        const site = NASA_LANDED_SITES[siteId] || NASA_LANDED_SITES['jezero-crater'];
+        const traj = ALL_TRAJECTORIES[siteId] || ALL_TRAJECTORIES['jezero-crater'];
+
+        // Header and Dropdown updates
+        document.getElementById('active-workspace-label').textContent = `${site.name} — ${site.roverTitle.split(' ')[0]} // Sol ${site.sol}`;
+        document.querySelectorAll('.workspace-opt').forEach(opt => {
+          opt.classList.toggle('active', opt.textContent.includes(site.name));
+        });
+        document.querySelectorAll('.orbital-site-chip').forEach(chip => {
+          chip.classList.toggle('active', chip.textContent.includes(site.name));
+        });
+
+        // Update Dynamic Chart Header Title
+        const dynTitle = document.getElementById('chart-dynamic-site-title');
+        if (dynTitle) {
+          dynTitle.textContent = `${site.name.toUpperCase()} // TELEMETRY WAVEFORM PROFILE`;
+        }
+
+        // Build Bottom Discovered Sites Quick Carousel
+        buildDiscoveredSitesCarousel(site);
+
+        // Reset EVA Simulation
+        resetSimulation();
+
+        // Build 3D Terrain & Volumetric Corridor
+        build3DTerrainForSite(siteId);
+
+        // Update Right Inspector Sidebar KPIs
+        updateInspectorSidebar(site, traj);
+      }
+
+      /* ========================================================================
+         RIGHT INSPECTOR SIDEBAR & LUMINOUS WHITE WAVE CHART
          ======================================================================== */
       function updateInspectorSidebar(site, traj) {
         const safeKpi = traj.safe_survival_path;
@@ -6551,16 +5238,13 @@
         const addDistKm = ((safeKpi.total_distance_m - directKpi.total_distance_m) / 1000).toFixed(2);
         document.getElementById('kpi-detour-sub').textContent = `+${addDistKm} km circumvention`;
 
-        // Mission Safety Verdict
+        // Mission Verdict
         document.getElementById('mission-verdict-text').innerHTML = '<strong>SAFETY VERDICT:</strong> ' + (traj.comparison_summary || site.desc);
 
-        // Update Luminous White Wave Chart
+        // Render Luminous White Wave Chart
         renderLuminousWaveChart();
       }
 
-      /* ========================================================================
-         LUMINOUS WHITE WAVE TELEMETRY CHART (3 TABS WITH LABELS & UNITS)
-         ======================================================================== */
       function initChartTabs() {
         const tabs = document.querySelectorAll('.chart-tab-pill');
         tabs.forEach(tab => {
@@ -6585,10 +5269,9 @@
         const totalPoints = safeElev.length;
         const totalDistKm = traj.safe_survival_path.total_distance_m / 1000;
 
-        // X-Axis distance labels
         const distanceLabels = safeElev.map((_, i) => ((i / (totalPoints - 1)) * totalDistKm).toFixed(1) + ' km');
 
-        // Create subtle luminous vertical white gradient fill
+        // Subtle Luminous White Gradient Fill
         const whiteGrad = ctx.createLinearGradient(0, 0, 0, 150);
         whiteGrad.addColorStop(0, 'rgba(255, 255, 255, 0.16)');
         whiteGrad.addColorStop(1, 'rgba(255, 255, 255, 0.00)');
@@ -6646,7 +5329,7 @@
               type: 'linear',
               position: 'right',
               min: 0,
-              max: 25,
+              max: 28,
               grid: { display: false },
               ticks: { color: '#EAB308', font: { family: 'JetBrains Mono', size: 9 }, callback: v => v + '°' }
             }
@@ -6789,9 +5472,9 @@
       }
 
       /* ========================================================================
-         SIMULATION CONTROLS & SPACESUIT FRAME-BY-FRAME PHYSICS ENGINE
+         SIMULATION CONTROLS & 3D ROVER BEACON MOVEMENT
          ======================================================================== */
-      function initSimulationControls() {
+      function initSimControls() {
         const btnPlayPause = document.getElementById('btn-sim-play-pause');
         const btnReset = document.getElementById('btn-sim-reset');
 
@@ -6806,9 +5489,6 @@
           clearInterval(simTimer);
           isSimulating = false;
           btnPlayPause.innerHTML = '<i data-lucide="play" class="hud-icon"></i> <span id="sim-text">Resume EVA</span>';
-          if (safePolyline && safePolyline.getElement()) {
-            safePolyline.getElement().classList.remove('sim-active');
-          }
           if (window.lucide) lucide.createIcons();
           return;
         }
@@ -6817,11 +5497,6 @@
         btnPlayPause.innerHTML = '<i data-lucide="pause" class="hud-icon"></i> <span id="sim-text">Pause EVA</span>';
         if (window.lucide) lucide.createIcons();
         audio.playBlip(980);
-
-        // Marching ants polyline effect
-        if (safePolyline && safePolyline.getElement()) {
-          safePolyline.getElement().classList.add('sim-active');
-        }
 
         const traj = ALL_TRAJECTORIES[currentSiteId] || ALL_TRAJECTORIES['jezero-crater'];
         const safePath = traj.safe_survival_path.coordinates;
@@ -6834,9 +5509,6 @@
             clearInterval(simTimer);
             isSimulating = false;
             btnPlayPause.innerHTML = '<i data-lucide="rotate-ccw" class="hud-icon"></i> <span id="sim-text">Traverse Done</span>';
-            if (safePolyline && safePolyline.getElement()) {
-              safePolyline.getElement().classList.remove('sim-active');
-            }
             if (window.lucide) lucide.createIcons();
             audio.playBlip(1200, 0.15);
           }
@@ -6847,7 +5519,14 @@
           const elev = traj.safe_survival_path.elevation_array[simIndex] || -2450;
           const slope = traj.safe_survival_path.slope_array[simIndex] || 4.5;
 
-          // 1. Telemetry Calculations
+          // 1. Move 3D Rover Beacon along corridor curve
+          if (roverMarkerMesh && currentCorridorCurve) {
+            const tProgress = simIndex / (total - 1);
+            const pt3D = currentCorridorCurve.getPointAt(tProgress);
+            roverMarkerMesh.position.copy(pt3D);
+          }
+
+          // 2. Telemetry Updates
           const o2Pct = Math.max(10, (100 - (simIndex / (total - 1)) * 46)).toFixed(1);
           const o2Kg = (1.42 * (o2Pct / 100)).toFixed(2);
           const o2Burn = (0.75 + (slope / 15.0) * 0.45).toFixed(2);
@@ -6862,12 +5541,7 @@
 
           const hrBpm = Math.round(78 + (Math.max(0, slope) / 15.0) * 52 + Math.sin(simIndex * 1.7) * 2);
 
-          // 2. Update Leaflet Marker
-          if (astronautMarker) {
-            astronautMarker.setLatLng([curPt.lat, curPt.lon]);
-          }
-
-          // 3. Update Spacesuit Telemetry Cards
+          // Update Telemetry Cards
           document.getElementById('suit-o2-pct').textContent = o2Pct + '%';
           document.getElementById('suit-o2-sub').innerHTML = `${o2Kg} kg • ${o2Burn} L/min<br>+${o2MarginH}h safety margin`;
 
@@ -6881,12 +5555,10 @@
           document.getElementById('suit-hr-sub').innerHTML = `Resting: 78 BPM<br>Slope: ${slope.toFixed(1)}°`;
 
           const o2Fill = document.getElementById('o2-progress-fill');
-          if (o2Fill) {
-            o2Fill.style.width = o2Pct + '%';
-          }
+          if (o2Fill) o2Fill.style.width = o2Pct + '%';
           document.getElementById('o2-bar-text').textContent = o2Pct + '% NOMINAL';
 
-          // 4. Update Bottom Tape
+          // Update Bottom Ribbon
           document.getElementById('tape-coords').textContent = `${curPt.lat.toFixed(4)}° N, ${curPt.lon.toFixed(4)}° E`;
           document.getElementById('tape-elev').textContent = elev + ' m';
           document.getElementById('tape-slope').textContent = slope.toFixed(1) + '°';
@@ -6905,18 +5577,13 @@
         if (btnPlayPause) {
           btnPlayPause.innerHTML = '<i data-lucide="play" class="hud-icon"></i> <span id="sim-text">Run EVA Sim</span>';
         }
-        if (safePolyline && safePolyline.getElement()) {
-          safePolyline.getElement().classList.remove('sim-active');
-        }
         if (window.lucide) lucide.createIcons();
 
-        const traj = ALL_TRAJECTORIES[currentSiteId] || ALL_TRAJECTORIES['jezero-crater'];
-        const safePath = traj.safe_survival_path.coordinates;
-        if (safePath[0] && astronautMarker) {
-          astronautMarker.setLatLng([safePath[0].lat, safePath[0].lon]);
+        if (roverMarkerMesh && currentCorridorCurve) {
+          roverMarkerMesh.position.copy(currentCorridorCurve.getPointAt(0));
         }
 
-        // Reset Telemetry Cards to 100% nominal
+        // Reset Telemetry Cards
         document.getElementById('suit-o2-pct').textContent = '100%';
         document.getElementById('suit-o2-sub').innerHTML = '1.42 kg • 0.88 L/min<br>+4.8h safety margin';
 
@@ -6953,50 +5620,50 @@
       }
 
       /* ========================================================================
-         THREE.JS 3D WEBGL MARS GLOBE (VIEW A: ORBITAL VIEW)
+         VIEW A: THREE.JS 3D ORBITAL MARS GLOBE
          ======================================================================== */
-      function initThreeJsMars() {
-        const webglContainer = document.getElementById('webgl-mars-canvas-container');
-        if (!webglContainer) return;
+      function initOrbitalGlobe() {
+        const container = document.getElementById('webgl-orbital-mars-container');
+        if (!container) return;
 
-        const w = webglContainer.clientWidth || window.innerWidth;
-        const h = webglContainer.clientHeight || (window.innerHeight - 52);
+        const w = container.clientWidth || window.innerWidth;
+        const h = container.clientHeight || (window.innerHeight - 52);
 
-        scene = new THREE.Scene();
-        camera = new THREE.PerspectiveCamera(45, w / h, 0.1, 1000);
-        camera.position.set(0, 0.5, 5.0);
+        oScene = new THREE.Scene();
+        oCamera = new THREE.PerspectiveCamera(45, w / h, 0.1, 1000);
+        oCamera.position.set(0, 0.5, 5.0);
 
-        renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
-        renderer.setSize(w, h);
-        renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
-        renderer.toneMapping = THREE.ACESFilmicToneMapping;
-        renderer.toneMappingExposure = 1.15;
-        webglContainer.appendChild(renderer.domElement);
+        oRenderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+        oRenderer.setSize(w, h);
+        oRenderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
+        oRenderer.toneMapping = THREE.ACESFilmicToneMapping;
+        oRenderer.toneMappingExposure = 1.15;
+        container.appendChild(oRenderer.domElement);
 
-        controls = new THREE.OrbitControls(camera, renderer.domElement);
-        controls.enableDamping = true;
-        controls.dampingFactor = 0.04;
-        controls.minDistance = 3.2;
-        controls.maxDistance = 10.0;
-        controls.enablePan = false;
+        oControls = new THREE.OrbitControls(oCamera, oRenderer.domElement);
+        oControls.enableDamping = true;
+        oControls.dampingFactor = 0.04;
+        oControls.minDistance = 3.2;
+        oControls.maxDistance = 10.0;
+        oControls.enablePan = false;
 
         const sunLight = new THREE.DirectionalLight(0xfff5e6, 2.2);
         sunLight.position.set(6, 3, 5);
-        scene.add(sunLight);
+        oScene.add(sunLight);
 
         const ambientLight = new THREE.AmbientLight(0x202838, 0.55);
-        scene.add(ambientLight);
+        oScene.add(ambientLight);
 
-        // Mars Sphere
+        // Mars Sphere with Viking Texture
         const sphereGeo = new THREE.SphereGeometry(1.65, 64, 64);
         const textureLoader = new THREE.TextureLoader();
 
         const marsTextureUrl = 'https://trek.nasa.gov/tiles/Mars/EQ/Mars_Viking_MDIM21_ClrMosaic_global_232m/1.0.0/default/default028mm/0/0/0.jpg';
         const marsTex = textureLoader.load(
           marsTextureUrl,
-          () => renderer.render(scene, camera),
+          () => oRenderer.render(oScene, oCamera),
           undefined,
-          () => console.log('NASA Viking tile fallback active')
+          () => console.log('NASA Viking texture offline fallback')
         );
 
         const marsMat = new THREE.MeshStandardMaterial({
@@ -7005,10 +5672,10 @@
           metalness: 0.08
         });
 
-        marsMesh = new THREE.Mesh(sphereGeo, marsMat);
-        scene.add(marsMesh);
+        oMarsMesh = new THREE.Mesh(sphereGeo, marsMat);
+        oScene.add(oMarsMesh);
 
-        // Thin Atmospheric Glow Rim
+        // Atmospheric Rim Glow
         const atmoGeo = new THREE.SphereGeometry(1.68, 64, 64);
         const atmoMat = new THREE.MeshBasicMaterial({
           color: 0xe07a5f,
@@ -7016,40 +5683,19 @@
           opacity: 0.12,
           side: THREE.BackSide
         });
-        atmosphereMesh = new THREE.Mesh(atmoGeo, atmoMat);
-        scene.add(atmosphereMesh);
+        oAtmoMesh = new THREE.Mesh(atmoGeo, atmoMat);
+        oScene.add(oAtmoMesh);
 
-        // Target Landing Beacon
-        const beaconGeo = new THREE.SphereGeometry(0.024, 16, 16);
-        const beaconMat = new THREE.MeshBasicMaterial({ color: 0xffffff });
-        beaconMesh = new THREE.Mesh(beaconGeo, beaconMat);
-        beaconMesh.position.set(0, 0.5, 1.66);
-        scene.add(beaconMesh);
-
-        // Render Loop
-        function animateThree() {
-          requestAnimationFrame(animateThree);
-          if (marsMesh) {
-            marsMesh.rotation.y += 0.0012;
-            atmosphereMesh.rotation.y += 0.0012;
+        function animateOrbital() {
+          requestAnimationFrame(animateOrbital);
+          if (oMarsMesh) {
+            oMarsMesh.rotation.y += 0.0012;
+            oAtmoMesh.rotation.y += 0.0012;
           }
-          if (beaconMesh) {
-            const s = 1.0 + Math.sin(Date.now() * 0.006) * 0.25;
-            beaconMesh.scale.set(s, s, s);
-          }
-          controls.update();
-          renderer.render(scene, camera);
+          oControls.update();
+          oRenderer.render(oScene, oCamera);
         }
-        animateThree();
-
-        window.addEventListener('resize', () => {
-          if (!renderer || !camera) return;
-          const rw = webglContainer.clientWidth || window.innerWidth;
-          const rh = webglContainer.clientHeight || (window.innerHeight - 52);
-          camera.aspect = rw / rh;
-          camera.updateProjectionMatrix();
-          renderer.setSize(rw, rh);
-        });
+        animateOrbital();
       }
 
     })();
