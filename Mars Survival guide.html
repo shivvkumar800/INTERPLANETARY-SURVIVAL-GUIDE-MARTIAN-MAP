@@ -12,7 +12,524 @@
 
   <!-- Core Aerospace & Graphics Libraries via CDN -->
   <!-- 1. GSAP for Smooth Motion & flyTo Animations -->
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js">
+      /* ========================================================================
+         FIRST-PERSON ROVER / ASTRONAUT COCKPIT ENGINE (WASD DRIVE & PHYSICS)
+         ======================================================================== */
+      function buildCompassTapeStrip() {
+        const strip = document.getElementById('hud-compass-tape-strip');
+        if (!strip) return;
+        strip.innerHTML = '';
+
+        // Build 3 sets of 0-360 degrees for seamless infinite wrap
+        const cardinals = { 0: 'N', 90: 'E', 180: 'S', 270: 'W' };
+        for (let set = 0; set < 3; set++) {
+          for (let deg = 0; deg < 360; deg += 10) {
+            const tick = document.createElement('div');
+            const isMajor = (deg % 30 === 0);
+            const isCardinal = (deg in cardinals);
+            tick.className = 'compass-tick' + (isMajor ? ' major' : '') + (isCardinal ? ' cardinal' : '');
+
+            const line = document.createElement('div');
+            line.className = 'tick-line';
+            tick.appendChild(line);
+
+            if (isMajor) {
+              const label = document.createElement('div');
+              label.className = 'tick-label';
+              label.textContent = isCardinal ? cardinals[deg] : String(deg).padStart(3, '0');
+              tick.appendChild(label);
+            }
+            strip.appendChild(tick);
+          }
+        }
+      }
+
+      function initCockpitControls() {
+        const btnToggle = document.getElementById('btn-toggle-cockpit');
+        if (btnToggle) {
+          btnToggle.addEventListener('click', toggleCockpitMode);
+        }
+
+        const btnInspect = document.getElementById('btn-hud-inspect-discovery');
+        if (btnInspect) {
+          btnInspect.addEventListener('click', () => {
+            const site = NASA_LANDED_SITES[currentSiteId];
+            if (site && site.landmarks) {
+              const nearest = findNearestLandmark(roverDrive.x, roverDrive.z);
+              if (nearest) openLandmarkModal(nearest);
+            }
+          });
+        }
+
+        // Global Key Listeners for WASD / Arrows / V / E
+        window.addEventListener('keydown', (e) => {
+          if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return;
+
+          if (e.code === 'KeyV') {
+            e.preventDefault();
+            toggleCockpitMode();
+            return;
+          }
+
+          if (e.code === 'KeyE') {
+            if (isCockpitMode) {
+              const site = NASA_LANDED_SITES[currentSiteId];
+              if (site && site.landmarks) {
+                const nearest = findNearestLandmark(roverDrive.x, roverDrive.z);
+                if (nearest && nearest.dist < 26) {
+                  e.preventDefault();
+                  openLandmarkModal(nearest);
+                }
+              }
+            }
+            return;
+          }
+
+          if (e.code === 'KeyW' || e.code === 'ArrowUp') {
+            driveKeys.forward = true;
+            if (isCockpitMode) e.preventDefault();
+          }
+          if (e.code === 'KeyS' || e.code === 'ArrowDown') {
+            driveKeys.backward = true;
+            if (isCockpitMode) e.preventDefault();
+          }
+          if (e.code === 'KeyA' || e.code === 'ArrowLeft') {
+            driveKeys.left = true;
+            if (isCockpitMode) e.preventDefault();
+          }
+          if (e.code === 'KeyD' || e.code === 'ArrowRight') {
+            driveKeys.right = true;
+            if (isCockpitMode) e.preventDefault();
+          }
+        });
+
+        window.addEventListener('keyup', (e) => {
+          if (e.code === 'KeyW' || e.code === 'ArrowUp') driveKeys.forward = false;
+          if (e.code === 'KeyS' || e.code === 'ArrowDown') driveKeys.backward = false;
+          if (e.code === 'KeyA' || e.code === 'ArrowLeft') driveKeys.left = false;
+          if (e.code === 'KeyD' || e.code === 'ArrowRight') driveKeys.right = false;
+        });
+      }
+
+      function toggleCockpitMode() {
+        if (isTransitioningCockpit) return;
+        if (isCockpitMode) {
+          exitCockpitMode();
+        } else {
+          enterCockpitMode();
+        }
+      }
+
+      function enterCockpitMode() {
+        if (!tCamera || !tControls) return;
+        isTransitioningCockpit = true;
+        audio.playBlip(720, 0.12);
+
+        // Save current orbital perspective
+        savedOrbitalCamPos.copy(tCamera.position);
+        savedOrbitalCamTarget.copy(tControls.target);
+        tControls.enabled = false;
+
+        // Position camera smoothly at rover coordinates
+        const eyeY = getTerrainElevation(currentSiteId, roverDrive.x, roverDrive.z) + 1.8;
+        const lookDist = 20.0;
+        const lookX = roverDrive.x + Math.sin(roverDrive.heading) * lookDist;
+        const lookZ = roverDrive.z + Math.cos(roverDrive.heading) * lookDist;
+
+        // Update button UI
+        const btnToggle = document.getElementById('btn-toggle-cockpit');
+        if (btnToggle) {
+          btnToggle.classList.add('active');
+          btnToggle.innerHTML = '<i data-lucide="video-off" class="hud-icon"></i> <span>Exit Cockpit [V]</span>';
+          if (window.lucide) lucide.createIcons();
+        }
+
+        // Camera badge
+        const badge = document.querySelector('.camera-hud-badge');
+        if (badge) {
+          badge.innerHTML = '<span>PERSPECTIVE:</span> <strong style="color: #FFFFFF;">SURFACE COCKPIT // WASD DRIVE</strong>';
+        }
+
+        // Swoop camera down with GSAP
+        gsap.to(tCamera.position, {
+          x: roverDrive.x,
+          y: eyeY,
+          z: roverDrive.z,
+          duration: 1.5,
+          ease: 'power2.inOut'
+        });
+
+        gsap.to(tControls.target, {
+          x: lookX,
+          y: eyeY,
+          z: lookZ,
+          duration: 1.5,
+          ease: 'power2.inOut',
+          onComplete: () => {
+            isTransitioningCockpit = false;
+            isCockpitMode = true;
+            const hud = document.getElementById('cockpit-hud-overlay');
+            if (hud) {
+              hud.classList.remove('hidden');
+            }
+            if (lidarRibbonMesh) lidarRibbonMesh.visible = true;
+            if (roverDustMesh) roverDustMesh.visible = true;
+          }
+        });
+      }
+
+      function exitCockpitMode() {
+        if (!tCamera || !tControls) return;
+        isTransitioningCockpit = true;
+        isCockpitMode = false;
+        audio.playBlip(540, 0.12);
+
+        // Hide HUD overlay
+        const hud = document.getElementById('cockpit-hud-overlay');
+        if (hud) hud.classList.add('hidden');
+        if (lidarRibbonMesh) lidarRibbonMesh.visible = false;
+        if (roverDustMesh) roverDustMesh.visible = false;
+
+        // Reset button UI
+        const btnToggle = document.getElementById('btn-toggle-cockpit');
+        if (btnToggle) {
+          btnToggle.classList.remove('active');
+          btnToggle.innerHTML = '<i data-lucide="video" class="hud-icon"></i> <span>Surface Cockpit (WASD)</span>';
+          if (window.lucide) lucide.createIcons();
+        }
+
+        // Camera badge
+        const badge = document.querySelector('.camera-hud-badge');
+        if (badge) {
+          badge.innerHTML = '<span>PERSPECTIVE:</span> <strong>3D TILT 55° // BEARING -20°</strong>';
+        }
+
+        // Swoop camera back up with GSAP
+        gsap.to(tCamera.position, {
+          x: savedOrbitalCamPos.x || 90,
+          y: savedOrbitalCamPos.y || 220,
+          z: savedOrbitalCamPos.z || 270,
+          duration: 1.3,
+          ease: 'power2.inOut'
+        });
+
+        gsap.to(tControls.target, {
+          x: savedOrbitalCamTarget.x || 0,
+          y: savedOrbitalCamTarget.y || 0,
+          z: savedOrbitalCamTarget.z || 0,
+          duration: 1.3,
+          ease: 'power2.inOut',
+          onComplete: () => {
+            isTransitioningCockpit = false;
+            tControls.enabled = true;
+          }
+        });
+      }
+
+      function updateCockpitDrivingPhysics(dt) {
+        // 1. Throttle / Acceleration
+        if (driveKeys.forward) {
+          roverDrive.speed = Math.min(roverDrive.maxSpeed, roverDrive.speed + roverDrive.accel * dt);
+        } else if (driveKeys.backward) {
+          roverDrive.speed = Math.max(-roverDrive.maxSpeed * 0.45, roverDrive.speed - roverDrive.accel * dt);
+        } else {
+          // Friction deceleration
+          if (roverDrive.speed > 0) {
+            roverDrive.speed = Math.max(0, roverDrive.speed - roverDrive.friction * dt);
+          } else if (roverDrive.speed < 0) {
+            roverDrive.speed = Math.min(0, roverDrive.speed + roverDrive.friction * dt);
+          }
+        }
+
+        // 2. Steering
+        if (driveKeys.left) {
+          roverDrive.heading += roverDrive.turnRate * dt;
+        }
+        if (driveKeys.right) {
+          roverDrive.heading -= roverDrive.turnRate * dt;
+        }
+
+        // 3. Position Translation & Boundary Clamping
+        roverDrive.x += Math.sin(roverDrive.heading) * roverDrive.speed * dt;
+        roverDrive.z += Math.cos(roverDrive.heading) * roverDrive.speed * dt;
+
+        const radDist = Math.hypot(roverDrive.x, roverDrive.z);
+        if (radDist > 270) {
+          roverDrive.x = (roverDrive.x / radDist) * 270;
+          roverDrive.z = (roverDrive.z / radDist) * 270;
+          roverDrive.speed = 0;
+        }
+
+        // Distance accumulated
+        roverDrive.distanceDrivenMeters += Math.abs(roverDrive.speed * dt * 3.8);
+
+        // 4. Sample 4 Wheel Contact Points for Real-Time Pitch & Roll
+        const halfW = 1.3;
+        const halfL = 1.8;
+        const sinH = Math.sin(roverDrive.heading);
+        const cosH = Math.cos(roverDrive.heading);
+
+        const fl_x = roverDrive.x + sinH * halfL - cosH * halfW;
+        const fl_z = roverDrive.z + cosH * halfL + sinH * halfW;
+        const fr_x = roverDrive.x + sinH * halfL + cosH * halfW;
+        const fr_z = roverDrive.z + cosH * halfL - sinH * halfW;
+        const rl_x = roverDrive.x - sinH * halfL - cosH * halfW;
+        const rl_z = roverDrive.z - cosH * halfL + sinH * halfW;
+        const rr_x = roverDrive.x - sinH * halfL + cosH * halfW;
+        const rr_z = roverDrive.z - cosH * halfL - sinH * halfW;
+
+        const hFL = getTerrainElevation(currentSiteId, fl_x, fl_z);
+        const hFR = getTerrainElevation(currentSiteId, fr_x, fr_z);
+        const hRL = getTerrainElevation(currentSiteId, rl_x, rl_z);
+        const hRR = getTerrainElevation(currentSiteId, rr_x, rr_z);
+
+        roverDrive.centerY = (hFL + hFR + hRL + hRR) * 0.25;
+        const pitchRad = Math.atan2((hFL + hFR) - (hRL + hRR), halfL * 3.8);
+        const rollRad = Math.atan2((hFL + hRL) - (hFR + hRR), halfW * 3.8);
+
+        roverDrive.pitchDeg = pitchRad * (180 / Math.PI);
+        roverDrive.rollDeg = rollRad * (180 / Math.PI);
+        roverDrive.slopeDeg = Math.sqrt(roverDrive.pitchDeg * roverDrive.pitchDeg + roverDrive.rollDeg * roverDrive.rollDeg);
+
+        // Subtle suspension bounce over rocky terrain
+        roverDrive.bounceOffset = Math.sin(Date.now() * 0.014) * 0.05 * (Math.abs(roverDrive.speed) / roverDrive.maxSpeed);
+
+        // 5. Update Camera POV
+        const eyeY = roverDrive.centerY + 1.8 + roverDrive.bounceOffset;
+        tCamera.position.set(roverDrive.x, eyeY, roverDrive.z);
+
+        const lookDist = 20.0;
+        const lookX = roverDrive.x + Math.sin(roverDrive.heading) * lookDist;
+        const lookZ = roverDrive.z + Math.cos(roverDrive.heading) * lookDist;
+        const lookY = eyeY + Math.tan(pitchRad) * lookDist;
+
+        tCamera.lookAt(lookX, lookY, lookZ);
+        tCamera.rotation.z = -rollRad * 0.65;
+
+        // Sync 3D Rover Marker in scene
+        if (roverMarkerMesh) {
+          roverMarkerMesh.position.set(roverDrive.x, roverDrive.centerY + 1.0, roverDrive.z);
+        }
+
+        // 6. Update Ground-Projected Lidar Path Ribbon Ahead
+        updateLidarRibbonAhead();
+
+        // 7. Update Regolith Dust Kick-Up Trail Behind Wheels
+        updateRoverDustParticles(rl_x, rl_z, rr_x, rr_z, dt);
+
+        // 8. Update Cockpit HUD Instruments & Telemetry
+        updateCockpitHUDInstruments();
+        syncCockpitTelemetry();
+      }
+
+      function updateLidarRibbonAhead() {
+        if (!lidarRibbonMesh) {
+          const ribbonCount = 24;
+          const ribbonGeo = new THREE.BufferGeometry();
+          const ribbonArr = new Float32Array(ribbonCount * 3);
+          ribbonGeo.setAttribute('position', new THREE.BufferAttribute(ribbonArr, 3));
+          const ribbonMat = new THREE.LineBasicMaterial({
+            color: 0xFFFFFF,
+            transparent: true,
+            opacity: 0.85,
+            linewidth: 2
+          });
+          lidarRibbonMesh = new THREE.Line(ribbonGeo, ribbonMat);
+          lidarRibbonMesh.frustumCulled = false;
+          tScene.add(lidarRibbonMesh);
+        }
+
+        const ribbonArr = lidarRibbonMesh.geometry.attributes.position.array;
+        for (let i = 0; i < 24; i++) {
+          const t = i / 23.0;
+          const dist = t * 34.0;
+          const rx = roverDrive.x + Math.sin(roverDrive.heading) * dist;
+          const rz = roverDrive.z + Math.cos(roverDrive.heading) * dist;
+          const ry = getTerrainElevation(currentSiteId, rx, rz) + 0.35;
+          ribbonArr[i * 3] = rx;
+          ribbonArr[i * 3 + 1] = ry;
+          ribbonArr[i * 3 + 2] = rz;
+        }
+        lidarRibbonMesh.geometry.attributes.position.needsUpdate = true;
+      }
+
+      function updateRoverDustParticles(rl_x, rl_z, rr_x, rr_z, dt) {
+        if (!roverDustMesh) {
+          const geo = new THREE.BufferGeometry();
+          const pos = new Float32Array(roverDustCount * 3);
+          for (let i = 0; i < roverDustCount * 3; i++) pos[i] = 0;
+          geo.setAttribute('position', new THREE.BufferAttribute(pos, 3));
+          const mat = new THREE.PointsMaterial({
+            color: 0xC46242,
+            size: 2.6,
+            transparent: true,
+            opacity: 0.45,
+            blending: THREE.AdditiveBlending
+          });
+          roverDustMesh = new THREE.Points(geo, mat);
+          roverDustMesh.frustumCulled = false;
+          tScene.add(roverDustMesh);
+        }
+
+        const pos = roverDustMesh.geometry.attributes.position.array;
+        const isMoving = Math.abs(roverDrive.speed) > 0.6;
+
+        for (let i = 0; i < roverDustCount; i++) {
+          pos[i * 3 + 1] += 0.04; // float upward
+          pos[i * 3] += 0.08;     // drift with Martian breeze
+
+          // Respawn at wheels when old or moving
+          if (pos[i * 3 + 1] > roverDrive.centerY + 4.5 || (isMoving && Math.random() < 0.08)) {
+            const isLeft = (i % 2 === 0);
+            pos[i * 3] = isLeft ? rl_x : rr_x;
+            pos[i * 3 + 1] = roverDrive.centerY + 0.2;
+            pos[i * 3 + 2] = isLeft ? rl_z : rr_z;
+          }
+        }
+        roverDustMesh.geometry.attributes.position.needsUpdate = true;
+      }
+
+      function findNearestLandmark(x, z) {
+        const site = NASA_LANDED_SITES[currentSiteId];
+        if (!site || !site.landmarks) return null;
+        let nearest = null;
+        let minDist = Infinity;
+
+        site.landmarks.forEach(lm => {
+          const dx = lm.local[0] - x;
+          const dz = lm.local[1] - z;
+          const d = Math.hypot(dx, dz);
+          if (d < minDist) {
+            minDist = d;
+            nearest = { ...lm, dist: d };
+          }
+        });
+        return nearest;
+      }
+
+      function updateCockpitHUDInstruments() {
+        // 1. Sliding Compass Tape & Heading Readout
+        const degRaw = (roverDrive.heading * 180 / Math.PI) % 360;
+        const deg = (degRaw + 360) % 360;
+        const strip = document.getElementById('hud-compass-tape-strip');
+        if (strip) {
+          // Each 360 deg is 864px (2.4px per degree)
+          const pxPerDeg = 2.4;
+          const offset = -(864 + deg * pxPerDeg);
+          strip.style.transform = `translateX(${offset.toFixed(1)}px)`;
+        }
+
+        const cardinals = ['N', 'NE', 'E', 'SE', 'S', 'SW', 'W', 'NW', 'N'];
+        const cardName = cardinals[Math.round(deg / 45) % 8];
+        const nearest = findNearestLandmark(roverDrive.x, roverDrive.z);
+        const headingText = document.getElementById('hud-compass-heading-text');
+        if (headingText) {
+          const targetStr = nearest ? `Toward ${nearest.name} (${Math.round(nearest.dist * 6)}m)` : 'Terrain Sector Scanning';
+          headingText.textContent = `Heading ${String(Math.round(deg)).padStart(3, '0')}° ${cardName} — ${targetStr}`;
+        }
+
+        // 2. Artificial Horizon Gimbal (Pitch & Roll)
+        const rotator = document.getElementById('hud-gimbal-rotator');
+        if (rotator) {
+          const transY = (roverDrive.pitchDeg * 3.2).toFixed(1);
+          const rotDeg = (-roverDrive.rollDeg).toFixed(1);
+          rotator.style.transform = `translateY(${transY}px) rotate(${rotDeg}deg)`;
+        }
+
+        // 3. Lidar Rangefinder
+        const lidarDistEl = document.getElementById('hud-lidar-dist');
+        const lidarSlopeEl = document.getElementById('hud-lidar-slope');
+        if (lidarDistEl && lidarSlopeEl) {
+          const forwardDist = Math.max(8.0, Math.min(75.0, 38.0 - roverDrive.pitchDeg * 1.4));
+          lidarDistEl.textContent = `${forwardDist.toFixed(1)} m`;
+          lidarSlopeEl.textContent = `SLOPE: ${roverDrive.slopeDeg.toFixed(1)}°`;
+          if (roverDrive.slopeDeg > 15) {
+            lidarSlopeEl.style.color = '#EF4444';
+          } else if (roverDrive.slopeDeg > 9) {
+            lidarSlopeEl.style.color = '#EAB308';
+          } else {
+            lidarSlopeEl.style.color = '#10B981';
+          }
+        }
+
+        // 4. Proximity Discovery Toast
+        const toast = document.getElementById('hud-proximity-toast');
+        const toastName = document.getElementById('hud-proximity-name');
+        const toastDist = document.getElementById('hud-proximity-dist');
+        if (toast && nearest) {
+          if (nearest.dist < 26) {
+            toast.classList.remove('hidden');
+            if (toastName) toastName.textContent = nearest.name;
+            if (toastDist) toastDist.textContent = `Distance: ${Math.round(nearest.dist * 6)}m`;
+          } else {
+            toast.classList.add('hidden');
+          }
+        }
+      }
+
+      function syncCockpitTelemetry() {
+        const traj = ALL_TRAJECTORIES[currentSiteId] || ALL_TRAJECTORIES['jezero-crater'];
+        
+        // Distance
+        const kmDriven = (roverDrive.distanceDrivenMeters / 1000).toFixed(2);
+        const totalDist = (traj.safe_survival_path.total_distance_m / 1000).toFixed(1);
+        const tapeDistEl = document.getElementById('tape-dist');
+        if (tapeDistEl) tapeDistEl.textContent = `${kmDriven} / ${totalDist} km`;
+
+        // Elevation
+        const elevM = Math.round(-2450 + (roverDrive.centerY || -22) * 3.5);
+        const tapeElevEl = document.getElementById('tape-elev');
+        if (tapeElevEl) tapeElevEl.textContent = `${elevM.toLocaleString()} m`;
+
+        // Slope
+        const tapeSlopeEl = document.getElementById('tape-slope');
+        if (tapeSlopeEl) tapeSlopeEl.textContent = `${roverDrive.slopeDeg.toFixed(1)}°`;
+
+        // Coords
+        const site = NASA_LANDED_SITES[currentSiteId];
+        if (site) {
+          const lat = (site.lat + (roverDrive.z / 1000) * 0.016).toFixed(4);
+          const lon = (site.lon + (roverDrive.x / 1000) * 0.016).toFixed(4);
+          const tapeCoordsEl = document.getElementById('tape-coords');
+          if (tapeCoordsEl) tapeCoordsEl.textContent = `${lat}° N, ${lon}° E`;
+        }
+
+        // Oxygen & Life Support
+        const distRatio = Math.min(1.0, roverDrive.distanceDrivenMeters / 4500);
+        const o2Pct = Math.max(8.0, 100 - distRatio * 38 - (roverDrive.slopeDeg / 20.0) * 4);
+        const o2Kg = (1.42 * (o2Pct / 100)).toFixed(2);
+        const o2Burn = (0.78 + (roverDrive.slopeDeg / 15.0) * 0.42).toFixed(2);
+        const o2MarginH = ((o2Pct / 100) * 6.2).toFixed(1);
+
+        const suitO2PctEl = document.getElementById('suit-o2-pct');
+        if (suitO2PctEl) suitO2PctEl.textContent = `${o2Pct.toFixed(1)}%`;
+
+        const suitO2SubEl = document.getElementById('suit-o2-sub');
+        if (suitO2SubEl) suitO2SubEl.innerHTML = `${o2Kg} kg • ${o2Burn} L/min<br>+${o2MarginH}h safety margin`;
+
+        const o2FillEl = document.getElementById('o2-progress-fill');
+        if (o2FillEl) o2FillEl.style.width = `${o2Pct}%`;
+
+        const o2BarText = document.getElementById('o2-bar-text');
+        if (o2BarText) o2BarText.textContent = `${o2Pct.toFixed(1)}% NOMINAL`;
+
+        // Battery
+        const battPct = Math.max(12, Math.round(100 - distRatio * 32));
+        const battWh = Math.round(750 * (battPct / 100));
+        const heatW = Math.round(210 + (roverDrive.slopeDeg / 15.0) * 40);
+        const suitBattPctEl = document.getElementById('suit-batt-pct');
+        if (suitBattPctEl) suitBattPctEl.textContent = `${battPct}%`;
+        const suitBattSubEl = document.getElementById('suit-batt-sub');
+        if (suitBattSubEl) suitBattSubEl.innerHTML = `${battWh} Wh (750 Wh pack)<br>${heatW} W active heating`;
+
+        // Heart Rate
+        const hr = Math.round(76 + (roverDrive.slopeDeg / 18.0) * 36 + (Math.abs(roverDrive.speed) / roverDrive.maxSpeed) * 18);
+        const suitHrValEl = document.getElementById('suit-hr-val');
+        if (suitHrValEl) suitHrValEl.textContent = `${hr} BPM`;
+      }
+
+    </script>
 
   <!-- 2. Lucide Icons -->
   <script src="https://unpkg.com/lucide@latest"></script>
@@ -1159,6 +1676,401 @@
       color: var(--text-silver);
       line-height: 1.5;
     }
+  
+    /* ==========================================================================
+       FIRST-PERSON ROVER / ASTRONAUT COCKPIT HUD (AEROSPACE MONOCHROME)
+       ========================================================================== */
+    .cockpit-hud-overlay {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: 450;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      padding: 16px 20px 24px 20px;
+      box-sizing: border-box;
+      opacity: 0;
+      transition: opacity 0.35s ease;
+    }
+
+    .cockpit-hud-overlay:not(.hidden) {
+      opacity: 1;
+    }
+
+    /* 1. Top Compass Degree Tape */
+    .hud-compass-container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      align-self: center;
+      margin-top: 54px;
+      background: rgba(11, 14, 20, 0.84);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      border-radius: var(--radius-sm);
+      padding: 8px 18px;
+      box-shadow: 0 8px 28px rgba(0, 0, 0, 0.6);
+      pointer-events: auto;
+    }
+
+    .hud-compass-header {
+      font-family: var(--font-serif);
+      font-style: italic;
+      font-size: 15px;
+      color: #FFFFFF;
+      letter-spacing: 0.02em;
+      text-shadow: 0 0 12px rgba(255, 255, 255, 0.35);
+      margin-bottom: 6px;
+      text-align: center;
+    }
+
+    .hud-compass-tape-window {
+      width: 320px;
+      height: 28px;
+      overflow: hidden;
+      position: relative;
+      border-top: 1px solid rgba(255, 255, 255, 0.12);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+      display: flex;
+      align-items: center;
+    }
+
+    .hud-compass-tape-window::before,
+    .hud-compass-tape-window::after {
+      content: '';
+      position: absolute;
+      top: 0;
+      bottom: 0;
+      width: 44px;
+      pointer-events: none;
+      z-index: 3;
+    }
+    .hud-compass-tape-window::before {
+      left: 0;
+      background: linear-gradient(to right, rgba(11, 14, 20, 1), transparent);
+    }
+    .hud-compass-tape-window::after {
+      right: 0;
+      background: linear-gradient(to left, rgba(11, 14, 20, 1), transparent);
+    }
+
+    .hud-compass-center-indicator {
+      position: absolute;
+      left: 50%;
+      top: 0;
+      bottom: 0;
+      width: 2px;
+      background: #FFFFFF;
+      transform: translateX(-50%);
+      z-index: 4;
+      box-shadow: 0 0 8px #FFFFFF;
+    }
+
+    .hud-compass-tape-strip {
+      display: flex;
+      align-items: flex-end;
+      position: absolute;
+      left: 50%;
+      will-change: transform;
+      height: 100%;
+    }
+
+    .compass-tick {
+      width: 24px;
+      flex-shrink: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-end;
+      height: 100%;
+      padding-bottom: 3px;
+    }
+
+    .compass-tick .tick-line {
+      width: 1px;
+      height: 6px;
+      background: rgba(255, 255, 255, 0.3);
+    }
+
+    .compass-tick.major .tick-line {
+      height: 11px;
+      background: rgba(255, 255, 255, 0.75);
+    }
+
+    .compass-tick .tick-label {
+      font-family: var(--font-mono);
+      font-size: 8px;
+      color: var(--text-silver);
+      margin-top: 2px;
+      letter-spacing: 0.04em;
+    }
+
+    .compass-tick.cardinal .tick-label {
+      color: #FFFFFF;
+      font-weight: 700;
+      font-size: 9px;
+    }
+
+    /* 2. Center Artificial Horizon & Pitch Ladder */
+    .hud-center-gimbal-layer {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      width: 260px;
+      height: 200px;
+      transform: translate(-50%, -50%);
+      pointer-events: none;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .hud-gimbal-rotator {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      will-change: transform;
+    }
+
+    .hud-horizon-wings {
+      position: absolute;
+      display: flex;
+      align-items: center;
+      width: 160px;
+      justify-content: space-between;
+    }
+
+    .horizon-wing {
+      width: 50px;
+      height: 1.5px;
+      background: rgba(255, 255, 255, 0.65);
+      box-shadow: 0 0 6px rgba(255, 255, 255, 0.4);
+    }
+
+    .horizon-center-pip {
+      width: 4px;
+      height: 4px;
+      border-radius: 50%;
+      border: 1px solid #FFFFFF;
+      box-shadow: 0 0 6px #FFFFFF;
+    }
+
+    .hud-pitch-rungs {
+      position: absolute;
+      width: 90px;
+      height: 130px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .pitch-rung {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      width: 44px;
+    }
+
+    .pitch-rung.deg-10 { width: 64px; }
+    .pitch-rung.deg-5 { width: 40px; }
+
+    .pitch-line {
+      flex: 1;
+      height: 1px;
+      background: rgba(255, 255, 255, 0.35);
+    }
+
+    .pitch-num {
+      font-family: var(--font-mono);
+      font-size: 8px;
+      color: rgba(255, 255, 255, 0.6);
+      padding: 0 3px;
+    }
+
+    /* 3. Lidar Rangefinder Reticle */
+    .hud-lidar-reticle {
+      position: absolute;
+      left: calc(50% + 95px);
+      top: 50%;
+      transform: translateY(-50%);
+      background: rgba(11, 14, 20, 0.78);
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      border-radius: var(--radius-sm);
+      padding: 6px 10px;
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+      pointer-events: none;
+    }
+
+    .lidar-tag {
+      font-family: var(--font-mono);
+      font-size: 8px;
+      color: var(--text-dim);
+      letter-spacing: 0.08em;
+    }
+
+    .lidar-val {
+      font-family: var(--font-mono);
+      font-size: 13px;
+      font-weight: 600;
+      color: #FFFFFF;
+    }
+
+    .lidar-slope {
+      font-family: var(--font-mono);
+      font-size: 9px;
+      color: #EAB308;
+    }
+
+    /* 4. Proximity Discovery Toast */
+    .hud-proximity-toast {
+      position: absolute;
+      top: 110px;
+      right: 24px;
+      background: rgba(15, 17, 22, 0.94);
+      backdrop-filter: blur(18px);
+      -webkit-backdrop-filter: blur(18px);
+      border: 1px solid rgba(255, 255, 255, 0.18);
+      border-radius: var(--radius-md);
+      box-shadow: 0 12px 36px rgba(0, 0, 0, 0.7), 0 0 16px rgba(255, 255, 255, 0.08);
+      padding: 12px 16px;
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      pointer-events: auto;
+      z-index: 520;
+      transition: all 0.25s ease;
+    }
+
+    .hud-proximity-toast.hidden {
+      opacity: 0;
+      transform: translateY(-8px);
+      pointer-events: none;
+    }
+
+    .proximity-pulse-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: #FFFFFF;
+      box-shadow: 0 0 10px #FFFFFF;
+      animation: pulseBeacon 1.4s infinite ease-in-out;
+    }
+
+    .proximity-content {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+
+    .proximity-badge {
+      font-family: var(--font-mono);
+      font-size: 8px;
+      color: var(--text-silver);
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    .proximity-title {
+      font-family: var(--font-serif);
+      font-style: italic;
+      font-size: 15px;
+      color: #FFFFFF;
+    }
+
+    .proximity-dist {
+      font-family: var(--font-mono);
+      font-size: 9px;
+      color: #94A3B8;
+    }
+
+    .btn-inspect-toast {
+      background: #FFFFFF;
+      color: #08090C;
+      border: none;
+      border-radius: var(--radius-pill);
+      padding: 6px 12px;
+      font-family: var(--font-sans);
+      font-size: 11px;
+      font-weight: 600;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      transition: transform 0.15s ease, background-color 0.15s ease;
+    }
+
+    .btn-inspect-toast:hover {
+      transform: scale(1.04);
+      background: #E2E8F0;
+    }
+
+    .btn-inspect-toast kbd {
+      background: rgba(0, 0, 0, 0.15);
+      border: 1px solid rgba(0, 0, 0, 0.2);
+      border-radius: 3px;
+      padding: 1px 5px;
+      font-family: var(--font-mono);
+      font-size: 9px;
+    }
+
+    /* 5. Bottom Keycap Hint Bar */
+    .hud-keycap-bar {
+      align-self: center;
+      background: rgba(11, 14, 20, 0.85);
+      backdrop-filter: blur(14px);
+      border: var(--border-hairline);
+      border-radius: var(--radius-pill);
+      padding: 6px 18px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-family: var(--font-mono);
+      font-size: 10px;
+      color: var(--text-silver);
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+      pointer-events: auto;
+    }
+
+    .keycap-cluster {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .hud-keycap {
+      background: rgba(255, 255, 255, 0.12);
+      border: 1px solid rgba(255, 255, 255, 0.22);
+      border-radius: 4px;
+      padding: 2px 6px;
+      font-family: var(--font-mono);
+      font-size: 10px;
+      color: #FFFFFF;
+      font-weight: 600;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.4);
+    }
+
+    .keycap-action {
+      color: #FFFFFF;
+      font-family: var(--font-sans);
+      font-size: 11px;
+    }
+
+    .hud-keycap-sep {
+      color: rgba(255, 255, 255, 0.2);
+    }
+
   </style>
 </head>
 <body>
@@ -1314,6 +2226,11 @@
                 <i data-lucide="rotate-ccw" class="hud-icon"></i>
                 <span>Reset</span>
               </button>
+              <button class="hud-btn" id="btn-toggle-cockpit" title="Surface Cockpit (WASD) [Hotkey: V]">
+                <i data-lucide="video" class="hud-icon" id="cockpit-btn-icon"></i>
+                <span id="cockpit-btn-text">Surface Cockpit (WASD)</span>
+              </button>
+              <div class="hud-divider"></div>
               <button class="hud-btn" id="btn-recenter-3d" title="Reset Camera Perspective (Pitch 55°)">
                 <i data-lucide="compass" class="hud-icon"></i>
                 <span>Reset View</span>
@@ -1322,6 +2239,98 @@
           </div>
 
           <!-- Bottom Discovered Sites Quick FlyTo Carousel -->
+          <!-- FIRST-PERSON ROVER / ASTRONAUT COCKPIT HUD (AEROSPACE MONOCHROME) -->
+          <div class="cockpit-hud-overlay hidden" id="cockpit-hud-overlay">
+            <!-- Top Magnetic Compass Tape -->
+            <div class="hud-compass-container">
+              <div class="hud-compass-header" id="hud-compass-heading-text">
+                Heading 048° NE — Toward Octavia E. Butler Landing
+              </div>
+              <div class="hud-compass-tape-window">
+                <div class="hud-compass-center-indicator"></div>
+                <div class="hud-compass-tape-strip" id="hud-compass-tape-strip">
+                  <!-- Generated dynamically in JS -->
+                </div>
+              </div>
+            </div>
+
+            <!-- Center Artificial Horizon & Pitch Ladder -->
+            <div class="hud-center-gimbal-layer">
+              <div class="hud-gimbal-rotator" id="hud-gimbal-rotator">
+                <div class="hud-horizon-wings">
+                  <div class="horizon-wing"></div>
+                  <div class="horizon-center-pip"></div>
+                  <div class="horizon-wing"></div>
+                </div>
+                <div class="hud-pitch-rungs">
+                  <div class="pitch-rung deg-10">
+                    <span class="pitch-num">+10</span>
+                    <div class="pitch-line"></div>
+                    <span class="pitch-num">+10</span>
+                  </div>
+                  <div class="pitch-rung deg-5">
+                    <span class="pitch-num">+5</span>
+                    <div class="pitch-line"></div>
+                    <span class="pitch-num">+5</span>
+                  </div>
+                  <div style="height: 1px;"></div>
+                  <div class="pitch-rung deg-5">
+                    <span class="pitch-num">-5</span>
+                    <div class="pitch-line"></div>
+                    <span class="pitch-num">-5</span>
+                  </div>
+                  <div class="pitch-rung deg-10">
+                    <span class="pitch-num">-10</span>
+                    <div class="pitch-line"></div>
+                    <span class="pitch-num">-10</span>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Lidar Rangefinder Reticle -->
+              <div class="hud-lidar-reticle">
+                <span class="lidar-tag">LIDAR RANGING</span>
+                <span class="lidar-val tabular-nums" id="hud-lidar-dist">42.8 m</span>
+                <span class="lidar-slope tabular-nums" id="hud-lidar-slope">SLOPE: 4.2°</span>
+              </div>
+            </div>
+
+            <!-- Proximity Discovery Toast -->
+            <div class="hud-proximity-toast hidden" id="hud-proximity-toast">
+              <div class="proximity-pulse-dot"></div>
+              <div class="proximity-content">
+                <span class="proximity-badge">NASA FIELD DISCOVERY IN RANGE</span>
+                <span class="proximity-title" id="hud-proximity-name">Octavia E. Butler Landing</span>
+                <span class="proximity-dist tabular-nums" id="hud-proximity-dist">Distance: 48m</span>
+              </div>
+              <button class="btn-inspect-toast" id="btn-hud-inspect-discovery">
+                <kbd>E</kbd>
+                <span>Inspect Surface Photos</span>
+              </button>
+            </div>
+
+            <!-- Bottom Keycap Hint Bar -->
+            <div class="hud-keycap-bar">
+              <div class="keycap-cluster">
+                <span class="hud-keycap">W</span>
+                <span class="hud-keycap">A</span>
+                <span class="hud-keycap">S</span>
+                <span class="hud-keycap">D</span>
+                <span class="keycap-action">Drive</span>
+              </div>
+              <div class="hud-keycap-sep">•</div>
+              <div class="keycap-cluster">
+                <span class="hud-keycap">E</span>
+                <span class="keycap-action">Inspect Site</span>
+              </div>
+              <div class="hud-keycap-sep">•</div>
+              <div class="keycap-cluster">
+                <span class="hud-keycap">V</span>
+                <span class="keycap-action">Exit Cockpit</span>
+              </div>
+            </div>
+          </div>
+
           <div class="discovered-sites-bar" id="discovered-sites-bar">
             <!-- Dynamically populated with pins for active site -->
           </div>
@@ -4491,6 +5500,27 @@
       /* 5. THREE.JS 3D TERRAIN & ORBITAL GLOBE SYSTEMS */
       let tScene, tCamera, tRenderer, tControls;
       let terrainMesh, instancedRocksMesh, dustParticlesMesh;
+      let lidarRibbonMesh, roverDustMesh, roverDustCount = 60;
+      let isCockpitMode = false, isTransitioningCockpit = false;
+      let savedOrbitalCamPos = new THREE.Vector3(), savedOrbitalCamTarget = new THREE.Vector3();
+      const driveKeys = { forward: false, backward: false, left: false, right: false };
+      const roverDrive = {
+        x: -120,
+        z: -100,
+        heading: 0.82,
+        speed: 0,
+        pitchDeg: 0,
+        rollDeg: 0,
+        slopeDeg: 0,
+        bounceOffset: 0,
+        distanceDrivenMeters: 0,
+        maxSpeed: 14.0,
+        accel: 24.0,
+        friction: 14.0,
+        turnRate: 1.6,
+        centerY: -22
+      };
+      let lastAnimTime = performance.now();
       let corridorMesh, directPathMesh, chevronGroup, stemsGroup, pinsGroup, roverMarkerMesh;
       let chevronOffset = 0;
 
@@ -4510,6 +5540,8 @@
         initRouteControls();
         initChartTabs();
         initSimControls();
+        initCockpitControls();
+        buildCompassTapeStrip();
         initAudioToggle();
 
         // 1. Initialize Upgraded 3D Orbital Mars Globe (View A)
