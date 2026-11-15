@@ -2238,6 +2238,175 @@
       color: #F8FAFC;
     }
 
+
+    /* ==========================================================================
+       SIDE SURFACE ROVER TRAVERSAL CAM // ROCKER-BOGIE CHASSIS FEED (EVA SIM)
+       ========================================================================== */
+    .side-rover-cam-panel {
+      position: absolute;
+      bottom: 72px;
+      left: 20px;
+      z-index: 450;
+      width: 360px;
+      background: rgba(12, 14, 18, 0.94);
+      backdrop-filter: blur(18px);
+      -webkit-backdrop-filter: blur(18px);
+      border: 1px solid rgba(255, 255, 255, 0.16);
+      border-radius: var(--radius-md);
+      box-shadow: 0 16px 48px rgba(0, 0, 0, 0.75);
+      font-family: var(--font-mono);
+      transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+      overflow: hidden;
+      pointer-events: auto;
+    }
+
+    .side-rover-cam-panel.idle-dim {
+      opacity: 0.88;
+      border-color: rgba(255, 255, 255, 0.12);
+    }
+
+    .side-rover-cam-panel.rolling {
+      border-color: rgba(245, 158, 11, 0.65);
+      box-shadow: 0 16px 48px rgba(0, 0, 0, 0.75), 0 0 24px rgba(245, 158, 11, 0.2);
+    }
+
+    .side-rover-cam-panel.minimized {
+      width: 250px;
+      height: 38px;
+    }
+    .side-rover-cam-panel.minimized .side-rover-canvas-wrap,
+    .side-rover-cam-panel.minimized .side-rover-footer {
+      display: none;
+    }
+
+    .side-rover-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 9px 12px;
+      background: rgba(255, 255, 255, 0.03);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    }
+
+    .side-rover-title {
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      font-size: 9.5px;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      color: #F8FAFC;
+    }
+
+    .rover-rec-dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: #EF4444;
+      box-shadow: 0 0 8px #EF4444;
+    }
+    .side-rover-cam-panel.rolling .rover-rec-dot {
+      animation: pulseBeacon 1.2s infinite ease-in-out;
+    }
+
+    .side-rover-actions {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .rover-speed-badge {
+      font-size: 9px;
+      font-weight: 700;
+      color: #F59E0B;
+      background: rgba(245, 158, 11, 0.15);
+      border: 1px solid rgba(245, 158, 11, 0.35);
+      padding: 2px 7px;
+      border-radius: var(--radius-pill);
+      letter-spacing: 0.04em;
+    }
+
+    .btn-side-rover-min {
+      border: none;
+      background: rgba(255, 255, 255, 0.08);
+      color: #94A3B8;
+      width: 20px;
+      height: 20px;
+      border-radius: 4px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.15s ease;
+    }
+    .btn-side-rover-min:hover {
+      background: rgba(255, 255, 255, 0.18);
+      color: #FFFFFF;
+    }
+
+    .side-rover-canvas-wrap {
+      position: relative;
+      width: 100%;
+      height: 135px;
+      background: #090A0E;
+    }
+
+    #side-rover-canvas {
+      display: block;
+      width: 100%;
+      height: 100%;
+    }
+
+    .rover-cam-scanlines {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%);
+      background-size: 100% 4px;
+      pointer-events: none;
+      opacity: 0.55;
+    }
+
+    .rover-cam-feed-label {
+      position: absolute;
+      top: 6px;
+      left: 8px;
+      font-size: 8px;
+      color: rgba(255, 255, 255, 0.65);
+      letter-spacing: 0.06em;
+      pointer-events: none;
+    }
+
+    .side-rover-footer {
+      display: grid;
+      grid-template-columns: 1.2fr 1fr 1fr;
+      padding: 7px 12px;
+      background: rgba(255, 255, 255, 0.02);
+      border-top: 1px solid rgba(255, 255, 255, 0.08);
+      gap: 6px;
+    }
+
+    .rover-stat-col {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .rover-stat-col .stat-lbl {
+      font-size: 7.5px;
+      color: #64748B;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      margin-bottom: 2px;
+    }
+
+    .rover-stat-col .stat-val {
+      font-size: 9.5px;
+      font-weight: 700;
+      color: #F8FAFC;
+    }
+
   </style>
 </head>
 <body>
@@ -2632,6 +2801,44 @@
               <div class="keycap-cluster">
                 <span class="hud-keycap">V</span>
                 <span class="keycap-action">Exit Cockpit</span>
+              </div>
+            </div>
+          </div>
+
+          
+          <!-- BIG LIVE ROVER TRAVERSAL HUD CAM (ACTIVATES WITH EVA SIM / WASD DRIVE) -->
+          <div class="side-rover-cam-panel idle-dim" id="side-rover-cam-panel">
+            <div class="side-rover-header">
+              <div class="side-rover-title">
+                <div class="rover-rec-dot" id="rover-rec-dot"></div>
+                <span>LIVE SURFACE RECON // CHASSIS CAM</span>
+              </div>
+              <div class="side-rover-actions">
+                <span class="rover-speed-badge" id="side-rover-speed-badge">0.0 KM/H</span>
+                <button class="btn-side-rover-min" id="btn-side-rover-min" title="Minimize / Expand Rover Feed">
+                  <i data-lucide="minus" style="width: 12px; height: 12px;"></i>
+                </button>
+              </div>
+            </div>
+
+            <div class="side-rover-canvas-wrap">
+              <canvas id="side-rover-canvas" width="360" height="135"></canvas>
+              <div class="rover-cam-scanlines"></div>
+              <div class="rover-cam-feed-label">FEED: HAZCAM-FORE // PITCH: <span id="side-chassis-tilt">+0.0°</span></div>
+            </div>
+
+            <div class="side-rover-footer">
+              <div class="rover-stat-col">
+                <span class="stat-lbl">TRAVERSE DIST</span>
+                <span class="stat-val tabular-nums" id="side-rover-dist">0.00 / 10.9 km</span>
+              </div>
+              <div class="rover-stat-col">
+                <span class="stat-lbl">ROCKER-BOGIE</span>
+                <span class="stat-val" id="side-rover-bogie" style="color: #34D399;">OPTIMAL GRIP</span>
+              </div>
+              <div class="rover-stat-col">
+                <span class="stat-lbl">STATUS</span>
+                <span class="stat-val" id="side-rover-status" style="color: #94A3B8;">PARKED</span>
               </div>
             </div>
           </div>
@@ -6392,6 +6599,47 @@
         const group = new THREE.Group();
         group.name = "ARES_SCOUT_ROVER";
 
+        // Prominent 2.2x Scale so Rover is unmistakably visible across the 680m crater
+        group.scale.set(2.2, 2.2, 2.2);
+
+        // Ground Hologram Tracking Ring (Radius ~12m)
+        const ringGeo = new THREE.RingGeometry(3.6, 4.2, 32);
+        ringGeo.rotateX(-Math.PI / 2);
+        const ringMat = new THREE.MeshBasicMaterial({
+          color: 0xF59E0B,
+          transparent: true,
+          opacity: 0.65,
+          side: THREE.DoubleSide
+        });
+        const ringMesh = new THREE.Mesh(ringGeo, ringMat);
+        ringMesh.position.y = 0.08;
+        group.add(ringMesh);
+
+        // Volumetric Headlight Cone projecting onto Martian terrain ahead
+        const lightConeGeo = new THREE.ConeGeometry(2.8, 10, 16, 1, true);
+        lightConeGeo.rotateX(-Math.PI / 2);
+        lightConeGeo.translate(0, 0, 5);
+        const lightConeMat = new THREE.MeshBasicMaterial({
+          color: 0xFEF08A,
+          transparent: true,
+          opacity: 0.18,
+          side: THREE.DoubleSide
+        });
+        const lightCone = new THREE.Mesh(lightConeGeo, lightConeMat);
+        lightCone.position.set(0, 0.8, 1.8);
+        group.add(lightCone);
+
+        // Vertical Laser Tracking Beacon Drop-Line (Height ~24m)
+        const laserGeo = new THREE.CylinderGeometry(0.04, 0.04, 20, 6);
+        const laserMat = new THREE.MeshBasicMaterial({
+          color: 0xF59E0B,
+          transparent: true,
+          opacity: 0.6
+        });
+        const laserMesh = new THREE.Mesh(laserGeo, laserMat);
+        laserMesh.position.set(0, 10, 0);
+        group.add(laserMesh);
+
         // 1. Main Obsidian Chassis Body (Angled Aerodynamic Hull)
         const chassisGeo = new THREE.BoxGeometry(2.6, 0.9, 3.6);
         const chassisMat = new THREE.MeshStandardMaterial({
@@ -6519,6 +6767,7 @@
         group.userData = {
           wheels: wheels,
           beacon: beaconMesh,
+          ring: ringMesh,
           rollDistance: 0,
           animateRoll: function(distDelta) {
             this.rollDistance += distDelta;
@@ -6528,6 +6777,11 @@
             });
             if (this.beacon) {
               this.beacon.rotation.y += 0.08;
+            }
+            if (this.ring) {
+              this.ring.rotation.z += 0.02;
+              const s = 1.0 + Math.sin(Date.now() * 0.005) * 0.12;
+              this.ring.scale.set(s, s, s);
             }
           }
         };
@@ -7392,6 +7646,7 @@
         initRouteControls();
         initChartTabs();
         initSimControls();
+        initSideRoverCam();
         initCockpitControls();
         initAcousticAndAlertControls();
         buildCompassTapeStrip();
@@ -7658,6 +7913,368 @@
          ======================================================================== */
       
       // 3D Terrain Pointer Raycasting for Live Surface Temperature Inspection
+      /* ========================================================================
+         BIG LIVE ROVER TRAVERSAL HUD CAM CONTROLLER (2D ROCKER-BOGIE SIMULATOR)
+         ======================================================================== */
+      function initSideRoverCam() {
+        const panel = document.getElementById('side-rover-cam-panel');
+        const canvas = document.getElementById('side-rover-canvas');
+        const btnMin = document.getElementById('btn-side-rover-min');
+        if (!canvas) return;
+
+        const ctx = canvas.getContext('2d');
+        const w = 360;
+        const h = 135;
+
+        // Toggle Minimize / Expand
+        if (btnMin) {
+          btnMin.addEventListener('click', (e) => {
+            e.stopPropagation();
+            panel.classList.toggle('minimized');
+            const icon = btnMin.querySelector('i');
+            if (icon) {
+              icon.setAttribute('data-lucide', panel.classList.contains('minimized') ? 'maximize-2' : 'minus');
+              if (window.lucide) lucide.createIcons();
+            }
+          });
+        }
+
+        let terrainScroll = 0;
+        let wheelAngle = 0;
+        let currentVisualSpeed = 0;
+        const dustList = [];
+
+        function spawnDustParticle(x, y) {
+          dustList.push({
+            x: x + (Math.random() - 0.5) * 6,
+            y: y + (Math.random() - 0.5) * 3,
+            vx: -(1.4 + Math.random() * 2.8),
+            vy: -(0.4 + Math.random() * 1.4),
+            size: 2.5 + Math.random() * 3.5,
+            alpha: 0.65 + Math.random() * 0.35,
+            life: 0
+          });
+        }
+
+        function renderFrame(time) {
+          requestAnimationFrame(renderFrame);
+
+          // Determine target speed based on simulation or WASD
+          let targetSpeed = 0;
+          if (isSimulating) {
+            targetSpeed = 3.6; // Nominal Martian rover traverse speed
+          } else if (Math.abs(roverDrive.speed) > 0.1) {
+            targetSpeed = (Math.abs(roverDrive.speed) / roverDrive.maxSpeed) * 4.2;
+          }
+
+          // Smooth acceleration / deceleration
+          currentVisualSpeed += (targetSpeed - currentVisualSpeed) * 0.08;
+
+          // Update UI badge & status
+          const speedBadge = document.getElementById('side-rover-speed-badge');
+          const statusVal = document.getElementById('side-rover-status');
+          const bogieVal = document.getElementById('side-rover-bogie');
+          const distVal = document.getElementById('side-rover-dist');
+          const tiltVal = document.getElementById('side-chassis-tilt');
+
+          if (currentVisualSpeed > 0.15) {
+            panel.classList.add('rolling');
+            panel.classList.remove('idle-dim');
+            if (speedBadge) speedBadge.textContent = `${(currentVisualSpeed * 1.05).toFixed(1)} KM/H`;
+            if (statusVal) {
+              statusVal.textContent = 'ROLLING';
+              statusVal.style.color = '#F59E0B';
+            }
+            if (bogieVal) {
+              bogieVal.textContent = (roverDrive.slopeDeg > 12) ? 'HIGH TORQUE' : 'OPTIMAL GRIP';
+              bogieVal.style.color = (roverDrive.slopeDeg > 12) ? '#F59E0B' : '#34D399';
+            }
+          } else {
+            panel.classList.remove('rolling');
+            panel.classList.add('idle-dim');
+            if (speedBadge) speedBadge.textContent = '0.0 KM/H';
+            if (statusVal) {
+              statusVal.textContent = 'PARKED';
+              statusVal.style.color = '#94A3B8';
+            }
+          }
+
+          if (tiltVal) {
+            tiltVal.textContent = `${(roverDrive.slopeDeg || 0).toFixed(1)}°`;
+          }
+
+          const spec = MISSION_O2_SPECS[currentSiteId] || MISSION_O2_SPECS['jezero-crater'];
+          if (distVal && spec) {
+            distVal.textContent = `${(roverDrive.distanceDrivenMeters / 1000).toFixed(2)} / ${spec.totalKm.toFixed(1)} km`;
+          }
+
+          terrainScroll += currentVisualSpeed * 1.8;
+          wheelAngle += currentVisualSpeed * 0.08;
+
+          // Clear Canvas
+          ctx.clearRect(0, 0, w, h);
+
+          // 1. Martian Twilight Sky
+          const skyGrad = ctx.createLinearGradient(0, 0, 0, h);
+          skyGrad.addColorStop(0, '#090B0F');
+          skyGrad.addColorStop(0.65, '#1A0E0A');
+          skyGrad.addColorStop(1, '#2D140C');
+          ctx.fillStyle = skyGrad;
+          ctx.fillRect(0, 0, w, h);
+
+          // Distant Crater Rim Silhouette (Parallax 0.15)
+          ctx.fillStyle = '#1A0E0B';
+          ctx.beginPath();
+          ctx.moveTo(0, h);
+          for (let x = 0; x <= w; x += 15) {
+            const rimY = 62 + Math.sin((x + terrainScroll * 0.15) * 0.02) * 12 + Math.cos((x + terrainScroll * 0.1) * 0.04) * 6;
+            ctx.lineTo(x, rimY);
+          }
+          ctx.lineTo(w, h);
+          ctx.closePath();
+          ctx.fill();
+
+          // Midground Escarpment Ridge (Parallax 0.45)
+          ctx.fillStyle = '#3B1910';
+          ctx.beginPath();
+          ctx.moveTo(0, h);
+          for (let x = 0; x <= w; x += 10) {
+            const ridgeY = 82 + Math.sin((x + terrainScroll * 0.45) * 0.035) * 10;
+            ctx.lineTo(x, ridgeY);
+          }
+          ctx.lineTo(w, h);
+          ctx.closePath();
+          ctx.fill();
+
+          // Foreground Scrolling Martian Regolith Ground
+          const groundBaseY = 112;
+          ctx.fillStyle = '#5A2618';
+          ctx.beginPath();
+          ctx.moveTo(0, h);
+          for (let x = 0; x <= w; x += 6) {
+            const gy = groundBaseY + Math.sin((x + terrainScroll) * 0.04) * 2.2 + Math.sin((x + terrainScroll) * 0.12) * 1.0;
+            ctx.lineTo(x, gy);
+          }
+          ctx.lineTo(w, h);
+          ctx.closePath();
+          ctx.fill();
+
+          // Ground Surface Iron-Oxide highlight line
+          ctx.strokeStyle = '#9A3E26';
+          ctx.lineWidth = 1.8;
+          ctx.beginPath();
+          for (let x = 0; x <= w; x += 6) {
+            const gy = groundBaseY + Math.sin((x + terrainScroll) * 0.04) * 2.2 + Math.sin((x + terrainScroll) * 0.12) * 1.0;
+            if (x === 0) ctx.moveTo(x, gy); else ctx.lineTo(x, gy);
+          }
+          ctx.stroke();
+
+          // Pebbles & Rocks on Ground
+          for (let i = 0; i < 12; i++) {
+            const rockX = ((i * 35 - (terrainScroll * 1.0)) % (w + 40) + (w + 40)) % (w + 40) - 20;
+            const rockY = groundBaseY + 3 + (i % 3) * 4;
+            ctx.fillStyle = '#26110B';
+            ctx.beginPath();
+            ctx.arc(rockX, rockY, 1.8 + (i % 3), 0, Math.PI * 2);
+            ctx.fill();
+          }
+
+          // Spawn Dust when rolling
+          if (currentVisualSpeed > 0.4 && Math.random() < 0.7) {
+            spawnDustParticle(roverCenterX - 60, groundBaseY + 1);
+          }
+
+          // Update & Render Dust Particles
+          for (let i = dustList.length - 1; i >= 0; i--) {
+            const p = dustList[i];
+            p.x += p.vx;
+            p.y += p.vy;
+            p.alpha -= 0.022;
+            p.size += 0.18;
+            p.life++;
+
+            if (p.alpha <= 0 || p.life > 40) {
+              dustList.splice(i, 1);
+              continue;
+            }
+
+            ctx.fillStyle = `rgba(234, 88, 12, ${p.alpha * 0.6})`;
+            ctx.beginPath();
+            ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
+            ctx.fill();
+          }
+
+          // ====================================================================
+          // 2. BIG ROVER RENDERING (SIDE PROFILE)
+          // ====================================================================
+          const roverCenterX = 155;
+          const bounce = (currentVisualSpeed > 0.1) ? Math.sin(time * 0.009) * 1.6 : 0;
+          const roverY = groundBaseY - 14 + bounce;
+
+          // Headlight Beam projecting forward
+          const headlightGrad = ctx.createRadialGradient(roverCenterX + 70, roverY - 10, 10, roverCenterX + 180, roverY + 5, 120);
+          headlightGrad.addColorStop(0, 'rgba(254, 240, 138, 0.45)');
+          headlightGrad.addColorStop(0.6, 'rgba(254, 240, 138, 0.12)');
+          headlightGrad.addColorStop(1, 'rgba(254, 240, 138, 0)');
+          ctx.fillStyle = headlightGrad;
+          ctx.beginPath();
+          ctx.moveTo(roverCenterX + 62, roverY - 14);
+          ctx.lineTo(roverCenterX + 190, roverY - 45);
+          ctx.lineTo(roverCenterX + 205, groundBaseY + 8);
+          ctx.closePath();
+          ctx.fill();
+
+          // Mastcam Sweeping Laser LIDAR Line
+          const sweepX = roverCenterX + 110 + Math.sin(time * 0.005) * 35;
+          ctx.strokeStyle = 'rgba(245, 158, 11, 0.55)';
+          ctx.lineWidth = 1.2;
+          ctx.beginPath();
+          ctx.moveTo(roverCenterX + 48, roverY - 48);
+          ctx.lineTo(sweepX, groundBaseY);
+          ctx.stroke();
+
+          // Lidar spot on ground
+          ctx.fillStyle = '#F59E0B';
+          ctx.beginPath();
+          ctx.ellipse(sweepX, groundBaseY, 4, 1.5, 0, 0, Math.PI * 2);
+          ctx.fill();
+
+          // Rocker-Bogie Suspension Struts (Dark Titanium)
+          ctx.strokeStyle = '#334155';
+          ctx.lineWidth = 3.5;
+          ctx.beginPath();
+          // Rocker pivot on chassis to middle wheel
+          ctx.moveTo(roverCenterX, roverY - 6);
+          ctx.lineTo(roverCenterX - 60, groundBaseY - 2);
+          // Rocker arm to bogie pivot
+          ctx.moveTo(roverCenterX, roverY - 6);
+          ctx.lineTo(roverCenterX + 35, roverY - 4);
+          // Bogie arm to mid wheel & front wheel
+          ctx.lineTo(roverCenterX + 6, groundBaseY - 2);
+          ctx.moveTo(roverCenterX + 35, roverY - 4);
+          ctx.lineTo(roverCenterX + 65, groundBaseY - 2);
+          ctx.stroke();
+
+          // 3 Wheels (Rear, Middle, Front)
+          const wheelsX = [roverCenterX - 60, roverCenterX + 6, roverCenterX + 65];
+          wheelsX.forEach(wx => {
+            const wy = groundBaseY - 2;
+
+            // Ground Contact Shadow
+            ctx.fillStyle = 'rgba(0, 0, 0, 0.5)';
+            ctx.beginPath();
+            ctx.ellipse(wx, wy + 13, 14, 3, 0, 0, Math.PI * 2);
+            ctx.fill();
+
+            // Outer Tire
+            ctx.fillStyle = '#14171F';
+            ctx.beginPath();
+            ctx.arc(wx, wy, 13, 0, Math.PI * 2);
+            ctx.fill();
+
+            ctx.strokeStyle = '#475569';
+            ctx.lineWidth = 1.6;
+            ctx.stroke();
+
+            // Rotating Treads
+            ctx.strokeStyle = '#64748B';
+            ctx.lineWidth = 1.4;
+            for (let k = 0; k < 6; k++) {
+              const a = wheelAngle + (k * Math.PI / 3);
+              ctx.beginPath();
+              ctx.moveTo(wx, wy);
+              ctx.lineTo(wx + Math.cos(a) * 11.5, wy + Math.sin(a) * 11.5);
+              ctx.stroke();
+            }
+
+            // Gold Hubcap
+            ctx.fillStyle = '#F59E0B';
+            ctx.beginPath();
+            ctx.arc(wx, wy, 4, 0, Math.PI * 2);
+            ctx.fill();
+          });
+
+          // Main Chassis Hull (Obsidian Aerospace Body)
+          ctx.fillStyle = '#181B22';
+          ctx.strokeStyle = '#475569';
+          ctx.lineWidth = 1.5;
+          ctx.beginPath();
+          ctx.moveTo(roverCenterX - 64, roverY - 8);
+          ctx.lineTo(roverCenterX + 56, roverY - 8);
+          ctx.lineTo(roverCenterX + 68, roverY - 18);
+          ctx.lineTo(roverCenterX + 50, roverY - 30);
+          ctx.lineTo(roverCenterX - 60, roverY - 30);
+          ctx.lineTo(roverCenterX - 68, roverY - 16);
+          ctx.closePath();
+          ctx.fill();
+          ctx.stroke();
+
+          // Golden Thermal Insulation Foil Patch
+          ctx.fillStyle = '#D97706';
+          ctx.fillRect(roverCenterX - 28, roverY - 24, 46, 12);
+          ctx.strokeStyle = '#F59E0B';
+          ctx.lineWidth = 0.8;
+          ctx.strokeRect(roverCenterX - 28, roverY - 24, 46, 12);
+
+          // Stencil Typography on Chassis
+          ctx.font = '700 7px "JetBrains Mono"';
+          ctx.fillStyle = '#F8FAFC';
+          ctx.fillText('ARES // NASA', roverCenterX - 24, roverY - 15);
+
+          // Solar Array Top Deck
+          ctx.fillStyle = '#0F172A';
+          ctx.strokeStyle = '#38BDF8';
+          ctx.lineWidth = 0.8;
+          ctx.fillRect(roverCenterX - 56, roverY - 34, 102, 4);
+          ctx.strokeRect(roverCenterX - 56, roverY - 34, 102, 4);
+
+          // High-Gain Parabolic Dish Antenna (Rear)
+          ctx.fillStyle = '#F1F5F9';
+          ctx.beginPath();
+          ctx.arc(roverCenterX - 42, roverY - 42, 9, -Math.PI * 0.7, Math.PI * 0.2);
+          ctx.lineTo(roverCenterX - 42, roverY - 42);
+          ctx.closePath();
+          ctx.fill();
+
+          // Dish Mount Strut
+          ctx.strokeStyle = '#94A3B8';
+          ctx.lineWidth = 1.4;
+          ctx.beginPath();
+          ctx.moveTo(roverCenterX - 42, roverY - 34);
+          ctx.lineTo(roverCenterX - 42, roverY - 42);
+          ctx.stroke();
+
+          // Mastcam Sensor Mast (Front)
+          ctx.strokeStyle = '#CBD5E1';
+          ctx.lineWidth = 2.4;
+          ctx.beginPath();
+          ctx.moveTo(roverCenterX + 48, roverY - 34);
+          ctx.lineTo(roverCenterX + 48, roverY - 54);
+          ctx.stroke();
+
+          // Mastcam Head Box
+          ctx.fillStyle = '#1E293B';
+          ctx.strokeStyle = '#64748B';
+          ctx.lineWidth = 1;
+          ctx.fillRect(roverCenterX + 42, roverY - 60, 15, 8);
+          ctx.strokeRect(roverCenterX + 42, roverY - 60, 15, 8);
+
+          // Cyan Stereo Lenses
+          ctx.fillStyle = '#38BDF8';
+          ctx.beginPath();
+          ctx.arc(roverCenterX + 55, roverY - 56, 2.2, 0, Math.PI * 2);
+          ctx.fill();
+
+          // Amber Beacon on Top of Mastcam
+          ctx.fillStyle = '#F59E0B';
+          ctx.beginPath();
+          ctx.arc(roverCenterX + 48, roverY - 64, 2.5, 0, Math.PI * 2);
+          ctx.fill();
+        }
+
+        requestAnimationFrame(renderFrame);
+      }
+
       function initTerrainHoverRaycaster() {
         const container = document.getElementById('webgl-tactical-container');
         if (!container) return;
