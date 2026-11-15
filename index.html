@@ -2033,6 +2033,79 @@
       box-shadow: 0 0 14px rgba(239, 68, 68, 0.35);
     }
 
+  
+    /* ==========================================================================
+       PRECISION UPGRADES: EMERGENCY ROUTE, COLD TRAPS & UNEXPLORED SECTORS
+       ========================================================================== */
+    .emergency-route-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: rgba(16, 185, 129, 0.15);
+      border: 1px solid rgba(16, 185, 129, 0.45);
+      border-radius: var(--radius-pill);
+      padding: 3px 10px;
+      font-family: var(--font-mono);
+      font-size: 9px;
+      color: #34D399;
+      letter-spacing: 0.06em;
+    }
+
+    .cold-trap-indicator {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      background: rgba(2, 132, 199, 0.18);
+      border: 1px solid rgba(56, 189, 248, 0.45);
+      border-radius: var(--radius-pill);
+      padding: 2px 8px;
+      font-family: var(--font-mono);
+      font-size: 9px;
+      color: #38BDF8;
+      animation: pulseBeacon 1.4s infinite ease-in-out;
+    }
+
+    .slope-exertion-indicator {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      background: rgba(239, 68, 68, 0.2);
+      border: 1px solid rgba(239, 68, 68, 0.55);
+      border-radius: var(--radius-pill);
+      padding: 2px 8px;
+      font-family: var(--font-mono);
+      font-size: 9px;
+      color: #F87171;
+      animation: pulseBeacon 0.9s infinite ease-in-out;
+    }
+
+    .radiation-indicator {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      background: rgba(245, 158, 11, 0.2);
+      border: 1px solid rgba(245, 158, 11, 0.5);
+      border-radius: var(--radius-pill);
+      padding: 2px 8px;
+      font-family: var(--font-mono);
+      font-size: 9px;
+      color: #FBBF24;
+    }
+
+    /* Unexplored Sector Badge in Modal */
+    .modal-unexplored-tag {
+      background: rgba(245, 158, 11, 0.18);
+      border: 1px solid rgba(245, 158, 11, 0.5);
+      color: #FBBF24;
+      font-family: var(--font-mono);
+      font-size: 9px;
+      padding: 2px 8px;
+      border-radius: var(--radius-pill);
+      display: inline-block;
+      margin-bottom: 6px;
+      letter-spacing: 0.08em;
+    }
+
   </style>
 </head>
 <body>
@@ -2226,7 +2299,7 @@
               <div class="big-alert-actions">
                 <button class="btn-big-action-primary" id="btn-big-execute-return">
                   <i data-lucide="rotate-ccw" style="width: 17px; height: 17px;"></i>
-                  <span>Execute Safe A* Walk-Back</span>
+                  <span>↺ Follow Emergency Short Route</span>
                 </button>
                 <button class="btn-big-action-secondary" id="btn-big-dismiss">
                   <i data-lucide="eye-off" style="width: 15px; height: 15px;"></i>
@@ -5410,12 +5483,65 @@
   }
 };
 
+            
+      /* ========================================================================
+         HIGH-RES MARTIAN ORBITAL RADAR INLINE SVG GENERATOR (ZERO BROKEN IMAGES)
+         ======================================================================== */
+      function getOrbitalRadarSVG(name, coords, elev) {
+        const c = coords || [18.38, 77.58];
+        const e = elev || '-2,450m';
+        const svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 500" width="100%" height="100%">
+          <defs>
+            <radialGradient id="radarBg" cx="50%" cy="50%" r="70%">
+              <stop offset="0%" stop-color="#2D1510"/>
+              <stop offset="60%" stop-color="#190D0B"/>
+              <stop offset="100%" stop-color="#0B0504"/>
+            </radialGradient>
+            <pattern id="grid" width="40" height="40" patternUnits="userSpaceOnUse">
+              <path d="M 40 0 L 0 0 0 40" fill="none" stroke="rgba(245,158,11,0.12)" stroke-width="1"/>
+            </pattern>
+          </defs>
+          <rect width="800" height="500" fill="url(#radarBg)"/>
+          <rect width="800" height="500" fill="url(#grid)"/>
+          <ellipse cx="400" cy="250" rx="340" ry="190" fill="none" stroke="rgba(245,158,11,0.22)" stroke-width="1.5" stroke-dasharray="4,4"/>
+          <ellipse cx="400" cy="250" rx="260" ry="145" fill="none" stroke="rgba(245,158,11,0.35)" stroke-width="2"/>
+          <ellipse cx="400" cy="250" rx="180" ry="100" fill="none" stroke="rgba(245,158,11,0.5)" stroke-width="2"/>
+          <ellipse cx="400" cy="250" rx="90" ry="50" fill="rgba(245,158,11,0.08)" stroke="#F59E0B" stroke-width="2.5"/>
+          <line x1="400" y1="40" x2="400" y2="460" stroke="rgba(245,158,11,0.35)" stroke-width="1.5"/>
+          <line x1="80" y1="250" x2="720" y2="250" stroke="rgba(245,158,11,0.35)" stroke-width="1.5"/>
+          <circle cx="400" cy="250" r="16" fill="none" stroke="#FBBF24" stroke-width="2"/>
+          <circle cx="400" cy="250" r="4" fill="#EF4444"/>
+          <text x="36" y="52" fill="#F59E0B" font-family="'JetBrains Mono', monospace" font-size="13" font-weight="700" letter-spacing="2">NASA MOLA // ORBITAL RADAR ALTIMETRY RECON</text>
+          <text x="36" y="74" fill="#E2E8F0" font-family="'JetBrains Mono', monospace" font-size="11">TARGET: ${name.toUpperCase()}</text>
+          <text x="36" y="94" fill="#94A3B8" font-family="'JetBrains Mono', monospace" font-size="11">COORDINATES: ${c[0]}° N, ${c[1]}° E  |  ELEVATION: ${e}</text>
+          <text x="36" y="460" fill="#10B981" font-family="'JetBrains Mono', monospace" font-size="10">RESOLUTION: 1.0m/px  •  RADAR REFLECTIVITY: 0.88  •  STATUS: VERIFIED RADAR FRAME</text>
+        </svg>`;
+        return 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(svg);
+      }
+
+      function openUnexploredSectorModal(clickWorldPt) {
+        audio.playBlip(620, 0.1);
+        const lat = (18.38 + (clickWorldPt.z / 1000) * 0.016).toFixed(4);
+        const lon = (77.58 + (clickWorldPt.x / 1000) * 0.016).toFixed(4);
+        const elev = Math.round(-2450 + clickWorldPt.y * 3.5);
+        const slope = (Math.abs(Math.sin(clickWorldPt.x * 0.04)) * 14.5 + 3.2).toFixed(1);
+
+        povTitle.textContent = 'Unexplored Martian Sector';
+        povCamera.textContent = 'ORBITAL MOLA/THEMIS RECON // SYNTHETIC ML MODELING';
+        povSolCoords.textContent = `${lat}°N, ${lon}°E • Elevation ${elev}m • Estimated Slope ${slope}°`;
+        povDesc.innerHTML = `<span class="modal-unexplored-tag">UNEXPLORED SECTOR // NO SURFACE ROVER TELEMETRY</span><br>NASA has not yet landed a surface asset at these coordinates. Relying on Orbital MOLA/THEMIS Altimetry &amp; ML Terrain traversability prediction for remote routing analysis.`;
+
+        povLoading.style.display = 'none';
+        povImg.src = getOrbitalRadarSVG('Unexplored Sector Target', [lat, lon], `${elev}m`);
+        povModal.classList.add('active');
+      }
+
             const ROVER_SURFACE_FALLBACKS = {
-        perseverance: 'https://images-assets.nasa.gov/image/PIA24424/PIA24424~orig.jpg',
-        spirit: 'https://images-assets.nasa.gov/image/PIA05015/PIA05015~orig.jpg',
-        curiosity: 'https://images-assets.nasa.gov/image/PIA16051/PIA16051~orig.jpg',
-        insight: 'https://images-assets.nasa.gov/image/PIA22959/PIA22959~orig.jpg',
-        opportunity: 'https://images-assets.nasa.gov/image/PIA05237/PIA05237~orig.jpg'
+        perseverance: 'https://images-assets.nasa.gov/image/PIA24424/PIA24424~medium.jpg',
+        spirit: 'https://images-assets.nasa.gov/image/PIA05015/PIA05015~medium.jpg',
+        curiosity: 'https://images-assets.nasa.gov/image/PIA16051/PIA16051~medium.jpg',
+        insight: 'https://images-assets.nasa.gov/image/PIA22959/PIA22959~medium.jpg',
+        opportunity: 'https://images-assets.nasa.gov/image/PIA05237/PIA05237~medium.jpg'
       };
 
       const NASA_LANDED_SITES = {
@@ -5431,60 +5557,65 @@
             {
               id: 'octavia-butler',
               name: 'Octavia E. Butler Landing',
+              nasaId: 'PIA24424',
               coords: [18.38, 77.58],
               local: [-120, -100],
               sol: 0,
               camera: 'NAVCAM',
               elev: '-2,494m',
-              img: 'https://mars.nasa.gov/mars2020-raw-images/pub/ods/surface/sol/00003/ids/edr/browse/ncam/NLF_0003_0667201371_000ECM_N0010052AUT_04096_00_2I3J01_1200.jpg',
+              img: 'https://images-assets.nasa.gov/image/PIA24424/PIA24424~medium.jpg',
               fallback: 'https://images-assets.nasa.gov/image/PIA24424/PIA24424~orig.jpg',
               desc: 'Perseverance Navcam/Mastcam-Z surface touchdown horizon & wheel tracks on the floor of Jezero Crater.'
             },
             {
               id: 'south-seitah',
               name: 'South Séítah',
+              nasaId: 'PIA24836',
               coords: [18.42, 77.56],
               local: [-50, -30],
               sol: 214,
               camera: 'MASTCAM-Z',
               elev: '-2,460m',
-              img: 'https://mars.nasa.gov/mars2020-raw-images/pub/ods/surface/sol/00214/ids/edr/browse/zcam/ZL0_0214_0685947236_054EBY_N0071836ZCAM08206_1100LMJ01_1200.jpg',
+              img: 'https://images-assets.nasa.gov/image/PIA24836/PIA24836~medium.jpg',
               fallback: 'https://images-assets.nasa.gov/image/PIA24836/PIA24836~orig.jpg',
               desc: 'Perseverance Mastcam-Z layered olivine bedrock, fractured pavers, and hazardous dark ripple dunes.'
             },
             {
               id: 'kodiak-butte',
               name: 'Kodiak Butte',
+              nasaId: 'PIA24923',
               coords: [18.44, 77.54],
               local: [10, 40],
               sol: 84,
               camera: 'MASTCAM-Z',
               elev: '-2,382m',
-              img: 'https://mars.nasa.gov/mars2020-raw-images/pub/ods/surface/sol/00084/ids/edr/browse/zcam/ZL0_0084_0674410688_662EBY_N0040000ZCAM08036_1100LMJ01_1200.jpg',
+              img: 'https://images-assets.nasa.gov/image/PIA24923/PIA24923~medium.jpg',
               fallback: 'https://images-assets.nasa.gov/image/PIA24923/PIA24923~orig.jpg',
               desc: 'Perseverance Mastcam-Z western delta remnant stratigraphy displaying bottomset and inclined foreset delta beds.'
             },
             {
               id: 'three-forks',
               name: 'Three Forks Sample Depot',
+              nasaId: 'PIA25684',
               coords: [18.46, 77.50],
               local: [70, 90],
               sol: 658,
               camera: 'NAVCAM',
               elev: '-2,478m',
-              img: 'https://mars.nasa.gov/mars2020-raw-images/pub/ods/surface/sol/00658/ids/edr/browse/ncam/NLF_0658_0725365592_689ECM_N0311330NCAM00501_01_195J01_1200.jpg',
+              img: 'https://images-assets.nasa.gov/image/PIA25684/PIA25684~medium.jpg',
               fallback: 'https://images-assets.nasa.gov/image/PIA25684/PIA25684~orig.jpg',
               desc: 'Perseverance WATSON/Navcam sample tubes cached directly on the red Martian surface at Three Forks.'
             },
             {
               id: 'cheyava-falls',
               name: 'Cheyava Falls',
+              nasaId: 'PIA26367',
               coords: [18.45, 77.45],
               local: [130, 120],
               sol: 1218,
               camera: 'MASTCAM-Z',
               elev: '-2,418m',
-              img: 'https://mars.nasa.gov/mars2020-raw-images/pub/ods/surface/sol/01218/ids/edr/browse/zcam/ZL0_1218_0775077030_391EBY_N0561736ZCAM09279_1100LMJ01_1200.jpg',
+              img: 'https://images-assets.nasa.gov/image/PIA26367/PIA26367~medium.jpg',
               fallback: 'https://images-assets.nasa.gov/image/PIA26367/PIA26367~orig.jpg',
               desc: 'Perseverance Mastcam-Z leopard-spot mudstone rock containing iron phosphate reaction rings and organic veins.'
             }
@@ -5502,38 +5633,41 @@
             {
               id: 'columbia-station',
               name: 'Columbia Memorial Station',
+              nasaId: 'PIA05015',
               coords: [-14.568, 175.473],
               local: [-110, -100],
               sol: 0,
               camera: 'PANCAM',
               elev: '-1,940m',
-              img: 'https://photojournal.jpl.nasa.gov/jpegMod/PIA05015_modest.jpg',
+              img: 'https://images-assets.nasa.gov/image/PIA05015/PIA05015~medium.jpg',
               fallback: 'https://images-assets.nasa.gov/image/PIA05015/PIA05015~orig.jpg',
               desc: 'Spirit Pancam Gusev Crater plains surface touchdown horizon and lander airbag impressions.'
             },
             {
               id: 'husband-hill',
               name: 'Husband Hill Summit',
+              nasaId: 'PIA07997',
               coords: [-14.590, 175.520],
               local: [10, 20],
               sol: 580,
               camera: 'PANCAM',
               elev: '-1,833m',
-              img: 'https://photojournal.jpl.nasa.gov/jpegMod/PIA07997_modest.jpg',
+              img: 'https://images-assets.nasa.gov/image/PIA07997/PIA07997~medium.jpg',
               fallback: 'https://images-assets.nasa.gov/image/PIA07997/PIA07997~orig.jpg',
               desc: 'Spirit Pancam summit panoramic view overlooking the Inner Basin, Tennessee Valley, and dust devils.'
             },
             {
               id: 'home-plate',
               name: 'Home Plate Silica Deposit',
+              nasaId: 'PIA10214',
               coords: [-14.602, 175.535],
               local: [110, 100],
               sol: 750,
               camera: 'PANCAM',
               elev: '-1,915m',
-              img: 'https://photojournal.jpl.nasa.gov/jpegMod/PIA10214_modest.jpg',
+              img: 'https://images-assets.nasa.gov/image/PIA10214/PIA10214~medium.jpg',
               fallback: 'https://images-assets.nasa.gov/image/PIA10214/PIA10214~orig.jpg',
-              desc: 'Spirit Pancam layered volcanic ash & bright white silica soil trench churned up by rover wheels.'
+              desc: 'Spirit Pancam layered volcanic ash & bright white opaline silica soil trench churned up by rover wheels.'
             }
           ]
         },
@@ -5549,48 +5683,52 @@
             {
               id: 'bradbury-landing',
               name: 'Bradbury Landing',
+              nasaId: 'PIA16051',
               coords: [-5.45, 137.44],
               local: [-130, -110],
               sol: 0,
               camera: 'MASTCAM',
               elev: '-4,450m',
-              img: 'https://photojournal.jpl.nasa.gov/jpegMod/PIA16051_modest.jpg',
+              img: 'https://images-assets.nasa.gov/image/PIA16051/PIA16051~medium.jpg',
               fallback: 'https://images-assets.nasa.gov/image/PIA16051/PIA16051~orig.jpg',
               desc: 'Curiosity Mastcam landing site and Aeolis Mons (Mount Sharp) base panorama on Mars.'
             },
             {
               id: 'yellowknife-bay',
               name: 'Yellowknife Bay',
+              nasaId: 'PIA16564',
               coords: [-5.46, 137.43],
               local: [-80, -70],
               sol: 120,
               camera: 'MASTCAM',
               elev: '-4,420m',
-              img: 'https://photojournal.jpl.nasa.gov/jpegMod/PIA16564_modest.jpg',
+              img: 'https://images-assets.nasa.gov/image/PIA16564/PIA16564~medium.jpg',
               fallback: 'https://images-assets.nasa.gov/image/PIA16564/PIA16564~orig.jpg',
               desc: 'Curiosity Mastcam Sheepbed mudstone ancient freshwater lakebed confirming habitable conditions.'
             },
             {
               id: 'vera-rubin-ridge',
               name: 'Vera Rubin Ridge',
+              nasaId: 'PIA22210',
               coords: [-5.48, 137.41],
               local: [10, 20],
               sol: 1800,
               camera: 'MASTCAM',
               elev: '-4,180m',
-              img: 'https://photojournal.jpl.nasa.gov/jpegMod/PIA22210_modest.jpg',
+              img: 'https://images-assets.nasa.gov/image/PIA22210/PIA22210~medium.jpg',
               fallback: 'https://images-assets.nasa.gov/image/PIA22210/PIA22210~medium.jpg',
               desc: 'Curiosity Mastcam hematite ridge stratigraphy and finely laminated sedimentary rock formations.'
             },
             {
               id: 'gediz-vallis',
               name: 'Gediz Vallis Boxwork',
+              nasaId: 'PIA26281',
               coords: [-5.515, 137.36],
               local: [110, 110],
               sol: 4320,
               camera: 'MASTCAM',
               elev: '-3,820m',
-              img: 'https://photojournal.jpl.nasa.gov/jpegMod/PIA26281_modest.jpg',
+              img: 'https://images-assets.nasa.gov/image/PIA26281/PIA26281~medium.jpg',
               fallback: 'https://images-assets.nasa.gov/image/PIA26281/PIA26281~orig.jpg',
               desc: 'Curiosity Mastcam sulfate-bearing ridge and boulder-strewn debris channel in upper Gediz Vallis.'
             }
@@ -5608,36 +5746,39 @@
             {
               id: 'homestead-hollow',
               name: 'Homestead Hollow',
+              nasaId: 'PIA22959',
               coords: [4.502, 135.623],
               local: [-90, -90],
               sol: 0,
               camera: 'IDC',
               elev: '-2,613m',
-              img: 'https://photojournal.jpl.nasa.gov/jpegMod/PIA22959_modest.jpg',
+              img: 'https://images-assets.nasa.gov/image/PIA22959/PIA22959~medium.jpg',
               fallback: 'https://images-assets.nasa.gov/image/PIA22959/PIA22959~orig.jpg',
               desc: 'InSight IDC surface view of smooth sandy hollow and pebble field on the Martian plains.'
             },
             {
               id: 'seis-zone',
               name: 'SEIS Seismometer Zone',
+              nasaId: 'PIA22977',
               coords: [4.510, 135.632],
               local: [0, 10],
               sol: 60,
               camera: 'IDC',
               elev: '-2,605m',
-              img: 'https://photojournal.jpl.nasa.gov/jpegMod/PIA22977_modest.jpg',
+              img: 'https://images-assets.nasa.gov/image/PIA22977/PIA22977~medium.jpg',
               fallback: 'https://images-assets.nasa.gov/image/PIA22977/PIA22977~orig.jpg',
               desc: 'InSight dome seismometer (SEIS) and wind and thermal shield deployed directly on Mars soil.'
             },
             {
               id: 'hp3-mole',
               name: 'HP3 Heat Flow Mole Site',
+              nasaId: 'PIA23302',
               coords: [4.518, 135.641],
               local: [90, 80],
               sol: 110,
               camera: 'IDC',
               elev: '-2,595m',
-              img: 'https://photojournal.jpl.nasa.gov/jpegMod/PIA23302_modest.jpg',
+              img: 'https://images-assets.nasa.gov/image/PIA23302/PIA23302~medium.jpg',
               fallback: 'https://images-assets.nasa.gov/image/PIA23302/PIA23302~orig.jpg',
               desc: 'InSight HP3 mole support structure and self-hammering heat probe embedded in Martian regolith.'
             }
@@ -5655,36 +5796,39 @@
             {
               id: 'eagle-crater',
               name: 'Eagle Crater',
+              nasaId: 'PIA05237',
               coords: [-1.946, 354.473],
               local: [-120, -110],
               sol: 1,
               camera: 'PANCAM',
               elev: '-1,440m',
-              img: 'https://photojournal.jpl.nasa.gov/jpegMod/PIA05237_modest.jpg',
+              img: 'https://images-assets.nasa.gov/image/PIA05237/PIA05237~medium.jpg',
               fallback: 'https://images-assets.nasa.gov/image/PIA05237/PIA05237~orig.jpg',
               desc: 'Opportunity Pancam bedrock outcrop and hematite spherules at the landing crater.'
             },
             {
               id: 'victoria-crater',
               name: 'Victoria Crater',
+              nasaId: 'PIA08813',
               coords: [-2.050, 354.498],
               local: [40, 30],
               sol: 950,
               camera: 'PANCAM',
               elev: '-1,400m',
-              img: 'https://photojournal.jpl.nasa.gov/jpegMod/PIA08813_modest.jpg',
+              img: 'https://images-assets.nasa.gov/image/PIA08813/PIA08813~medium.jpg',
               fallback: 'https://images-assets.nasa.gov/image/PIA08813/PIA08813~orig.jpg',
               desc: 'Opportunity Pancam Cape Verde cliff promontory and dramatic stratified canyon walls.'
             },
             {
               id: 'endeavour-rim',
               name: 'Endeavour Rim',
+              nasaId: 'PIA14764',
               coords: [-2.280, 354.670],
               local: [120, 110],
               sol: 2700,
               camera: 'PANCAM',
               elev: '-1,390m',
-              img: 'https://photojournal.jpl.nasa.gov/jpegMod/PIA14764_modest.jpg',
+              img: 'https://images-assets.nasa.gov/image/PIA14764/PIA14764~medium.jpg',
               fallback: 'https://images-assets.nasa.gov/image/PIA14764/PIA14764~orig.jpg',
               desc: 'Opportunity Pancam Cape York crater rim ridge revealing gypsum veins and ancient sulfate rock.'
             }
@@ -6233,6 +6377,40 @@
       let currentO2AlertState = 'nominal';
       let isBigAlertDismissed = false;
 
+      
+      let emergencyShortPathMesh = null;
+
+      function renderEmergencyShortRoute() {
+        if (!tScene) return;
+        if (emergencyShortPathMesh) tScene.remove(emergencyShortPathMesh);
+
+        const traj = ALL_TRAJECTORIES[currentSiteId] || ALL_TRAJECTORIES['jezero-crater'];
+        const basePt = (currentCorridorCurve && currentCorridorCurve.points) ? currentCorridorCurve.points[0] : new THREE.Vector3(-120, 0, -100);
+        const currentPt = new THREE.Vector3(roverDrive.x, roverDrive.centerY + 1.2, roverDrive.z);
+
+        // Direct straight line vector from rover to Base Camp
+        const linePts = [];
+        const steps = 30;
+        for (let i = 0; i <= steps; i++) {
+          const t = i / steps;
+          const px = currentPt.x + (basePt.x - currentPt.x) * t;
+          const pz = currentPt.z + (basePt.z - currentPt.z) * t;
+          const py = getTerrainElevation(currentSiteId, px, pz) + 1.2;
+          linePts.push(new THREE.Vector3(px, py, pz));
+        }
+
+        const geo = new THREE.BufferGeometry().setFromPoints(linePts);
+        const mat = new THREE.LineDashedMaterial({
+          color: 0x10B981,
+          dashSize: 3,
+          gapSize: 2,
+          linewidth: 3
+        });
+        emergencyShortPathMesh = new THREE.Line(geo, mat);
+        emergencyShortPathMesh.computeLineDistances();
+        tScene.add(emergencyShortPathMesh);
+      }
+
       function checkOxygenAlerts(o2Pct, forceTrigger = false) {
         const vignette = document.getElementById('visor-vignette-pulse');
         const banner = document.getElementById('hud-o2-alert-banner');
@@ -6292,6 +6470,8 @@
           if (bigOverlay) {
             bigOverlay.classList.remove('caution-mode', 'hidden');
           }
+          // Compute and render glowing direct Emergency Short-Cut Route
+          renderEmergencyShortRoute();
 
           if (currentO2AlertState !== 'critical' || forceTrigger) {
             currentO2AlertState = 'critical';
