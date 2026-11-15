@@ -100,7 +100,7 @@ const server = http.createServer((req, res) => {
 
   // Root or Default Page
   if (reqPath === '/' || reqPath === '/index.html') {
-    reqPath = '/Mars Survival guide.html';
+    reqPath = '/index.html';
   }
 
   const filePath = path.join(PUBLIC_DIR, reqPath);
@@ -140,7 +140,7 @@ server.listen(PORT, '0.0.0.0', () => {
   console.log(`  All Trajectories: http://localhost:${PORT}/api/trajectories`);
   console.log(`  Site Trajectory:  http://localhost:${PORT}/api/trajectory/:siteId`);
   console.log(`  Mars Data API:    http://localhost:${PORT}/api/mars-data`);
-  console.log(`  Serving:          Mars Survival guide.html`);
+  console.log(`  Serving:          index.html`);
   console.log(`======================================================\n`);
 });
 
