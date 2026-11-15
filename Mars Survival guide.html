@@ -2233,6 +2233,142 @@
     /* ==========================================================================
        SIDE SURFACE ROVER TRAVERSAL CAM // ROCKER-BOGIE CHASSIS FEED (EVA SIM)
        ========================================================================== */
+    /* ==========================================================================
+       AEROSPACE WASD ROVER DRIVE CONTROLS HUD LEGEND CARD (FROSTED OBSIDIAN)
+       ========================================================================== */
+    .hud-wasd-legend-card {
+      position: absolute;
+      bottom: 304px;
+      left: 20px;
+      width: 175px;
+      background: rgba(12, 16, 24, 0.90);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border: 1px solid rgba(255, 255, 255, 0.14);
+      border-radius: 10px;
+      padding: 9px 12px;
+      box-shadow: 0 12px 32px rgba(0, 0, 0, 0.72), inset 0 1px 0 rgba(255, 255, 255, 0.08);
+      z-index: 460;
+      user-select: none;
+      pointer-events: auto;
+      font-family: var(--font-mono, 'JetBrains Mono', monospace);
+      transition: border-color 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .hud-wasd-legend-card.orbital-wasd-dock {
+      bottom: 45px;
+      left: 30px;
+      z-index: 40;
+    }
+
+    .wasd-legend-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 7px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+      padding-bottom: 5px;
+    }
+
+    .wasd-legend-title {
+      font-size: 8.5px;
+      letter-spacing: 0.1em;
+      font-weight: 700;
+      color: #94A3B8;
+      text-transform: uppercase;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .wasd-legend-status {
+      font-size: 7.5px;
+      font-weight: 800;
+      letter-spacing: 0.08em;
+      color: #64748B;
+      transition: all 0.12s ease;
+    }
+
+    .wasd-grid-cluster {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 5px;
+      margin: 6px 0;
+    }
+
+    .wasd-row {
+      display: flex;
+      gap: 6px;
+      justify-content: center;
+    }
+
+    .wasd-keycap {
+      width: 38px;
+      height: 38px;
+      background: rgba(20, 25, 36, 0.92);
+      border: 1px solid rgba(255, 255, 255, 0.14);
+      border-bottom: 2px solid rgba(255, 255, 255, 0.22);
+      border-radius: 6px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.06s ease;
+      box-shadow: 0 3px 6px rgba(0, 0, 0, 0.45), inset 0 1px 0 rgba(255, 255, 255, 0.1);
+      cursor: pointer;
+    }
+
+    .wasd-keycap:hover {
+      background: rgba(30, 38, 54, 0.95);
+      border-color: rgba(255, 255, 255, 0.25);
+    }
+
+    .wasd-keycap .key-letter {
+      font-size: 13px;
+      font-weight: 800;
+      color: #E2E8F0;
+      line-height: 1;
+      font-family: var(--font-mono, monospace);
+    }
+
+    .wasd-keycap .key-desc {
+      font-size: 6.5px;
+      font-weight: 700;
+      letter-spacing: 0.06em;
+      color: #64748B;
+      margin-top: 2px;
+      text-transform: uppercase;
+    }
+
+    .wasd-keycap.key-active {
+      background: rgba(245, 158, 11, 0.32) !important;
+      border-color: #F59E0B !important;
+      border-bottom-width: 1px !important;
+      transform: translateY(1.5px);
+      box-shadow: 0 0 16px rgba(245, 158, 11, 0.65), inset 0 1px 0 rgba(254, 240, 138, 0.5) !important;
+    }
+
+    .wasd-keycap.key-active .key-letter {
+      color: #FEF08A !important;
+      text-shadow: 0 0 8px rgba(245, 158, 11, 0.85);
+    }
+
+    .wasd-keycap.key-active .key-desc {
+      color: #FDE68A !important;
+    }
+
+    .wasd-legend-footer {
+      display: flex;
+      justify-content: space-between;
+      margin-top: 6px;
+      font-size: 7.5px;
+      color: #64748B;
+      letter-spacing: 0.04em;
+      border-top: 1px solid rgba(255, 255, 255, 0.06);
+      padding-top: 4px;
+    }
+
     .side-rover-cam-panel {
       position: absolute;
       bottom: 72px;
@@ -2759,6 +2895,43 @@
 
       <!-- Center Hero Typography Removed to Keep Globe 100% Unobstructed -->
 
+      <!-- Aerospace WASD Drive Controls Legend Card on 3D Mars Globe -->
+      <div class="hud-wasd-legend-card orbital-wasd-dock" id="hud-wasd-legend-globe">
+        <div class="wasd-legend-header">
+          <div class="wasd-legend-title">
+            <i data-lucide="globe" style="width: 10px; height: 10px;"></i>
+            PLANETARY DRIVE
+          </div>
+          <div class="wasd-legend-status" id="wasd-status-globe">STANDBY</div>
+        </div>
+        <div class="wasd-grid-cluster">
+          <div class="wasd-row center">
+            <div class="wasd-keycap keycap-w" data-key="forward" title="Hold W or Up to drive forward">
+              <span class="key-letter">W</span>
+              <span class="key-desc">FWD</span>
+            </div>
+          </div>
+          <div class="wasd-row center">
+            <div class="wasd-keycap keycap-a" data-key="left" title="Hold A or Left to steer left">
+              <span class="key-letter">A</span>
+              <span class="key-desc">LEFT</span>
+            </div>
+            <div class="wasd-keycap keycap-s" data-key="backward" title="Hold S or Down to reverse">
+              <span class="key-letter">S</span>
+              <span class="key-desc">REV</span>
+            </div>
+            <div class="wasd-keycap keycap-d" data-key="right" title="Hold D or Right to steer right">
+              <span class="key-letter">D</span>
+              <span class="key-desc">RIGHT</span>
+            </div>
+          </div>
+        </div>
+        <div class="wasd-legend-footer">
+          <span style="color: #38BDF8; font-weight: 700;">SPEED: 5.0x BOOST</span>
+          <span style="color: #94A3B8;">PLANETARY EVA</span>
+        </div>
+      </div>
+
       <!-- Left Side: 5 Verified NASA Discovered Landing Sites Picker -->
       <div class="orbital-left-panel">
         <div class="orbital-trajectory-picker">
@@ -2981,7 +3154,11 @@
               </button>
               <button class="hud-btn" id="btn-toggle-cockpit" title="Surface Cockpit (WASD) [Hotkey: V]">
                 <i data-lucide="video" class="hud-icon" id="cockpit-btn-icon"></i>
-                <span id="cockpit-btn-text">Surface Cockpit (WASD)</span>
+                <span id="cockpit-btn-text">Surface Cockpit [V]</span>
+              </button>
+              <button class="hud-btn" id="btn-pov-cycle" title="Cycle POV Perspective [Hotkey: C]">
+                <i data-lucide="camera" class="hud-icon"></i>
+                <span id="pov-btn-text">POV: Front Cockpit [C]</span>
               </button>
               <div class="hud-divider"></div>
               <button class="hud-btn" id="btn-recenter-3d" title="Reset Camera Perspective (Pitch 55°)">
@@ -3090,6 +3267,43 @@
           </div>
 
           
+    <!-- Aerospace WASD Drive Controls Legend Card in 3D Terrain Explorer -->
+    <div class="hud-wasd-legend-card" id="hud-wasd-legend-terrain">
+      <div class="wasd-legend-header">
+        <div class="wasd-legend-title">
+          <i data-lucide="crosshair" style="width: 10px; height: 10px;"></i>
+          ROVER DRIVE
+        </div>
+        <div class="wasd-legend-status" id="wasd-status-terrain">STANDBY</div>
+      </div>
+      <div class="wasd-grid-cluster">
+        <div class="wasd-row center">
+          <div class="wasd-keycap keycap-w" data-key="forward" title="Hold W or Up to drive forward">
+            <span class="key-letter">W</span>
+            <span class="key-desc">FWD</span>
+          </div>
+        </div>
+        <div class="wasd-row center">
+          <div class="wasd-keycap keycap-a" data-key="left" title="Hold A or Left to steer left">
+            <span class="key-letter">A</span>
+            <span class="key-desc">LEFT</span>
+          </div>
+          <div class="wasd-keycap keycap-s" data-key="backward" title="Hold S or Down to reverse">
+            <span class="key-letter">S</span>
+            <span class="key-desc">REV</span>
+          </div>
+          <div class="wasd-keycap keycap-d" data-key="right" title="Hold D or Right to steer right">
+            <span class="key-letter">D</span>
+            <span class="key-desc">RIGHT</span>
+          </div>
+        </div>
+      </div>
+      <div class="wasd-legend-footer">
+        <span style="color: #F59E0B; font-weight: 700;">SPEED: 3.5x BOOST</span>
+        <span id="wasd-pov-label" style="color: #94A3B8;">FRONT CAM</span>
+      </div>
+    </div>
+
           <!-- BIG LIVE ROVER TRAVERSAL HUD CAM (ACTIVATES WITH EVA SIM / WASD DRIVE) -->
           <div class="side-rover-cam-panel idle-dim" id="side-rover-cam-panel">
             <div class="side-rover-header">
@@ -6737,6 +6951,12 @@
       let savedOrbitalCamPos = new THREE.Vector3(), savedOrbitalCamTarget = new THREE.Vector3();
       const cockpitCamPos = new THREE.Vector3(), cockpitLookPos = new THREE.Vector3();
       const driveKeys = { forward: false, backward: false, left: false, right: false };
+      // Reusable 3D Objects Pre-allocated to Eliminate Garbage Collection Jitter (Locked 60 FPS)
+      const _vCamPos = new THREE.Vector3();
+      const _vLookPos = new THREE.Vector3();
+      const _vTemp = new THREE.Vector3();
+      let lastHUDTelemetryMs = 0;
+
       const roverDrive = {
         x: -120,
         z: -100,
@@ -6747,10 +6967,10 @@
         slopeDeg: 0,
         bounceOffset: 0,
         distanceDrivenMeters: 0,
-        maxSpeed: 14.0,
-        accel: 24.0,
-        friction: 14.0,
-        turnRate: 1.6,
+        maxSpeed: 49.0, // 3.5x Boosted (up from 14.0) for brisk responsive traverse
+        accel: 84.0,    // 3.5x Boosted Acceleration (up from 24.0)
+        friction: 42.0, // Smooth inertial braking back to 0.0 km/h
+        turnRate: 2.2,  // Responsive steering
         centerY: -22
       };
       let lastAnimTime = performance.now();
@@ -6947,7 +7167,7 @@
       /* ========================================================================
          UPGRADE 1: 3D ARTICULATED ARES SCOUT ROVER / ASTRONAUT BEACON MODEL
          ======================================================================== */
-      let currentPOVMode = 'chase'; // 'chase' (14m/22m), 'drone' (45m), 'visor' (2m)
+      let currentPOVMode = 'forward'; // Default: 'forward' (Front-Facing Over-the-Hood/Mast View), 'chase' (14m/22m), 'drone' (45m)
 
       function createArticulatedRoverModel() {
         const group = new THREE.Group();
@@ -6969,18 +7189,18 @@
         ringMesh.position.y = 0.08;
         group.add(ringMesh);
 
-        // Volumetric Headlight Cone projecting onto Martian terrain ahead
-        const lightConeGeo = new THREE.ConeGeometry(2.8, 10, 16, 1, true);
+        // Sleek Low-Profile Martian Ground Spotlight (Positioned low to avoid camera occlusion)
+        const lightConeGeo = new THREE.ConeGeometry(1.2, 6, 12, 1, true);
         lightConeGeo.rotateX(-Math.PI / 2);
-        lightConeGeo.translate(0, 0, 5);
+        lightConeGeo.translate(0, 0, 3);
         const lightConeMat = new THREE.MeshBasicMaterial({
           color: 0xFEF08A,
           transparent: true,
-          opacity: 0.18,
+          opacity: 0.12,
           side: THREE.DoubleSide
         });
         const lightCone = new THREE.Mesh(lightConeGeo, lightConeMat);
-        lightCone.position.set(0, 0.8, 1.8);
+        lightCone.position.set(0, 0.35, 1.8);
         group.add(lightCone);
 
         // Vertical Laser Tracking Beacon Drop-Line (Height ~24m)
@@ -7540,30 +7760,107 @@
         }
       }
 
+      function updateWASDKeyVisuals() {
+        const isFwd = driveKeys.forward;
+        const isBwd = driveKeys.backward;
+        const isLeft = driveKeys.left;
+        const isRight = driveKeys.right;
+        const isDriving = isFwd || isBwd || isLeft || isRight;
+
+        document.querySelectorAll('.keycap-w').forEach(el => el.classList.toggle('key-active', isFwd));
+        document.querySelectorAll('.keycap-a').forEach(el => el.classList.toggle('key-active', isLeft));
+        document.querySelectorAll('.keycap-s').forEach(el => el.classList.toggle('key-active', isBwd));
+        document.querySelectorAll('.keycap-d').forEach(el => el.classList.toggle('key-active', isRight));
+
+        const stateTerrain = document.getElementById('wasd-status-terrain');
+        const stateGlobe = document.getElementById('wasd-status-globe');
+        const stateText = isDriving ? 'ACTIVE' : ((isSimulating || isGlobeAutonomousSim) ? 'ARMED' : 'STANDBY');
+        const stateColor = isDriving ? '#34D399' : ((isSimulating || isGlobeAutonomousSim) ? '#F59E0B' : '#64748B');
+
+        if (stateTerrain) {
+          stateTerrain.textContent = stateText;
+          stateTerrain.style.color = stateColor;
+        }
+        if (stateGlobe) {
+          stateGlobe.textContent = stateText;
+          stateGlobe.style.color = stateColor;
+        }
+      }
+
+      function cyclePOVMode() {
+        if (currentPOVMode === 'forward') {
+          currentPOVMode = 'chase';
+        } else if (currentPOVMode === 'chase') {
+          currentPOVMode = 'drone';
+        } else {
+          currentPOVMode = 'forward';
+        }
+        audio.playBlip(760, 0.1);
+        const povNames = { forward: 'Front Cockpit', chase: 'Chase Cam', drone: 'Drone Recon' };
+        const povLabel = document.getElementById('wasd-pov-label');
+        if (povLabel) {
+          povLabel.textContent = currentPOVMode === 'forward' ? 'FRONT CAM' : (currentPOVMode === 'chase' ? 'CHASE CAM' : 'DRONE RECON');
+        }
+        const povBtnText = document.getElementById('pov-btn-text');
+        if (povBtnText) {
+          povBtnText.textContent = `POV: ${povNames[currentPOVMode]} [C]`;
+        }
+        const badge = document.querySelector('.camera-hud-badge');
+        if (badge && isCockpitMode) {
+          badge.innerHTML = `<span>PERSPECTIVE:</span> <strong style="color: #FFFFFF;">SURFACE COCKPIT // ${povNames[currentPOVMode].toUpperCase()} [WASD]</strong>`;
+        }
+      }
+
       function initCockpitControls() {
         const btnToggle = document.getElementById('btn-toggle-cockpit');
         if (btnToggle) {
           btnToggle.addEventListener('click', toggleCockpitMode);
         }
 
-        const btnInspect = document.getElementById('btn-hud-inspect-discovery');
-        if (btnInspect) {
-          btnInspect.addEventListener('click', () => {
-            const site = NASA_LANDED_SITES[currentSiteId];
-            if (site && site.landmarks) {
-              const nearest = findNearestLandmark(roverDrive.x, roverDrive.z);
-              if (nearest) openLandmarkModal(nearest);
-            }
-          });
+        const btnPov = document.getElementById('btn-pov-cycle');
+        if (btnPov) {
+          btnPov.addEventListener('click', cyclePOVMode);
         }
 
-        // Global Key Listeners for WASD / Arrows / V / E
+        // Interactive mouse click/touch on WASD keycaps
+        const keyBinds = [
+          { sel: '.keycap-w', key: 'forward' },
+          { sel: '.keycap-a', key: 'left' },
+          { sel: '.keycap-s', key: 'backward' },
+          { sel: '.keycap-d', key: 'right' }
+        ];
+
+        keyBinds.forEach(({ sel, key }) => {
+          document.querySelectorAll(sel).forEach(btn => {
+            const press = (e) => {
+              e.preventDefault();
+              driveKeys[key] = true;
+              updateWASDKeyVisuals();
+            };
+            const release = () => {
+              driveKeys[key] = false;
+              updateWASDKeyVisuals();
+            };
+            btn.addEventListener('mousedown', press);
+            btn.addEventListener('mouseup', release);
+            btn.addEventListener('mouseleave', release);
+            btn.addEventListener('touchstart', press, { passive: false });
+            btn.addEventListener('touchend', release);
+          });
+        });
+
         window.addEventListener('keydown', (e) => {
           if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return;
 
           if (e.code === 'KeyV') {
             e.preventDefault();
             toggleCockpitMode();
+            return;
+          }
+
+          if (e.code === 'KeyC') {
+            e.preventDefault();
+            cyclePOVMode();
             return;
           }
 
@@ -7589,27 +7886,31 @@
 
           if (e.code === 'KeyW' || e.code === 'ArrowUp') {
             driveKeys.forward = true;
-            if (isCockpitMode) e.preventDefault();
+            updateWASDKeyVisuals();
+            if (isCockpitMode || isSimulating) e.preventDefault();
           }
           if (e.code === 'KeyS' || e.code === 'ArrowDown') {
             driveKeys.backward = true;
-            if (isCockpitMode) e.preventDefault();
+            updateWASDKeyVisuals();
+            if (isCockpitMode || isSimulating) e.preventDefault();
           }
           if (e.code === 'KeyA' || e.code === 'ArrowLeft') {
             driveKeys.left = true;
-            if (isCockpitMode) e.preventDefault();
+            updateWASDKeyVisuals();
+            if (isCockpitMode || isSimulating) e.preventDefault();
           }
           if (e.code === 'KeyD' || e.code === 'ArrowRight') {
             driveKeys.right = true;
-            if (isCockpitMode) e.preventDefault();
+            updateWASDKeyVisuals();
+            if (isCockpitMode || isSimulating) e.preventDefault();
           }
         });
 
         window.addEventListener('keyup', (e) => {
-          if (e.code === 'KeyW' || e.code === 'ArrowUp') driveKeys.forward = false;
-          if (e.code === 'KeyS' || e.code === 'ArrowDown') driveKeys.backward = false;
-          if (e.code === 'KeyA' || e.code === 'ArrowLeft') driveKeys.left = false;
-          if (e.code === 'KeyD' || e.code === 'ArrowRight') driveKeys.right = false;
+          if (e.code === 'KeyW' || e.code === 'ArrowUp') { driveKeys.forward = false; updateWASDKeyVisuals(); }
+          if (e.code === 'KeyS' || e.code === 'ArrowDown') { driveKeys.backward = false; updateWASDKeyVisuals(); }
+          if (e.code === 'KeyA' || e.code === 'ArrowLeft') { driveKeys.left = false; updateWASDKeyVisuals(); }
+          if (e.code === 'KeyD' || e.code === 'ArrowRight') { driveKeys.right = false; updateWASDKeyVisuals(); }
         });
       }
 
@@ -7632,11 +7933,21 @@
         savedOrbitalCamTarget.copy(tControls.target);
         tControls.enabled = false;
 
-        // Position camera smoothly at rover coordinates
-        const eyeY = getTerrainElevation(currentSiteId, roverDrive.x, roverDrive.z) + 1.8;
-        const lookDist = 20.0;
-        const lookX = roverDrive.x + Math.sin(roverDrive.heading) * lookDist;
-        const lookZ = roverDrive.z + Math.cos(roverDrive.heading) * lookDist;
+        const fwdX = Math.sin(roverDrive.heading);
+        const fwdZ = Math.cos(roverDrive.heading);
+
+        // Front-Facing Forward POV: Elevated atop chassis deck (+4.6m), looking forward onto Martian horizon
+        const camX = roverDrive.x + fwdX * 0.6;
+        const camZ = roverDrive.z + fwdZ * 0.6;
+        const camY = roverDrive.centerY + 4.6;
+
+        const lookDist = 55.0;
+        const lookX = roverDrive.x + fwdX * lookDist;
+        const lookZ = roverDrive.z + fwdZ * lookDist;
+        const lookY = roverDrive.centerY + 2.0;
+
+        cockpitCamPos.set(camX, camY, camZ);
+        cockpitLookPos.set(lookX, lookY, lookZ);
 
         // Update button UI
         const btnToggle = document.getElementById('btn-toggle-cockpit');
@@ -7649,34 +7960,26 @@
         // Camera badge
         const badge = document.querySelector('.camera-hud-badge');
         if (badge) {
-          badge.innerHTML = '<span>PERSPECTIVE:</span> <strong style="color: #FFFFFF;">SURFACE COCKPIT // WASD DRIVE</strong>';
+          badge.innerHTML = '<span>PERSPECTIVE:</span> <strong style="color: #FFFFFF;">SURFACE COCKPIT // FRONT VIEW [WASD]</strong>';
         }
 
-        // Swoop camera down with GSAP
-        gsap.to(tCamera.position, {
-          x: roverDrive.x,
-          y: eyeY,
-          z: roverDrive.z,
-          duration: 1.5,
-          ease: 'power2.inOut'
-        });
+        // Show cockpit HUD overlay
+        const overlay = document.getElementById('cockpit-hud-overlay');
+        if (overlay) overlay.classList.remove('hidden');
 
-        gsap.to(tControls.target, {
-          x: lookX,
-          y: eyeY,
-          z: lookZ,
-          duration: 1.5,
+        // Swoop camera down with GSAP into front cockpit view
+        gsap.to(tCamera.position, {
+          x: camX,
+          y: camY,
+          z: camZ,
+          duration: 1.0,
           ease: 'power2.inOut',
+          onUpdate: () => {
+            tCamera.lookAt(lookX, lookY, lookZ);
+          },
           onComplete: () => {
             isTransitioningCockpit = false;
             isCockpitMode = true;
-            if (roverMarkerMesh) roverMarkerMesh.visible = false;
-            const hud = document.getElementById('cockpit-hud-overlay');
-            if (hud) {
-              hud.classList.remove('hidden');
-            }
-            if (lidarRibbonMesh) lidarRibbonMesh.visible = true;
-            if (roverDustMesh) roverDustMesh.visible = true;
           }
         });
       }
@@ -7731,7 +8034,7 @@
       }
 
       function updateCockpitDrivingPhysics(dt) {
-        // 1. Throttle / Acceleration along Heading Vector (Strict Manual WASD)
+        // 1. Throttle / Acceleration along Heading Vector (Strict Manual WASD with 3.5x Boost)
         if (driveKeys.forward) {
           roverDrive.speed = Math.min(roverDrive.maxSpeed, roverDrive.speed + roverDrive.accel * dt);
         } else if (driveKeys.backward) {
@@ -7760,8 +8063,10 @@
         }
 
         // 3. Position Translation & Boundary Clamping
-        roverDrive.x += Math.sin(roverDrive.heading) * roverDrive.speed * dt;
-        roverDrive.z += Math.cos(roverDrive.heading) * roverDrive.speed * dt;
+        const fwdX = Math.sin(roverDrive.heading);
+        const fwdZ = Math.cos(roverDrive.heading);
+        roverDrive.x += fwdX * roverDrive.speed * dt;
+        roverDrive.z += fwdZ * roverDrive.speed * dt;
 
         const radDist = Math.hypot(roverDrive.x, roverDrive.z);
         if (radDist > 270) {
@@ -7777,8 +8082,8 @@
         // 4. Sample 4 Wheel Contact Points for Real-Time Pitch & Roll
         const halfW = 1.3;
         const halfL = 1.8;
-        const sinH = Math.sin(roverDrive.heading);
-        const cosH = Math.cos(roverDrive.heading);
+        const sinH = fwdX;
+        const cosH = fwdZ;
 
         const fl_x = roverDrive.x + sinH * halfL - cosH * halfW;
         const fl_z = roverDrive.z + cosH * halfL + sinH * halfW;
@@ -7825,65 +8130,72 @@
         // Subtle suspension bounce over rocky terrain
         roverDrive.bounceOffset = Math.sin(Date.now() * 0.014) * 0.05 * (Math.abs(roverDrive.speed) / roverDrive.maxSpeed);
 
-        // 5. Multi-POV Follow-Cam Rig (Elevated Chase / Ingenuity Drone / Visor)
+        // 5. Multi-POV Follow-Cam Rig (Front Cockpit / Elevated Chase / Drone Recon)
         let targetCamX, targetCamY, targetCamZ;
         let targetLookX, targetLookY, targetLookZ;
 
-        if (isCockpitMode) {
-          if (currentPOVMode === 'chase') {
+        if (isCockpitMode && !isTransitioningCockpit) {
+          if (currentPOVMode === 'forward') {
+            // DEFAULT FRONT-FACING FORWARD COCKPIT POV:
+            // Positioned atop chassis deck looking straight onto horizon, front bumper/wheels visible at bottom
+            targetCamX = roverDrive.x + fwdX * 0.6;
+            targetCamZ = roverDrive.z + fwdZ * 0.6;
+            targetCamY = roverDrive.centerY + 4.6 + roverDrive.bounceOffset;
+
+            targetLookX = roverDrive.x + fwdX * 60.0;
+            targetLookZ = roverDrive.z + fwdZ * 60.0;
+            targetLookY = roverDrive.centerY + 2.0 + Math.tan(pitchRad) * 60.0;
+
+            // Frame-rate independent exponential lerp damping (zero jitter at any FPS)
+            const damp = 1.0 - Math.exp(-14.0 * dt);
+            cockpitCamPos.lerp(_vTemp.set(targetCamX, targetCamY, targetCamZ), damp);
+            cockpitLookPos.lerp(_vLookPos.set(targetLookX, targetLookY, targetLookZ), damp);
+
+            tCamera.position.copy(cockpitCamPos);
+            tCamera.lookAt(cockpitLookPos);
+            tCamera.rotation.z = -rollRad * 0.16;
+
+          } else if (currentPOVMode === 'chase') {
             // Elevated Chase-Cam: 14m above terrain, 22m behind, looking 45m ahead to horizon
-            targetCamX = roverDrive.x - Math.sin(roverDrive.heading) * 22.0;
-            targetCamZ = roverDrive.z - Math.cos(roverDrive.heading) * 22.0;
+            targetCamX = roverDrive.x - fwdX * 22.0;
+            targetCamZ = roverDrive.z - fwdZ * 22.0;
             const groundBehindY = getTerrainElevation(currentSiteId, targetCamX, targetCamZ);
             targetCamY = Math.max(roverDrive.centerY + 14.0, groundBehindY + 8.0) + roverDrive.bounceOffset;
 
-            targetLookX = roverDrive.x + Math.sin(roverDrive.heading) * 45.0;
-            targetLookZ = roverDrive.z + Math.cos(roverDrive.heading) * 45.0;
+            targetLookX = roverDrive.x + fwdX * 45.0;
+            targetLookZ = roverDrive.z + fwdZ * 45.0;
             targetLookY = roverDrive.centerY + 4.0;
 
-            cockpitCamPos.lerp(new THREE.Vector3(targetCamX, targetCamY, targetCamZ), 0.16);
-            cockpitLookPos.lerp(new THREE.Vector3(targetLookX, targetLookY, targetLookZ), 0.16);
+            const damp = 1.0 - Math.exp(-10.0 * dt);
+            cockpitCamPos.lerp(_vTemp.set(targetCamX, targetCamY, targetCamZ), damp);
+            cockpitLookPos.lerp(_vLookPos.set(targetLookX, targetLookY, targetLookZ), damp);
 
             tCamera.position.copy(cockpitCamPos);
             tCamera.lookAt(cockpitLookPos);
-            tCamera.rotation.z = -rollRad * 0.22; // subtle cinematic roll
+            tCamera.rotation.z = -rollRad * 0.16;
 
           } else if (currentPOVMode === 'drone') {
             // High-Altitude Ingenuity Drone Recon (45m follow-cam)
-            targetCamX = roverDrive.x - Math.sin(roverDrive.heading) * 12.0;
-            targetCamZ = roverDrive.z - Math.cos(roverDrive.heading) * 12.0;
+            targetCamX = roverDrive.x - fwdX * 12.0;
+            targetCamZ = roverDrive.z - fwdZ * 12.0;
             targetCamY = roverDrive.centerY + 45.0;
 
-            targetLookX = roverDrive.x + Math.sin(roverDrive.heading) * 16.0;
-            targetLookZ = roverDrive.z + Math.cos(roverDrive.heading) * 16.0;
+            targetLookX = roverDrive.x + fwdX * 16.0;
+            targetLookZ = roverDrive.z + fwdZ * 16.0;
             targetLookY = roverDrive.centerY;
 
-            cockpitCamPos.lerp(new THREE.Vector3(targetCamX, targetCamY, targetCamZ), 0.14);
-            cockpitLookPos.lerp(new THREE.Vector3(targetLookX, targetLookY, targetLookZ), 0.14);
+            const damp = 1.0 - Math.exp(-10.0 * dt);
+            cockpitCamPos.lerp(_vTemp.set(targetCamX, targetCamY, targetCamZ), damp);
+            cockpitLookPos.lerp(_vLookPos.set(targetLookX, targetLookY, targetLookZ), damp);
 
             tCamera.position.copy(cockpitCamPos);
             tCamera.lookAt(cockpitLookPos);
-
-          } else {
-            // Visor POV: First-Person 2.0m height
-            const eyeY = roverDrive.centerY + 2.0 + roverDrive.bounceOffset;
-            const lookDist = 35.0;
-            targetLookX = roverDrive.x + Math.sin(roverDrive.heading) * lookDist;
-            targetLookZ = roverDrive.z + Math.cos(roverDrive.heading) * lookDist;
-            targetLookY = eyeY + Math.tan(pitchRad) * lookDist;
-
-            cockpitCamPos.lerp(new THREE.Vector3(roverDrive.x, eyeY, roverDrive.z), 0.25);
-            cockpitLookPos.lerp(new THREE.Vector3(targetLookX, targetLookY, targetLookZ), 0.25);
-
-            tCamera.position.copy(cockpitCamPos);
-            tCamera.lookAt(cockpitLookPos);
-            tCamera.rotation.z = -rollRad * 0.45;
           }
-        } else {
-          // ZERO Forced Zoom-In: Keep tControls enabled!
+        } else if (!isCockpitMode) {
+          // Normal Orbital Mode: keep tControls enabled!
           // Only smoothly lerp target so camera tracks the rover without overriding user mouse-wheel zoom distance:
           if (tControls) {
-            tControls.target.lerp(new THREE.Vector3(roverDrive.x, roverDrive.centerY, roverDrive.z), 0.05);
+            tControls.target.lerp(_vTemp.set(roverDrive.x, roverDrive.centerY, roverDrive.z), 0.05);
           }
         }
 
@@ -7891,7 +8203,7 @@
         if (roverMarkerMesh) {
           roverMarkerMesh.position.set(roverDrive.x, roverDrive.centerY, roverDrive.z);
           roverMarkerMesh.rotation.set(pitchRad, roverDrive.heading, rollRad);
-          roverMarkerMesh.visible = (!isCockpitMode || currentPOVMode !== 'visor');
+          roverMarkerMesh.visible = true; // Front bumper, solar trims, and wheels visible for spatial depth
           if (roverMarkerMesh.userData && roverMarkerMesh.userData.animateRoll) {
             roverMarkerMesh.userData.animateRoll(Math.abs(roverDrive.speed * dt * 3.8));
           }
@@ -7903,9 +8215,14 @@
         // 7. Update Regolith Dust Kick-Up Trail Behind Wheels
         updateRoverDustParticles(rl_x, rl_z, rr_x, rr_z, dt);
 
-        // 8. Update Cockpit HUD Instruments & Telemetry
-        updateCockpitHUDInstruments();
-        syncCockpitTelemetry();
+        // 8. Throttle DOM text/HUD telemetry updates to 15 Hz (~66ms) to eliminate all lag (Locked 60 FPS)
+        const nowMs = performance.now();
+        if (nowMs - lastHUDTelemetryMs >= 66) {
+          lastHUDTelemetryMs = nowMs;
+          updateCockpitHUDInstruments();
+          syncCockpitTelemetry();
+          updateWASDKeyVisuals();
+        }
       }
 
       function updateLidarRibbonAhead() {
@@ -8897,9 +9214,9 @@
         
         tRenderer = new THREE.WebGLRenderer({ antialias: true, powerPreference: 'high-performance' });
         tRenderer.setSize(w, h);
-        tRenderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
-        tRenderer.shadowMap.enabled = true;
-        tRenderer.shadowMap.type = THREE.PCFSoftShadowMap;
+        // Locked 60 FPS Optimization: Cap pixel ratio to 1.5 and disable heavy shadow maps
+        tRenderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 1.5));
+        tRenderer.shadowMap.enabled = false;
         tRenderer.toneMapping = THREE.ACESFilmicToneMapping;
         tRenderer.toneMappingExposure = 1.1;
         container.appendChild(tRenderer.domElement);
@@ -9606,8 +9923,8 @@
 
         currentCorridorCurve = new THREE.CatmullRomCurve3(points3D);
 
-        // 1. 3D Volumetric Tube Geometry (Luminous Pure White Corridor)
-        const tubeGeo = new THREE.TubeGeometry(currentCorridorCurve, 120, 2.2, 8, false);
+        // 1. 3D Navigational Path Ribbon (Sleek 0.45m Golden Cybernetic Guideline)
+        const tubeGeo = new THREE.TubeGeometry(currentCorridorCurve, 160, 0.45, 8, false);
         const tubeMat = new THREE.MeshStandardMaterial({
           color: 0xF59E0B, // Solar Amber
           emissive: 0xEA580C, // Warm Copper-Gold Glow
@@ -9629,7 +9946,7 @@
           directPts3D.push(new THREE.Vector3(x, y, z));
         }
         const directCurve = new THREE.CatmullRomCurve3(directPts3D);
-        const directTubeGeo = new THREE.TubeGeometry(directCurve, 60, 1.2, 6, false);
+        const directTubeGeo = new THREE.TubeGeometry(directCurve, 80, 0.32, 6, false);
         const directTubeMat = new THREE.MeshBasicMaterial({
           color: 0xEF4444,
           wireframe: true
@@ -10292,10 +10609,10 @@
         lon: 77.58,
         heading: 0,
         speed: 0,
-        maxSpeed: 0.035,
-        accel: 0.08,
-        friction: 0.05,
-        turnRate: 1.8,
+        maxSpeed: 0.175, // 5.0x Boosted Speed (up from 0.035) for swift planetary expedition
+        accel: 0.40,     // 5.0x Boosted Acceleration (up from 0.08)
+        friction: 0.25,  // Smooth inertial braking
+        turnRate: 2.5,   // Responsive steering
         wheels: [],
         beacon: null,
         totalKm: 0,
@@ -10719,7 +11036,7 @@
       function updateGlobeRoverPhysics(dt) {
         if (!gRover) return;
 
-        // Drive Keys (W / S / A / D) in Globe View (Strict Manual WASD)
+        // Drive Keys (W / S / A / D) in Globe View (Strict Manual WASD with 5.0x Boost)
         if (driveKeys.forward) {
           gRover.speed = Math.min(gRover.maxSpeed, gRover.speed + gRover.accel * dt);
         } else if (driveKeys.backward) {
@@ -10741,8 +11058,8 @@
         }
 
         if (Math.abs(gRover.speed) > 0.001) {
-          const dLat = Math.cos(gRover.heading) * gRover.speed * dt * 28.0;
-          const dLon = Math.sin(gRover.heading) * gRover.speed * dt * 28.0 / Math.cos(gRover.lat * Math.PI / 180);
+          const dLat = Math.cos(gRover.heading) * gRover.speed * dt * 36.0;
+          const dLon = Math.sin(gRover.heading) * gRover.speed * dt * 36.0 / Math.max(0.15, Math.cos(gRover.lat * Math.PI / 180));
           gRover.lat = Math.max(-85, Math.min(85, gRover.lat + dLat));
           gRover.lon = (gRover.lon + dLon + 360) % 360;
 
@@ -10762,36 +11079,43 @@
           }
         }
 
-        // Live Right-Side Telemetry Card & Top Ribbon Readouts
-        const specSpeed = document.getElementById('globe-spec-speed');
-        const specDist = document.getElementById('globe-spec-dist');
-        const specHills = document.getElementById('globe-spec-hills');
-        const specO2 = document.getElementById('globe-spec-o2');
-        const specStatus = document.getElementById('globe-spec-status');
-        const speedVal = (Math.abs(gRover.speed) * 120.0).toFixed(1);
-        if (specSpeed) specSpeed.textContent = `${speedVal} km/h`;
-        if (specDist) specDist.textContent = `${gRover.totalKm.toFixed(1)} km`;
-        if (specHills) specHills.textContent = `${hillsTraversedCount} Hills`;
-        if (specO2) specO2.textContent = `${gRover.o2Pct.toFixed(1)}%`;
-        if (specStatus) {
-          if (Math.abs(gRover.speed) > 0.001) {
-            specStatus.textContent = 'DRIVING [WASD]';
-            specStatus.style.color = '#38BDF8';
-          } else if (isGlobeAutonomousSim) {
-            specStatus.textContent = 'EVA ARMED [WASD]';
-            specStatus.style.color = '#34D399';
-          } else {
-            specStatus.textContent = 'STANDBY [WASD]';
-            specStatus.style.color = '#94A3B8';
-          }
-        }
+        // Throttle DOM text updates to 15 Hz (~66ms) to eliminate all Globe lag
+        const nowMs = performance.now();
+        if (nowMs - lastHUDTelemetryMs >= 66) {
+          lastHUDTelemetryMs = nowMs;
 
-        const teleSpeed = document.getElementById('globe-tele-speed');
-        const teleDist = document.getElementById('globe-tele-dist');
-        const teleO2 = document.getElementById('globe-tele-o2');
-        if (teleSpeed) teleSpeed.textContent = `${speedVal} km/h`;
-        if (teleDist) teleDist.textContent = `${gRover.totalKm.toFixed(1)} km`;
-        if (teleO2) teleO2.textContent = `${gRover.o2Pct.toFixed(1)}%`;
+          const specSpeed = document.getElementById('globe-spec-speed');
+          const specDist = document.getElementById('globe-spec-dist');
+          const specHills = document.getElementById('globe-spec-hills');
+          const specO2 = document.getElementById('globe-spec-o2');
+          const specStatus = document.getElementById('globe-spec-status');
+          const speedVal = (Math.abs(gRover.speed) * 120.0).toFixed(1);
+          if (specSpeed) specSpeed.textContent = `${speedVal} km/h`;
+          if (specDist) specDist.textContent = `${gRover.totalKm.toFixed(1)} km`;
+          if (specHills) specHills.textContent = `${hillsTraversedCount} Hills`;
+          if (specO2) specO2.textContent = `${gRover.o2Pct.toFixed(1)}%`;
+          if (specStatus) {
+            if (Math.abs(gRover.speed) > 0.001) {
+              specStatus.textContent = 'DRIVING [WASD]';
+              specStatus.style.color = '#38BDF8';
+            } else if (isGlobeAutonomousSim) {
+              specStatus.textContent = 'EVA ARMED [WASD]';
+              specStatus.style.color = '#34D399';
+            } else {
+              specStatus.textContent = 'STANDBY [WASD]';
+              specStatus.style.color = '#94A3B8';
+            }
+          }
+
+          const teleSpeed = document.getElementById('globe-tele-speed');
+          const teleDist = document.getElementById('globe-tele-dist');
+          const teleO2 = document.getElementById('globe-tele-o2');
+          if (teleSpeed) teleSpeed.textContent = `${speedVal} km/h`;
+          if (teleDist) teleDist.textContent = `${gRover.totalKm.toFixed(1)} km`;
+          if (teleO2) teleO2.textContent = `${gRover.o2Pct.toFixed(1)}%`;
+
+          updateWASDKeyVisuals();
+        }
 
         if (gRover.o2Pct <= 30.0) {
           triggerAIVoiceWarning(gRover.o2Pct <= 15.0 ? 'critical' : 'caution', gRover.o2Pct);
@@ -10811,7 +11135,8 @@
 
         oRenderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
         oRenderer.setSize(w, h);
-        oRenderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
+        // Locked 60 FPS Optimization on 3D Mars Globe
+        oRenderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 1.5));
         oRenderer.toneMapping = THREE.ACESFilmicToneMapping;
         oRenderer.toneMappingExposure = 1.2;
         container.appendChild(oRenderer.domElement);
