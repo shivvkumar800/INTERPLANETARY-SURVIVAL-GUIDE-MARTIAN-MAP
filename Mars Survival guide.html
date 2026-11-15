@@ -1764,6 +1764,275 @@
       transform: scale(1.03);
     }
 
+  
+    /* ==========================================================================
+       BIG-SCREEN ARCHITECTURAL LOW-OXYGEN & HAZARD WARNING OVERLAY
+       ========================================================================== */
+    .big-screen-alert-overlay {
+      position: absolute;
+      inset: 0;
+      z-index: 550;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+      background: rgba(8, 9, 12, 0.84);
+      background-image: repeating-linear-gradient(0deg, rgba(0, 0, 0, 0.18), rgba(0, 0, 0, 0.18) 2px, transparent 2px, transparent 4px);
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
+      box-shadow: inset 0 0 100px rgba(239, 68, 68, 0.45), inset 0 0 200px rgba(239, 68, 68, 0.22);
+      transition: all 0.4s ease;
+      pointer-events: auto;
+    }
+    .big-screen-alert-overlay.hidden { display: none !important; }
+    
+    .big-screen-alert-overlay.caution-mode {
+      box-shadow: inset 0 0 90px rgba(245, 158, 11, 0.40), inset 0 0 170px rgba(245, 158, 11, 0.18);
+    }
+
+    .big-alert-glass-panel {
+      max-width: 780px;
+      width: 100%;
+      background: rgba(15, 17, 22, 0.95);
+      border: 1px solid rgba(239, 68, 68, 0.55);
+      border-radius: 16px;
+      padding: 30px 36px;
+      box-shadow: 0 28px 70px rgba(0, 0, 0, 0.9), 0 0 45px rgba(239, 68, 68, 0.25);
+      display: flex;
+      flex-direction: column;
+      gap: 18px;
+      position: relative;
+    }
+    .big-screen-alert-overlay.caution-mode .big-alert-glass-panel {
+      border-color: rgba(245, 158, 11, 0.55);
+      box-shadow: 0 28px 70px rgba(0, 0, 0, 0.9), 0 0 45px rgba(245, 158, 11, 0.25);
+    }
+
+    .big-alert-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+    }
+
+    .big-alert-badge-group {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+
+    .big-alert-agency {
+      font-family: var(--font-mono);
+      font-size: 9px;
+      letter-spacing: 0.14em;
+      color: var(--text-silver);
+      text-transform: uppercase;
+    }
+
+    .big-alert-code {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      color: #EF4444;
+    }
+    .big-screen-alert-overlay.caution-mode .big-alert-code {
+      color: #F59E0B;
+    }
+
+    .big-alert-pulse-beacon {
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      background: #EF4444;
+      box-shadow: 0 0 16px #EF4444;
+      animation: pulseBeacon 1.0s infinite ease-in-out;
+    }
+    .big-screen-alert-overlay.caution-mode .big-alert-pulse-beacon {
+      background: #F59E0B;
+      box-shadow: 0 0 16px #F59E0B;
+    }
+
+    .btn-big-alert-close {
+      background: rgba(255, 255, 255, 0.06);
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      border-radius: 50%;
+      width: 28px;
+      height: 28px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--text-silver);
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .btn-big-alert-close:hover {
+      background: rgba(255, 255, 255, 0.16);
+      color: #FFFFFF;
+    }
+
+    .big-alert-title {
+      font-family: var(--font-serif);
+      font-size: 32px;
+      font-style: italic;
+      color: #EF4444;
+      line-height: 1.15;
+      letter-spacing: 0.02em;
+    }
+    .big-screen-alert-overlay.caution-mode .big-alert-title {
+      color: #F59E0B;
+    }
+
+    .big-alert-subtitle {
+      font-size: 13px;
+      color: var(--text-silver);
+      line-height: 1.5;
+      margin-top: -8px;
+    }
+
+    .big-alert-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 12px;
+      margin-top: 4px;
+    }
+
+    .big-alert-card {
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: var(--radius-md);
+      padding: 12px 14px;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+    .big-alert-card.critical-card {
+      border-color: rgba(239, 68, 68, 0.35);
+      background: rgba(239, 68, 68, 0.06);
+    }
+    .big-alert-card.warning-card {
+      border-color: rgba(245, 158, 11, 0.35);
+      background: rgba(245, 158, 11, 0.06);
+    }
+    .big-alert-card.hazard-card {
+      border-color: rgba(239, 68, 68, 0.25);
+    }
+
+    .big-card-label {
+      font-family: var(--font-mono);
+      font-size: 8px;
+      letter-spacing: 0.08em;
+      color: var(--text-dim);
+      text-transform: uppercase;
+    }
+
+    .big-card-value-wrap {
+      display: flex;
+      align-items: baseline;
+      gap: 6px;
+    }
+
+    .big-card-num {
+      font-family: var(--font-mono);
+      font-size: 20px;
+      font-weight: 700;
+      color: #FFFFFF;
+    }
+    .critical-card .big-card-num { color: #EF4444; }
+    .warning-card .big-card-num { color: #F59E0B; }
+
+    .big-card-unit {
+      font-family: var(--font-mono);
+      font-size: 9px;
+      color: var(--text-silver);
+    }
+
+    .big-card-sub {
+      font-size: 10px;
+      color: var(--text-silver);
+      line-height: 1.3;
+    }
+
+    .big-alert-actions {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      margin-top: 8px;
+      padding-top: 14px;
+      border-top: 1px solid rgba(255, 255, 255, 0.08);
+    }
+
+    .btn-big-action-primary {
+      background: #EF4444;
+      color: #FFFFFF;
+      font-family: var(--font-sans);
+      font-size: 13px;
+      font-weight: 700;
+      letter-spacing: 0.04em;
+      border: none;
+      border-radius: var(--radius-pill);
+      padding: 12px 24px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      cursor: pointer;
+      box-shadow: 0 0 20px rgba(239, 68, 68, 0.45);
+      transition: all 0.2s ease;
+    }
+    .big-screen-alert-overlay.caution-mode .btn-big-action-primary {
+      background: #F59E0B;
+      box-shadow: 0 0 20px rgba(245, 158, 11, 0.45);
+    }
+    .btn-big-action-primary:hover {
+      transform: translateY(-1px);
+      filter: brightness(1.12);
+      box-shadow: 0 0 28px rgba(239, 68, 68, 0.7);
+    }
+
+    .btn-big-action-secondary {
+      background: rgba(255, 255, 255, 0.06);
+      border: 1px solid rgba(255, 255, 255, 0.16);
+      color: #E2E8F0;
+      font-family: var(--font-sans);
+      font-size: 13px;
+      font-weight: 500;
+      border-radius: var(--radius-pill);
+      padding: 12px 22px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+    .btn-big-action-secondary:hover {
+      background: rgba(255, 255, 255, 0.12);
+      border-color: rgba(255, 255, 255, 0.3);
+      color: #FFFFFF;
+    }
+
+    /* Top Bar Quick Test Trigger Button */
+    .btn-test-alert {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      background: rgba(239, 68, 68, 0.12);
+      border: 1px solid rgba(239, 68, 68, 0.35);
+      border-radius: var(--radius-pill);
+      padding: 4px 12px;
+      color: #FCA5A5;
+      font-family: var(--font-mono);
+      font-size: 10px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      letter-spacing: 0.04em;
+    }
+    .btn-test-alert:hover {
+      background: rgba(239, 68, 68, 0.26);
+      border-color: #EF4444;
+      color: #FFFFFF;
+      box-shadow: 0 0 14px rgba(239, 68, 68, 0.35);
+    }
+
   </style>
 </head>
 <body>
@@ -1817,6 +2086,11 @@
           <div class="pulse-dot"></div>
           <span>NASA PDS &amp; Trek</span>
         </div>
+
+        <button class="btn-test-alert" id="btn-test-o2-alert" title="Test Big-Screen Critical Oxygen Alert [Demo for Judges]">
+          <i data-lucide="alert-triangle" style="width: 13px; height: 13px; color: #EF4444;"></i>
+          <span>⚠️ Test O2 Alert</span>
+        </button>
 
         <button class="btn-audio-toggle" id="btn-audio-toggle" title="Toggle Synthesized Audio [Hotkey: M]">
           <i data-lucide="volume-2" id="audio-icon" style="width: 13px; height: 13px;"></i> AUDIO
@@ -1887,6 +2161,80 @@
           
           <!-- Subtle Visor Edge Pulse Vignette (Breathing Amber / Crimson) -->
           <div class="visor-vignette-pulse" id="visor-vignette-pulse"></div>
+
+          <!-- BIG-SCREEN ARCHITECTURAL LOW-OXYGEN & HAZARD WARNING OVERLAY -->
+          <div class="big-screen-alert-overlay hidden" id="big-screen-alert-overlay">
+            <div class="big-alert-glass-panel">
+              <div class="big-alert-header">
+                <div style="display: flex; align-items: center; gap: 10px;">
+                  <div class="big-alert-pulse-beacon" id="big-alert-beacon"></div>
+                  <div class="big-alert-badge-group">
+                    <span class="big-alert-agency">ARES NASA EVA MISSION CONTROL // LIFE SUPPORT PROTOCOL</span>
+                    <span class="big-alert-code" id="big-alert-code">ALERT LEVEL: CRITICAL (PLSS-O2 &lt; 15%)</span>
+                  </div>
+                </div>
+                <button class="btn-big-alert-close" id="btn-close-big-alert" title="Dismiss to background monitor">
+                  <i data-lucide="x" style="width: 14px; height: 14px;"></i>
+                </button>
+              </div>
+
+              <h2 class="big-alert-title editorial-italic" id="big-alert-title">
+                Critical PLSS Oxygen Depletion — Abort Traverse
+              </h2>
+              <p class="big-alert-subtitle" id="big-alert-subtitle">
+                NASA Flight Rule 7.4.2 Violation: Insufficient metabolic reserve to complete forward exploration corridor. Immediate return trajectory required.
+              </p>
+
+              <div class="big-alert-grid">
+                <div class="big-alert-card critical-card">
+                  <span class="big-card-label">PLSS O2 REMAINING</span>
+                  <div class="big-card-value-wrap">
+                    <span class="big-card-num tabular-nums" id="big-o2-val">14.8%</span>
+                    <span class="big-card-unit" id="big-o2-unit">62.2 L / 420 L</span>
+                  </div>
+                  <span class="big-card-sub" id="big-o2-sub">Critical Reserve Threshold: 15.0%</span>
+                </div>
+
+                <div class="big-alert-card warning-card">
+                  <span class="big-card-label">EST. SURVIVAL MARGIN</span>
+                  <div class="big-card-value-wrap">
+                    <span class="big-card-num tabular-nums" id="big-time-val">18 MIN</span>
+                    <span class="big-card-unit">@ 3.4 L/min</span>
+                  </div>
+                  <span class="big-card-sub" id="big-time-sub">Walk-Back Requirement: 14 min</span>
+                </div>
+
+                <div class="big-alert-card">
+                  <span class="big-card-label">DISTANCE TO BASE CAMP</span>
+                  <div class="big-card-value-wrap">
+                    <span class="big-card-num tabular-nums" id="big-dist-val">3.42 KM</span>
+                    <span class="big-card-unit">A* Waypoints</span>
+                  </div>
+                  <span class="big-card-sub" id="big-dist-sub">Safe Gradient Corridor: 4.8° Avg</span>
+                </div>
+
+                <div class="big-alert-card hazard-card">
+                  <span class="big-card-label">TERRAIN RISK / HAZARD</span>
+                  <div class="big-card-value-wrap">
+                    <span class="big-card-num tabular-nums" id="big-hazard-val">18.4° SLOPE</span>
+                    <span class="big-card-unit">Direct Cliff</span>
+                  </div>
+                  <span class="big-card-sub" id="big-hazard-sub">94.2% Slip Risk on Basalt Scarp</span>
+                </div>
+              </div>
+
+              <div class="big-alert-actions">
+                <button class="btn-big-action-primary" id="btn-big-execute-return">
+                  <i data-lucide="rotate-ccw" style="width: 17px; height: 17px;"></i>
+                  <span>Execute Safe A* Walk-Back</span>
+                </button>
+                <button class="btn-big-action-secondary" id="btn-big-dismiss">
+                  <i data-lucide="eye-off" style="width: 15px; height: 15px;"></i>
+                  <span>Dismiss Warning</span>
+                </button>
+              </div>
+            </div>
+          </div>
 
           <!-- Glassmorphic Low-Oxygen Telemetry Alert Banner -->
           <div class="hud-o2-alert-banner hidden" id="hud-o2-alert-banner">
@@ -5488,7 +5836,11 @@
 
           if (roverMarkerMesh) {
             roverMarkerMesh.position.copy(pt);
-            roverMarkerMesh.visible = !isCockpitMode;
+            roverMarkerMesh.rotation.y = roverDrive.heading;
+            roverMarkerMesh.visible = (!isCockpitMode || currentPOVMode !== 'visor');
+            if (roverMarkerMesh.userData && roverMarkerMesh.userData.animateRoll) {
+              roverMarkerMesh.userData.animateRoll(strideMeters);
+            }
           }
         } else {
           roverDrive.x += Math.sin(roverDrive.heading) * (strideMeters * 0.35);
@@ -5521,9 +5873,163 @@
       /* ========================================================================
          UPGRADE 6: ARCHITECTURAL LOW-OXYGEN ALERT & SAFE RETURN SYSTEM
          ======================================================================== */
-      let currentO2AlertState = 'nominal';
+      
+      /* ========================================================================
+         UPGRADE 1: 3D ARTICULATED ARES SCOUT ROVER / ASTRONAUT BEACON MODEL
+         ======================================================================== */
+      let currentPOVMode = 'chase'; // 'chase' (14m/22m), 'drone' (45m), 'visor' (2m)
 
-      function checkOxygenAlerts(o2Pct) {
+      function createArticulatedRoverModel() {
+        const group = new THREE.Group();
+        group.name = "ARES_SCOUT_ROVER";
+
+        // 1. Main Obsidian Chassis Body (Angled Aerodynamic Hull)
+        const chassisGeo = new THREE.BoxGeometry(2.6, 0.9, 3.6);
+        const chassisMat = new THREE.MeshStandardMaterial({
+          color: 0x16181F,
+          roughness: 0.35,
+          metalness: 0.85
+        });
+        const chassisMesh = new THREE.Mesh(chassisGeo, chassisMat);
+        chassisMesh.position.y = 0.9;
+        chassisMesh.castShadow = true;
+        group.add(chassisMesh);
+
+        // 2. Solar Array Deck on Top (Gleaming Photovoltaic Dark Cells with Amber Trims)
+        const solarGeo = new THREE.BoxGeometry(2.4, 0.1, 3.2);
+        const solarMat = new THREE.MeshStandardMaterial({
+          color: 0x0F172A,
+          emissive: 0x1E293B,
+          emissiveIntensity: 0.45,
+          roughness: 0.15,
+          metalness: 0.9
+        });
+        const solarMesh = new THREE.Mesh(solarGeo, solarMat);
+        solarMesh.position.y = 1.4;
+        group.add(solarMesh);
+
+        // Solar Amber Accent Trim Lines
+        const trimGeo = new THREE.BoxGeometry(2.65, 0.12, 0.2);
+        const trimMat = new THREE.MeshStandardMaterial({
+          color: 0xF59E0B,
+          emissive: 0xD97706,
+          emissiveIntensity: 0.75
+        });
+        const trimFront = new THREE.Mesh(trimGeo, trimMat);
+        trimFront.position.set(0, 1.35, 1.7);
+        group.add(trimFront);
+
+        const trimRear = new THREE.Mesh(trimGeo, trimMat);
+        trimRear.position.set(0, 1.35, -1.7);
+        group.add(trimRear);
+
+        // 3. Sensor Mast & Mastcam Head
+        const mastGeo = new THREE.CylinderGeometry(0.08, 0.1, 1.6, 8);
+        const mastMat = new THREE.MeshStandardMaterial({ color: 0xD1D5DB, metalness: 0.8, roughness: 0.3 });
+        const mastMesh = new THREE.Mesh(mastGeo, mastMat);
+        mastMesh.position.set(0.6, 2.1, 1.3);
+        group.add(mastMesh);
+
+        // Mastcam Head
+        const headGeo = new THREE.BoxGeometry(0.7, 0.45, 0.45);
+        const headMat = new THREE.MeshStandardMaterial({ color: 0x1E293B, metalness: 0.7, roughness: 0.4 });
+        const headMesh = new THREE.Mesh(headGeo, headMat);
+        headMesh.position.set(0.6, 2.9, 1.3);
+        group.add(headMesh);
+
+        // Dual Cyan Lenses (Stereo Navcam)
+        const lensGeo = new THREE.CylinderGeometry(0.12, 0.12, 0.15, 12);
+        lensGeo.rotateX(Math.PI / 2);
+        const lensMat = new THREE.MeshBasicMaterial({ color: 0x38BDF8 });
+        const lensLeft = new THREE.Mesh(lensGeo, lensMat);
+        lensLeft.position.set(0.42, 2.9, 1.55);
+        group.add(lensLeft);
+
+        const lensRight = new THREE.Mesh(lensGeo, lensMat);
+        lensRight.position.set(0.78, 2.9, 1.55);
+        group.add(lensRight);
+
+        // Pulsing Amber Navigation Beacon on top of mast
+        const beaconGeo = new THREE.OctahedronGeometry(0.28, 0);
+        const beaconMat = new THREE.MeshBasicMaterial({ color: 0xFBBF24 });
+        const beaconMesh = new THREE.Mesh(beaconGeo, beaconMat);
+        beaconMesh.position.set(0.6, 3.28, 1.3);
+        group.add(beaconMesh);
+
+        // High-Gain Antenna Dish
+        const dishGeo = new THREE.ConeGeometry(0.4, 0.2, 12, 1, true);
+        dishGeo.rotateX(-Math.PI / 3);
+        const dishMat = new THREE.MeshStandardMaterial({ color: 0xF3F4F6, metalness: 0.6, roughness: 0.4, side: THREE.DoubleSide });
+        const dishMesh = new THREE.Mesh(dishGeo, dishMat);
+        dishMesh.position.set(-0.7, 1.8, -1.1);
+        group.add(dishMesh);
+
+        // 4. 6 Articulated Rocker-Bogie Wheels
+        const wheels = [];
+        const wheelGeo = new THREE.CylinderGeometry(0.55, 0.55, 0.45, 16);
+        wheelGeo.rotateZ(Math.PI / 2); // Axis along X
+        const wheelMat = new THREE.MeshStandardMaterial({
+          color: 0x1E232B,
+          roughness: 0.82,
+          metalness: 0.28
+        });
+
+        const wheelPositions = [
+          { x: -1.65, y: 0.55, z:  1.4, name: 'FL' },
+          { x:  1.65, y: 0.55, z:  1.4, name: 'FR' },
+          { x: -1.75, y: 0.55, z:  0.0, name: 'ML' },
+          { x:  1.75, y: 0.55, z:  0.0, name: 'MR' },
+          { x: -1.65, y: 0.55, z: -1.4, name: 'RL' },
+          { x:  1.65, y: 0.55, z: -1.4, name: 'RR' },
+        ];
+
+        const strutMat = new THREE.MeshStandardMaterial({ color: 0x4B5563, metalness: 0.8, roughness: 0.4 });
+
+        wheelPositions.forEach(wp => {
+          const wMesh = new THREE.Mesh(wheelGeo, wheelMat);
+          wMesh.position.set(wp.x, wp.y, wp.z);
+          wMesh.castShadow = true;
+          group.add(wMesh);
+          wheels.push(wMesh);
+
+          // Hubcap Gold Accent
+          const hubGeo = new THREE.CylinderGeometry(0.24, 0.24, 0.48, 8);
+          hubGeo.rotateZ(Math.PI / 2);
+          const hubMat = new THREE.MeshBasicMaterial({ color: 0xF59E0B });
+          const hubMesh = new THREE.Mesh(hubGeo, hubMat);
+          wMesh.add(hubMesh);
+
+          // Suspension Strut connecting to chassis
+          const strutGeo = new THREE.CylinderGeometry(0.06, 0.06, Math.abs(wp.x) - 1.2, 6);
+          strutGeo.rotateZ(Math.PI / 2);
+          const strutMesh = new THREE.Mesh(strutGeo, strutMat);
+          strutMesh.position.set(wp.x > 0 ? (wp.x - 0.4) : (wp.x + 0.4), wp.y + 0.2, wp.z);
+          group.add(strutMesh);
+        });
+
+        group.userData = {
+          wheels: wheels,
+          beacon: beaconMesh,
+          rollDistance: 0,
+          animateRoll: function(distDelta) {
+            this.rollDistance += distDelta;
+            const angle = (distDelta / 0.55);
+            this.wheels.forEach(w => {
+              w.rotation.x += angle;
+            });
+            if (this.beacon) {
+              this.beacon.rotation.y += 0.08;
+            }
+          }
+        };
+
+        return group;
+      }
+
+      let currentO2AlertState = 'nominal';
+      let isBigAlertDismissed = false;
+
+      function checkOxygenAlerts(o2Pct, forceTrigger = false) {
         const vignette = document.getElementById('visor-vignette-pulse');
         const banner = document.getElementById('hud-o2-alert-banner');
         const headline = document.getElementById('o2-alert-headline');
@@ -5531,13 +6037,25 @@
         const distEl = document.getElementById('o2-alert-dist');
         const timeEl = document.getElementById('o2-alert-time');
 
+        // Big-Screen Alert Overlay DOM Elements
+        const bigOverlay = document.getElementById('big-screen-alert-overlay');
+        const bigTitle = document.getElementById('big-alert-title');
+        const bigSubtitle = document.getElementById('big-alert-subtitle');
+        const bigCode = document.getElementById('big-alert-code');
+        const bigO2Val = document.getElementById('big-o2-val');
+        const bigO2Unit = document.getElementById('big-o2-unit');
+        const bigTimeVal = document.getElementById('big-time-val');
+        const bigDistVal = document.getElementById('big-dist-val');
+        const bigHazardVal = document.getElementById('big-hazard-val');
+        const bigHazardSub = document.getElementById('big-hazard-sub');
+
         const spec = MISSION_O2_SPECS[currentSiteId] || MISSION_O2_SPECS['jezero-crater'];
         const kmDriven = (roverDrive.distanceDrivenMeters / 1000).toFixed(2);
         const remainingL = (o2Pct / 100) * 420;
         const burnRate = spec.burnRate + (roverDrive.slopeDeg / 15.0) * 0.25;
         const estMins = Math.max(1, Math.round(remainingL / burnRate));
 
-        if (o2Pct < 15.0) {
+        if (o2Pct <= 15.0 || forceTrigger) {
           // CRITICAL ALERT (< 15%)
           if (vignette) {
             vignette.classList.remove('caution');
@@ -5555,14 +6073,30 @@
           if (distEl) distEl.textContent = `${kmDriven} km`;
           if (timeEl) timeEl.textContent = `${estMins} min`;
 
-          if (currentO2AlertState !== 'critical') {
+          // Update Big-Screen Overlay Telemetry
+          if (bigO2Val) bigO2Val.textContent = `${o2Pct.toFixed(1)}%`;
+          if (bigO2Unit) bigO2Unit.textContent = `${remainingL.toFixed(1)} L / 420 L`;
+          if (bigTimeVal) bigTimeVal.textContent = `${estMins} MIN`;
+          if (bigDistVal) bigDistVal.textContent = `${kmDriven} KM`;
+          if (bigHazardVal) bigHazardVal.textContent = `${roverDrive.slopeDeg.toFixed(1)}° SLOPE`;
+          if (bigHazardSub) bigHazardSub.textContent = currentRouteMode === 'direct' ? 'Direct Escarpment / 94.2% Slip Risk' : 'A* Safe Gradient Corridor Available';
+
+          if (bigCode) bigCode.textContent = 'ALERT LEVEL: CRITICAL (PLSS-O2 <= 15%)';
+          if (bigTitle) bigTitle.textContent = 'Critical PLSS Oxygen Depletion — Abort Traverse';
+          if (bigSubtitle) bigSubtitle.textContent = 'NASA Flight Rule 7.4.2 Violation: Insufficient metabolic reserve to complete forward exploration corridor. Immediate return trajectory required.';
+
+          if (bigOverlay) {
+            bigOverlay.classList.remove('caution-mode', 'hidden');
+          }
+
+          if (currentO2AlertState !== 'critical' || forceTrigger) {
             currentO2AlertState = 'critical';
             audio.playOxygenAlertChime(true);
-            if (window.gsap && banner) {
-              gsap.fromTo(banner, { y: -30, opacity: 0 }, { y: 0, opacity: 1, duration: 0.45, ease: 'power2.out' });
+            if (window.gsap && bigOverlay) {
+              gsap.fromTo(bigOverlay, { opacity: 0 }, { opacity: 1, duration: 0.45, ease: 'power2.out' });
             }
           }
-        } else if (o2Pct < 30.0) {
+        } else if (o2Pct <= 30.0) {
           // CAUTION ALERT (< 30%)
           if (vignette) {
             vignette.classList.remove('critical');
@@ -5579,25 +6113,34 @@
           if (distEl) distEl.textContent = `${kmDriven} km`;
           if (timeEl) timeEl.textContent = `${estMins} min`;
 
+          if (bigO2Val) bigO2Val.textContent = `${o2Pct.toFixed(1)}%`;
+          if (bigO2Unit) bigO2Unit.textContent = `${remainingL.toFixed(1)} L / 420 L`;
+          if (bigTimeVal) bigTimeVal.textContent = `${estMins} MIN`;
+          if (bigDistVal) bigDistVal.textContent = `${kmDriven} KM`;
+          if (bigHazardVal) bigHazardVal.textContent = `${roverDrive.slopeDeg.toFixed(1)}° SLOPE`;
+          if (bigHazardSub) bigHazardSub.textContent = 'Approaching Return Limit Threshold';
+
+          if (bigCode) bigCode.textContent = 'ALERT LEVEL: CAUTION (PLSS-O2 <= 30%)';
+          if (bigTitle) bigTitle.textContent = 'PLSS Oxygen Reserve Caution — 30% Threshold Crossed';
+          if (bigSubtitle) bigSubtitle.textContent = 'NASA Flight Rule 7.4.2 Advisory: Exploration range boundary reached. Recommend executing safe return corridor.';
+
+          if (bigOverlay && !isBigAlertDismissed) {
+            bigOverlay.classList.add('caution-mode');
+            bigOverlay.classList.remove('hidden');
+          }
+
           if (currentO2AlertState !== 'caution') {
             currentO2AlertState = 'caution';
             audio.playOxygenAlertChime(false);
-            if (window.gsap && banner) {
-              gsap.fromTo(banner, { y: -30, opacity: 0 }, { y: 0, opacity: 1, duration: 0.45, ease: 'power2.out' });
-            }
           }
         } else {
           // NOMINAL (>= 30%)
           if (currentO2AlertState !== 'nominal') {
             currentO2AlertState = 'nominal';
+            isBigAlertDismissed = false;
             if (vignette) vignette.classList.remove('caution', 'critical');
-            if (banner) {
-              if (window.gsap) {
-                gsap.to(banner, { y: -20, opacity: 0, duration: 0.35, onComplete: () => banner.classList.add('hidden') });
-              } else {
-                banner.classList.add('hidden');
-              }
-            }
+            if (banner) banner.classList.add('hidden');
+            if (bigOverlay) bigOverlay.classList.add('hidden');
           }
         }
       }
@@ -5626,23 +6169,76 @@
           btnManual.addEventListener('click', () => executeSingleFootstep(0.85));
         }
 
-        // 4. Auto-Route Safe Return Button
+        // 4. Auto-Route Safe Return Button (Small Banner)
         const btnReturn = document.getElementById('btn-autoroute-return');
         if (btnReturn) {
-          btnReturn.addEventListener('click', () => {
-            audio.playBlip(1100, 0.15);
-            roverDrive.heading = (roverDrive.heading + Math.PI) % (Math.PI * 2);
-            if (isSimulating) toggleSimulation();
-            const headline = document.getElementById('o2-alert-headline');
-            if (headline) headline.textContent = 'Safe Return Trajectory Engaged // Heading 180° to Basecamp';
-            setTimeout(() => {
-              const banner = document.getElementById('hud-o2-alert-banner');
-              if (banner && window.gsap) {
-                gsap.to(banner, { y: -20, opacity: 0, duration: 0.5, onComplete: () => banner.classList.add('hidden') });
-              }
-            }, 2600);
+          btnReturn.addEventListener('click', executeSafeReturnTrajectory);
+        }
+
+        // 5. Big-Screen Alert: Execute Safe A* Walk-Back
+        const btnBigReturn = document.getElementById('btn-big-execute-return');
+        if (btnBigReturn) {
+          btnBigReturn.addEventListener('click', executeSafeReturnTrajectory);
+        }
+
+        // 6. Big-Screen Alert: Dismiss Warning
+        const btnBigDismiss = document.getElementById('btn-big-dismiss');
+        const btnBigClose = document.getElementById('btn-close-big-alert');
+        const dismissBigAlert = () => {
+          isBigAlertDismissed = true;
+          const bigOverlay = document.getElementById('big-screen-alert-overlay');
+          if (bigOverlay) {
+            if (window.gsap) {
+              gsap.to(bigOverlay, { opacity: 0, duration: 0.35, onComplete: () => bigOverlay.classList.add('hidden') });
+            } else {
+              bigOverlay.classList.add('hidden');
+            }
+          }
+          audio.playBlip(560, 0.1);
+        };
+        if (btnBigDismiss) btnBigDismiss.addEventListener('click', dismissBigAlert);
+        if (btnBigClose) btnBigClose.addEventListener('click', dismissBigAlert);
+
+        // 7. Top Bar Quick Test O2 Alert Button (Judge Demonstration)
+        const btnTestAlert = document.getElementById('btn-test-o2-alert');
+        if (btnTestAlert) {
+          btnTestAlert.addEventListener('click', () => {
+            isBigAlertDismissed = false;
+            checkOxygenAlerts(14.2, true);
           });
         }
+      }
+
+      function executeSafeReturnTrajectory() {
+        audio.playBlip(1100, 0.15);
+        audio.playOxygenAlertChime(false);
+        roverDrive.heading = (roverDrive.heading + Math.PI) % (Math.PI * 2);
+        if (isSimulating) toggleSimulation();
+
+        // Switch to safe corridor if currently on direct
+        if (currentRouteMode !== 'safe') setRouteDisplayMode('safe');
+
+        const bigOverlay = document.getElementById('big-screen-alert-overlay');
+        if (bigOverlay) {
+          if (window.gsap) {
+            gsap.to(bigOverlay, { opacity: 0, duration: 0.45, onComplete: () => bigOverlay.classList.add('hidden') });
+          } else {
+            bigOverlay.classList.add('hidden');
+          }
+        }
+
+        const headline = document.getElementById('o2-alert-headline');
+        if (headline) headline.textContent = 'Safe A* Return Trajectory Engaged // Heading 180° to Basecamp';
+
+        const statusPill = document.getElementById('tape-status');
+        if (statusPill) statusPill.textContent = 'RETURNING';
+
+        setTimeout(() => {
+          const banner = document.getElementById('hud-o2-alert-banner');
+          if (banner && window.gsap) {
+            gsap.to(banner, { y: -20, opacity: 0, duration: 0.5, onComplete: () => banner.classList.add('hidden') });
+          }
+        }, 3200);
       }
 
       /* ========================================================================
@@ -5938,25 +6534,68 @@
         // Subtle suspension bounce over rocky terrain
         roverDrive.bounceOffset = Math.sin(Date.now() * 0.014) * 0.05 * (Math.abs(roverDrive.speed) / roverDrive.maxSpeed);
 
-        // 5. Smooth Camera Follow Rig (Lerped for responsive, silky 60fps tracking)
-        const eyeY = roverDrive.centerY + 1.8 + roverDrive.bounceOffset;
-        const lookDist = 22.0;
-        const targetLookX = roverDrive.x + Math.sin(roverDrive.heading) * lookDist;
-        const targetLookZ = roverDrive.z + Math.cos(roverDrive.heading) * lookDist;
-        const targetLookY = eyeY + Math.tan(pitchRad) * lookDist;
+        // 5. Multi-POV Follow-Cam Rig (Elevated Chase / Ingenuity Drone / Visor)
+        let targetCamX, targetCamY, targetCamZ;
+        let targetLookX, targetLookY, targetLookZ;
 
-        // Smooth camera lerp
-        cockpitCamPos.lerp(new THREE.Vector3(roverDrive.x, eyeY, roverDrive.z), 0.28);
-        cockpitLookPos.lerp(new THREE.Vector3(targetLookX, targetLookY, targetLookZ), 0.28);
+        if (currentPOVMode === 'chase') {
+          // Elevated Chase-Cam: 14m above terrain, 22m behind, looking 45m ahead to horizon
+          targetCamX = roverDrive.x - Math.sin(roverDrive.heading) * 22.0;
+          targetCamZ = roverDrive.z - Math.cos(roverDrive.heading) * 22.0;
+          const groundBehindY = getTerrainElevation(currentSiteId, targetCamX, targetCamZ);
+          targetCamY = Math.max(roverDrive.centerY + 14.0, groundBehindY + 8.0) + roverDrive.bounceOffset;
 
-        tCamera.position.copy(cockpitCamPos);
-        tCamera.lookAt(cockpitLookPos);
-        tCamera.rotation.z = -rollRad * 0.45;
+          targetLookX = roverDrive.x + Math.sin(roverDrive.heading) * 45.0;
+          targetLookZ = roverDrive.z + Math.cos(roverDrive.heading) * 45.0;
+          targetLookY = roverDrive.centerY + 4.0;
 
-        // Sync 3D Rover Marker and ensure it NEVER blocks cockpit view
+          cockpitCamPos.lerp(new THREE.Vector3(targetCamX, targetCamY, targetCamZ), 0.16);
+          cockpitLookPos.lerp(new THREE.Vector3(targetLookX, targetLookY, targetLookZ), 0.16);
+
+          tCamera.position.copy(cockpitCamPos);
+          tCamera.lookAt(cockpitLookPos);
+          tCamera.rotation.z = -rollRad * 0.22; // subtle cinematic roll
+
+        } else if (currentPOVMode === 'drone') {
+          // High-Altitude Ingenuity Drone Recon (45m follow-cam)
+          targetCamX = roverDrive.x - Math.sin(roverDrive.heading) * 12.0;
+          targetCamZ = roverDrive.z - Math.cos(roverDrive.heading) * 12.0;
+          targetCamY = roverDrive.centerY + 45.0;
+
+          targetLookX = roverDrive.x + Math.sin(roverDrive.heading) * 16.0;
+          targetLookZ = roverDrive.z + Math.cos(roverDrive.heading) * 16.0;
+          targetLookY = roverDrive.centerY;
+
+          cockpitCamPos.lerp(new THREE.Vector3(targetCamX, targetCamY, targetCamZ), 0.14);
+          cockpitLookPos.lerp(new THREE.Vector3(targetLookX, targetLookY, targetLookZ), 0.14);
+
+          tCamera.position.copy(cockpitCamPos);
+          tCamera.lookAt(cockpitLookPos);
+
+        } else {
+          // Visor POV: First-Person 2.0m height
+          const eyeY = roverDrive.centerY + 2.0 + roverDrive.bounceOffset;
+          const lookDist = 35.0;
+          targetLookX = roverDrive.x + Math.sin(roverDrive.heading) * lookDist;
+          targetLookZ = roverDrive.z + Math.cos(roverDrive.heading) * lookDist;
+          targetLookY = eyeY + Math.tan(pitchRad) * lookDist;
+
+          cockpitCamPos.lerp(new THREE.Vector3(roverDrive.x, eyeY, roverDrive.z), 0.25);
+          cockpitLookPos.lerp(new THREE.Vector3(targetLookX, targetLookY, targetLookZ), 0.25);
+
+          tCamera.position.copy(cockpitCamPos);
+          tCamera.lookAt(cockpitLookPos);
+          tCamera.rotation.z = -rollRad * 0.45;
+        }
+
+        // Update 3D Articulated Rover Model & Animate Wheel Roll
         if (roverMarkerMesh) {
-          roverMarkerMesh.position.set(roverDrive.x, roverDrive.centerY + 1.0, roverDrive.z);
-          roverMarkerMesh.visible = false; // Never block Cockpit view
+          roverMarkerMesh.position.set(roverDrive.x, roverDrive.centerY, roverDrive.z);
+          roverMarkerMesh.rotation.set(pitchRad, roverDrive.heading, rollRad);
+          roverMarkerMesh.visible = (currentPOVMode !== 'visor');
+          if (roverMarkerMesh.userData && roverMarkerMesh.userData.animateRoll) {
+            roverMarkerMesh.userData.animateRoll(Math.abs(roverDrive.speed * dt * 3.8));
+          }
         }
 
         // 6. Update Ground-Projected Lidar Path Ribbon Ahead
@@ -6871,7 +7510,7 @@
 
         // 1. Create 3D High-Res Displaced Terrain Grid
         const size = 680;
-        const segments = 160;
+        const segments = 256; // High-density grid for silky-smooth close-ups
         const geo = new THREE.PlaneGeometry(size, size, segments, segments);
         geo.rotateX(-Math.PI / 2); // Orient horizontal (XZ plane)
 
@@ -6889,7 +7528,7 @@
         const mat = new THREE.MeshStandardMaterial({
           map: colorTex,
           bumpMap: bumpTex,
-          bumpScale: 3.8, // Crisp rocky ridges and tactile regolith
+          bumpScale: 5.2, // High-relief rocky ridges, crisp gravel & tactile regolith
           roughness: 0.88,
           metalness: 0.08,
           flatShading: false
@@ -7018,17 +7657,10 @@
         // 3. Animated Directional Chevrons along safe corridor
         setupCorridorChevrons();
 
-        // 4. Compact Precision Telemetry Diamond Beacon (Hidden in Cockpit POV)
-        const roverGeo = new THREE.OctahedronGeometry(1.2, 0);
-        const roverMat = new THREE.MeshStandardMaterial({
-          color: 0xFBBF24,
-          emissive: 0xD97706,
-          emissiveIntensity: 0.85,
-          roughness: 0.2
-        });
-        roverMarkerMesh = new THREE.Mesh(roverGeo, roverMat);
+        // 4. Sleek 3D Articulated ARES Scout Rover Model (Visible in Chase & Drone POV)
+        roverMarkerMesh = createArticulatedRoverModel();
         roverMarkerMesh.position.copy(points3D[0]);
-        roverMarkerMesh.visible = !isCockpitMode;
+        roverMarkerMesh.visible = (!isCockpitMode || currentPOVMode !== 'visor');
         tScene.add(roverMarkerMesh);
       }
 
@@ -7572,12 +8204,28 @@
 
             if (roverMarkerMesh) {
               roverMarkerMesh.position.copy(pt3D);
-              roverMarkerMesh.visible = !isCockpitMode;
+              roverMarkerMesh.rotation.y = roverDrive.heading;
+              roverMarkerMesh.visible = (!isCockpitMode || currentPOVMode !== 'visor');
+              if (roverMarkerMesh.userData && roverMarkerMesh.userData.animateRoll) {
+                roverMarkerMesh.userData.animateRoll(3.8);
+              }
             }
 
             if (isCockpitMode) {
-              tCamera.position.set(pt3D.x, pt3D.y + 0.35, pt3D.z);
-              tCamera.lookAt(pt3D.x + tangent.x * 20, pt3D.y + tangent.y * 20, pt3D.z + tangent.z * 20);
+              if (currentPOVMode === 'chase') {
+                const behindX = pt3D.x - tangent.x * 22.0;
+                const behindZ = pt3D.z - tangent.z * 22.0;
+                const groundBehindY = getTerrainElevation(currentSiteId, behindX, behindZ);
+                const camY = Math.max(pt3D.y + 14.0, groundBehindY + 8.0);
+                tCamera.position.set(behindX, camY, behindZ);
+                tCamera.lookAt(pt3D.x + tangent.x * 45.0, pt3D.y + 4.0, pt3D.z + tangent.z * 45.0);
+              } else if (currentPOVMode === 'drone') {
+                tCamera.position.set(pt3D.x - tangent.x * 12.0, pt3D.y + 45.0, pt3D.z - tangent.z * 12.0);
+                tCamera.lookAt(pt3D.x + tangent.x * 16.0, pt3D.y, pt3D.z + tangent.z * 16.0);
+              } else {
+                tCamera.position.set(pt3D.x, pt3D.y + 2.0, pt3D.z);
+                tCamera.lookAt(pt3D.x + tangent.x * 35.0, pt3D.y + 1.0, pt3D.z + tangent.z * 35.0);
+              }
             }
           }
 
