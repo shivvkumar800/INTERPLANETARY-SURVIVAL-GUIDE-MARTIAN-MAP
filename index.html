@@ -2106,6 +2106,138 @@
       letter-spacing: 0.08em;
     }
 
+
+    /* ==========================================================================
+       THEMIS THERMAL INFRARED HUD SCALE & LIVE TEMPERATURE SENSOR
+       ========================================================================== */
+    .themis-hud-legend {
+      position: absolute;
+      top: 18px;
+      right: 18px;
+      z-index: 45;
+      width: 330px;
+      padding: 12px 14px;
+      background: rgba(15, 17, 22, 0.90);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border: 1px solid rgba(255, 255, 255, 0.16);
+      border-radius: var(--radius-md);
+      box-shadow: 0 12px 32px rgba(0, 0, 0, 0.65);
+      font-family: var(--font-mono);
+      transition: opacity 0.25s ease, transform 0.25s ease;
+      pointer-events: auto;
+    }
+
+    .themis-hud-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 8px;
+    }
+
+    .themis-hud-title {
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      color: #F8FAFC;
+    }
+
+    .themis-pulse-dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: #38BDF8;
+      box-shadow: 0 0 8px #38BDF8;
+      animation: pulseBeacon 1.6s infinite ease-in-out;
+    }
+
+    .themis-hud-sol {
+      font-size: 9px;
+      color: #94A3B8;
+      letter-spacing: 0.05em;
+    }
+
+    .themis-gradient-track {
+      width: 100%;
+      height: 10px;
+      border-radius: 4px;
+      overflow: hidden;
+      border: 1px solid rgba(255, 255, 255, 0.18);
+      margin-bottom: 6px;
+      box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.6);
+    }
+
+    .themis-gradient-bar {
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(to right,
+        #080E26 0%,
+        #0284C7 16%,
+        #38BDF8 25%,
+        #4338CA 38%,
+        #581C87 50%,
+        #9A3412 65%,
+        #B45309 76%,
+        #EA580C 86%,
+        #F59E0B 94%,
+        #FEF08A 100%
+      );
+    }
+
+    .themis-scale-labels {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 8px;
+      font-size: 8px;
+      line-height: 1.2;
+    }
+
+    .scale-point {
+      display: flex;
+      flex-direction: column;
+      text-align: center;
+    }
+
+    .scale-point strong {
+      font-size: 8.5px;
+      font-weight: 700;
+    }
+
+    .scale-point small {
+      font-size: 7px;
+      color: #94A3B8;
+      text-transform: uppercase;
+      letter-spacing: 0.03em;
+    }
+
+    .scale-point.cold strong { color: #38BDF8; }
+    .scale-point.mid-cold strong { color: #818CF8; }
+    .scale-point.ambient strong { color: #CBD5E1; }
+    .scale-point.warm strong { color: #FB923C; }
+    .scale-point.hot strong { color: #F59E0B; }
+
+    .themis-live-status {
+      padding-top: 6px;
+      border-top: 1px solid rgba(255, 255, 255, 0.08);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      font-size: 9px;
+    }
+
+    .themis-status-tag {
+      color: #94A3B8;
+      letter-spacing: 0.06em;
+    }
+
+    .themis-status-val {
+      font-weight: 700;
+      color: #F8FAFC;
+    }
+
   </style>
 </head>
 <body>
@@ -2231,6 +2363,35 @@
       <section class="tactical-main-pane">
         
         <div class="tactical-canvas-viewport">
+
+          <!-- NASA THEMIS Thermal Infrared Spectrum & Live Reading HUD Bar -->
+          <div class="themis-hud-legend" id="themis-hud-legend" style="display: none; opacity: 0;">
+            <div class="themis-hud-header">
+              <div class="themis-hud-title">
+                <div class="themis-pulse-dot"></div>
+                <span>NASA THEMIS IR // SURFACE THERMAL INERTIA</span>
+              </div>
+              <span class="themis-hud-sol">BAND 9 (12.57 µm)</span>
+            </div>
+            
+            <div class="themis-gradient-track">
+              <div class="themis-gradient-bar"></div>
+            </div>
+
+            <div class="themis-scale-labels">
+              <span class="scale-point cold"><strong>❄️ -105°C</strong><small>Cold Trap</small></span>
+              <span class="scale-point mid-cold"><strong>-85°C</strong><small>Frozen Basin</small></span>
+              <span class="scale-point ambient"><strong>-65°C</strong><small>Regolith</small></span>
+              <span class="scale-point warm"><strong>-45°C</strong><small>Scarp</small></span>
+              <span class="scale-point hot"><strong>🔥 -25°C</strong><small>Sunlit Ridge</small></span>
+            </div>
+
+            <div class="themis-live-status">
+              <span class="themis-status-tag">SURFACE UNDER ROVER:</span>
+              <span class="themis-status-val tabular-nums" id="themis-live-temp-display">-64.2°C (NOMINAL REGOLITH)</span>
+            </div>
+          </div>
+
           
           <!-- Subtle Visor Edge Pulse Vignette (Breathing Amber / Crimson) -->
           <div class="visor-vignette-pulse" id="visor-vignette-pulse"></div>
@@ -7199,6 +7360,25 @@
         const hr = Math.round(76 + (roverDrive.slopeDeg / 18.0) * 36 + (Math.abs(roverDrive.speed) / roverDrive.maxSpeed) * 18);
         const suitHrValEl = document.getElementById('suit-hr-val');
         if (suitHrValEl) suitHrValEl.textContent = `${hr} BPM`;
+        
+        // Dynamic THEMIS Surface Temperature Telemetry
+        if (typeof getMartianTemperature === 'function') {
+          const roverTemp = getMartianTemperature(currentSiteId, roverDrive.x, roverDrive.z);
+          const themisLiveEl = document.getElementById('themis-live-temp-display');
+          if (themisLiveEl) {
+            if (roverTemp <= -92.0) {
+              themisLiveEl.innerHTML = `<span style="color:#38BDF8; font-weight:700;">❄️ ${roverTemp.toFixed(1)}°C (COLD TRAP BREACH)</span>`;
+              if (suitBattSubEl) {
+                suitBattSubEl.innerHTML = `${battWh} Wh (750 Wh pack)<br><span style="color:#38BDF8; font-weight:600;">680 W active heating [COLD TRAP]</span>`;
+              }
+            } else if (roverTemp >= -38.0) {
+              themisLiveEl.innerHTML = `<span style="color:#F59E0B; font-weight:700;">☀️ ${roverTemp.toFixed(1)}°C (SUNLIT BASALT RIDGE)</span>`;
+            } else {
+              themisLiveEl.innerHTML = `<span style="color:#F8FAFC; font-weight:600;">${roverTemp.toFixed(1)}°C (NOMINAL REGOLITH)</span>`;
+            }
+          }
+        }
+
         checkOxygenAlerts(Number(o2Pct));
       }
 
@@ -7222,6 +7402,7 @@
 
         // 2. Initialize 3D Photorealistic Displaced Terrain Map (View B)
         init3DTerrainEngine();
+        initTerrainHoverRaycaster();
 
         // 3. Load Default Verified Landing Site (Jezero Crater)
         switchLandingSite('jezero-crater');
@@ -7475,6 +7656,39 @@
       /* ========================================================================
          PHOTOREALISTIC 3D MARS TERRAIN ENGINE (THREE.JS 3D DISPLACED DEM)
          ======================================================================== */
+      
+      // 3D Terrain Pointer Raycasting for Live Surface Temperature Inspection
+      function initTerrainHoverRaycaster() {
+        const container = document.getElementById('webgl-tactical-container');
+        if (!container) return;
+        const raycaster = new THREE.Raycaster();
+        const mouse = new THREE.Vector2();
+
+        container.addEventListener('pointermove', (evt) => {
+          if (currentLayerMode !== 'themis' || !terrainMesh || !tCamera) return;
+          const rect = container.getBoundingClientRect();
+          mouse.x = ((evt.clientX - rect.left) / rect.width) * 2 - 1;
+          mouse.y = -((evt.clientY - rect.top) / rect.height) * 2 + 1;
+
+          raycaster.setFromCamera(mouse, tCamera);
+          const hits = raycaster.intersectObject(terrainMesh);
+          if (hits.length > 0) {
+            const hitPt = hits[0].point;
+            const temp = getMartianTemperature(currentSiteId, hitPt.x, hitPt.z);
+            const themisLiveEl = document.getElementById('themis-live-temp-display');
+            if (themisLiveEl) {
+              if (temp <= -92.0) {
+                themisLiveEl.innerHTML = `<span style="color:#38BDF8; font-weight:700;">HOVER: ${temp.toFixed(1)}°C (COLD TRAP)</span>`;
+              } else if (temp >= -38.0) {
+                themisLiveEl.innerHTML = `<span style="color:#F59E0B; font-weight:700;">HOVER: ${temp.toFixed(1)}°C (WARM RIDGE)</span>`;
+              } else {
+                themisLiveEl.innerHTML = `<span style="color:#F8FAFC; font-weight:600;">HOVER: ${temp.toFixed(1)}°C (REGOLITH)</span>`;
+              }
+            }
+          }
+        });
+      }
+
       function init3DTerrainEngine() {
         const container = document.getElementById('tactical-3d-terrain-container');
         if (!container) return;
@@ -7710,7 +7924,81 @@
       }
 
       /* ========================================================================
+         NASA THEMIS THERMAL INFRARED PHYSICAL TEMPERATURE ENGINE
+         Calculates local surface temperature (°C) based on topography, slope,
+         thermal inertia of basalt rocks, and deep crater cold trap pooling.
+         ======================================================================== */
+      function getMartianTemperature(siteId, x, z) {
+        const h = getTerrainElevation(siteId, x, z);
+        
+        // Slope & solar aspect calculation
+        const eps = 4.0;
+        const dhdx = (getTerrainElevation(siteId, x + eps, z) - getTerrainElevation(siteId, x - eps, z)) / (2 * eps);
+        const dhdz = (getTerrainElevation(siteId, x, z + eps) - getTerrainElevation(siteId, x, z - eps)) / (2 * eps);
+        const slope = Math.hypot(dhdx, dhdz);
+
+        // Sun coming from North-East (azimuth 45°, elevation 42°)
+        const sunDot = (dhdx * 0.65 - dhdz * 0.65);
+
+        // Base ambient Martian diurnal surface temperature (-68°C)
+        let tempC = -68.0;
+
+        // 1. Direct Sunlit Slope Insolation (+12°C to +36°C on exposed scarps)
+        tempC += sunDot * 36.0;
+
+        // 2. High Thermal Inertia: exposed rocky basalt ridges retain daytime heat
+        tempC += Math.min(18.0, slope * 44.0);
+
+        // 3. Permanently Shadowed Cold Traps: deep depressions pool sub-zero frost (-95°C to -112°C)
+        if (h < -10) {
+          const depth = (-10 - h);
+          tempC -= Math.min(38.0, depth * 1.85);
+        }
+
+        // 4. Elevated highland rims & mountain peaks
+        if (h > 20) {
+          tempC += Math.min(14.0, (h - 20) * 0.35);
+        }
+
+        // Subtle micro-thermal variance (regolith grain distribution)
+        const microVar = Math.sin(x * 0.08) * Math.cos(z * 0.08) * 3.2;
+        tempC += microVar;
+
+        // Authentic NASA THEMIS surface temperature boundary: [-112°C, -22°C]
+        return Math.min(-22.0, Math.max(-112.0, tempC));
+      }
+
+      // Pre-calculated THEMIS False-Color Thermal Palette Transfer
+      const THEMIS_PALETTE = [
+        { t: 0.00, r: 8, g: 14, b: 38 },     // -105°C: Deep Abyssal Indigo
+        { t: 0.18, r: 2, g: 132, b: 199 },   //  -90°C: Electric Ice Cyan (Cold Trap)
+        { t: 0.28, r: 56, g: 189, b: 248 },  //  -82°C: Bright Cryo Azure
+        { t: 0.40, r: 67, g: 56, b: 202 },   //  -73°C: Cool Thermal Slate
+        { t: 0.52, r: 88, g: 28, b: 135 },   //  -63°C: Deep Thermal Plum / Violet
+        { t: 0.65, r: 154, g: 52, b: 18 },   //  -53°C: Terracotta Basalt Rust
+        { t: 0.78, r: 180, g: 83, b: 9 },    //  -42°C: Burnished Ochre
+        { t: 0.88, r: 234, g: 88, b: 12 },   //  -34°C: Fiery Tangerine
+        { t: 0.96, r: 245, g: 158, b: 11 },  //  -28°C: Luminous Solar Amber
+        { t: 1.00, r: 254, g: 240, b: 138 }  //  -25°C: White-Hot Gold Peak
+      ];
+
+      function sampleThemisRGB(tempC) {
+        const norm = Math.max(0, Math.min(1, (tempC - (-105)) / (-25 - (-105))));
+        let i = 0;
+        while (i < THEMIS_PALETTE.length - 1 && THEMIS_PALETTE[i+1].t <= norm) i++;
+        if (i >= THEMIS_PALETTE.length - 1) return THEMIS_PALETTE[THEMIS_PALETTE.length - 1];
+        const s0 = THEMIS_PALETTE[i], s1 = THEMIS_PALETTE[i+1];
+        const local = (norm - s0.t) / (s1.t - s0.t);
+        return {
+          r: Math.round(s0.r + (s1.r - s0.r) * local),
+          g: Math.round(s0.g + (s1.g - s0.g) * local),
+          b: Math.round(s0.b + (s1.b - s0.b) * local)
+        };
+      }
+
+      /* ========================================================================
          HIGH-DETAIL PROCEDURAL MARTIAN SURFACE & BUMP TEXTURE GENERATOR
+         Supports Viking Natural Albedo, MOLA Elevation, and High-Contrast THEMIS IR
          ======================================================================== */
       function createPhotorealisticMarsTextures(siteId, mode) {
         const size = 1024;
@@ -7724,34 +8012,179 @@
         bumpCanvas.height = size;
         const bCtx = bumpCanvas.getContext('2d');
 
-        // 1. Martian Iron-Oxide & Basalt Stratigraphic Color Gradient
-        const grad = cCtx.createRadialGradient(size/2, size/2, 60, size/2, size/2, size/2);
-        if (mode === 'viking') {
-          // Photorealistic Natural Viking Orbital Albedo
+        if (mode === 'themis') {
+          // ====================================================================
+          // AUTHENTIC NASA THEMIS THERMAL INFRARED SYNTHESIS (256x256 -> 1024x1024)
+          // ====================================================================
+          const gridRes = 256;
+          const offscreen = document.createElement('canvas');
+          offscreen.width = gridRes;
+          offscreen.height = gridRes;
+          const offCtx = offscreen.getContext('2d');
+          const imgData = offCtx.createImageData(gridRes, gridRes);
+          const data = imgData.data;
+
+          for (let py = 0; py < gridRes; py++) {
+            const wz = ((py / gridRes) - 0.5) * 680;
+            for (let px = 0; px < gridRes; px++) {
+              const wx = ((px / gridRes) - 0.5) * 680;
+              const temp = getMartianTemperature(siteId, wx, wz);
+              const rgb = sampleThemisRGB(temp);
+              
+              const idx = (py * gridRes + px) * 4;
+              data[idx]     = rgb.r;
+              data[idx + 1] = rgb.g;
+              data[idx + 2] = rgb.b;
+              data[idx + 3] = 255;
+            }
+          }
+          offCtx.putImageData(imgData, 0, 0);
+
+          // Render smoothly with bicubic scaling onto 1024x1024 canvas
+          cCtx.imageSmoothingEnabled = true;
+          cCtx.drawImage(offscreen, 0, 0, size, size);
+
+          // Subtle thermal isotherm contour rings
+          cCtx.lineWidth = 1.2;
+          for (let r = 100; r < 460; r += 42) {
+            cCtx.strokeStyle = (r < 220) ? 'rgba(56, 189, 248, 0.22)' : 'rgba(245, 158, 11, 0.24)';
+            cCtx.beginPath();
+            cCtx.arc(size/2, size/2, r, 0, Math.PI * 2);
+            cCtx.stroke();
+          }
+
+          // Bump map: Mid-grey base with thermal inertia texture
+          bCtx.fillStyle = '#808080';
+          bCtx.fillRect(0, 0, size, size);
+
+        } else if (mode === 'mola') {
+          // ====================================================================
+          // AUTHENTIC NASA MOLA HYPSOMETRIC TOPOGRAPHIC RELIEF SYNTHESIS
+          // ====================================================================
+          const gridRes = 256;
+          const offscreen = document.createElement('canvas');
+          offscreen.width = gridRes;
+          offscreen.height = gridRes;
+          const offCtx = offscreen.getContext('2d');
+          const imgData = offCtx.createImageData(gridRes, gridRes);
+          const data = imgData.data;
+
+          for (let py = 0; py < gridRes; py++) {
+            const wz = ((py / gridRes) - 0.5) * 680;
+            for (let px = 0; px < gridRes; px++) {
+              const wx = ((px / gridRes) - 0.5) * 680;
+              const h = getTerrainElevation(siteId, wx, wz);
+              
+              // MOLA Elevation Color Ramp (Basin Indigo -> Lowland Teal -> Midland Emerald -> Amber -> Terracotta -> Glacial Buff)
+              let r = 184, g = 90, b = 58;
+              if (h < -20) {
+                // Deep Basin: Indigo to Oceanic Teal
+                r = 15; g = 76; b = 129;
+              } else if (h < 0) {
+                // Lowlands: Emerald / Moss
+                r = 21; g = 128; b = 61;
+              } else if (h < 25) {
+                // Midlands: Goldenrod / Ochre
+                r = 202; g = 138; b = 4;
+              } else if (h < 50) {
+                // Highlands: Terracotta / Crimson
+                r = 185; g = 28; b = 28;
+              } else {
+                // High Crater Rims / Peaks: Glacial White / Buff
+                r = 241; g = 245; b = 249;
+              }
+
+              const idx = (py * gridRes + px) * 4;
+              data[idx]     = r;
+              data[idx + 1] = g;
+              data[idx + 2] = b;
+              data[idx + 3] = 255;
+            }
+          }
+          offCtx.putImageData(imgData, 0, 0);
+
+          cCtx.imageSmoothingEnabled = true;
+          cCtx.drawImage(offscreen, 0, 0, size, size);
+
+          // MOLA Elevation Contours
+          cCtx.lineWidth = 1.4;
+          cCtx.strokeStyle = 'rgba(255, 255, 255, 0.28)';
+          for (let r = 80; r < 480; r += 32) {
+            cCtx.beginPath();
+            cCtx.arc(size/2, size/2, r, 0, Math.PI * 2);
+            cCtx.stroke();
+          }
+
+          bCtx.fillStyle = '#808080';
+          bCtx.fillRect(0, 0, size, size);
+
+        } else {
+          // ====================================================================
+          // AUTHENTIC VIKING ORBITAL NATURAL IRON-OXIDE COLOR ALBEDO
+          // ====================================================================
+          const grad = cCtx.createRadialGradient(size/2, size/2, 60, size/2, size/2, size/2);
           grad.addColorStop(0, '#B85A3A');   // Dusty Ochre Floor
           grad.addColorStop(0.35, '#8C3B2B'); // Iron-Oxide Terracotta
           grad.addColorStop(0.65, '#5C281D'); // Weathered Basalt Scarp
           grad.addColorStop(0.9, '#301F1C');  // Dark Crater Rim
           grad.addColorStop(1, '#1A1210');    // Deep Basalt Mantle
-        } else if (mode === 'mola') {
-          // MOLA Topographic Elevation Shaded
-          grad.addColorStop(0, '#8A4F3D');
-          grad.addColorStop(0.4, '#B0755C');
-          grad.addColorStop(0.7, '#6E3A2E');
-          grad.addColorStop(1, '#331F1B');
-        } else {
-          // THEMIS Thermal Infrared Inertia
-          grad.addColorStop(0, '#A64B2A');
-          grad.addColorStop(0.5, '#732D1C');
-          grad.addColorStop(0.8, '#4A1D13');
-          grad.addColorStop(1, '#24100C');
-        }
-        cCtx.fillStyle = grad;
-        cCtx.fillRect(0, 0, size, size);
 
-        // Bump map base: mid-grey 128
-        bCtx.fillStyle = '#808080';
-        bCtx.fillRect(0, 0, size, size);
+          cCtx.fillStyle = grad;
+          cCtx.fillRect(0, 0, size, size);
+
+          bCtx.fillStyle = '#808080';
+          bCtx.fillRect(0, 0, size, size);
+
+          // Concentric Crater Rim Terraces
+          cCtx.strokeStyle = 'rgba(212, 162, 118, 0.45)';
+          bCtx.strokeStyle = '#FFFFFF';
+          for (let r = 120; r < 460; r += 32) {
+            cCtx.lineWidth = 2.5;
+            bCtx.lineWidth = 3.5;
+            cCtx.beginPath();
+            bCtx.beginPath();
+            cCtx.arc(size/2, size/2, r, 0, Math.PI * 2);
+            bCtx.arc(size/2, size/2, r, 0, Math.PI * 2);
+            cCtx.stroke();
+            bCtx.stroke();
+          }
+
+          // River Delta Channels (Jezero Fan)
+          if (siteId === 'jezero-crater') {
+            cCtx.strokeStyle = 'rgba(224, 190, 162, 0.75)'; // pale delta clays
+            bCtx.strokeStyle = '#E0E0E0';
+            cCtx.lineWidth = 14;
+            bCtx.lineWidth = 12;
+            cCtx.beginPath();
+            bCtx.beginPath();
+            cCtx.moveTo(80, size/2);
+            cCtx.bezierCurveTo(240, size/2 - 20, 360, size/2 - 50, 480, size/2);
+            bCtx.moveTo(80, size/2);
+            bCtx.bezierCurveTo(240, size/2 - 20, 360, size/2 - 50, 480, size/2);
+            cCtx.stroke();
+            bCtx.stroke();
+
+            // Sinuous Delta Fan Distributaries
+            cCtx.lineWidth = 4;
+            bCtx.lineWidth = 4;
+            for (let angle of [-0.4, -0.2, 0, 0.2, 0.4]) {
+              cCtx.beginPath();
+              bCtx.beginPath();
+              cCtx.moveTo(480, size/2);
+              cCtx.lineTo(580, size/2 + angle * 240);
+              bCtx.moveTo(480, size/2);
+              bCtx.lineTo(580, size/2 + angle * 240);
+              cCtx.stroke();
+              bCtx.stroke();
+            }
+
+            // South Seitah dark dune ripples
+            cCtx.fillStyle = 'rgba(26, 22, 21, 0.65)';
+            cCtx.beginPath();
+            cCtx.ellipse(size/2 - 120, size/2 - 70, 75, 45, Math.PI/4, 0, Math.PI*2);
+            cCtx.fill();
+          }
+        }
 
         // 2. High-Frequency Regolith Grain & Fine Rock Noise
         const cImg = cCtx.getImageData(0, 0, size, size);
@@ -7760,12 +8193,12 @@
         const bData = bImg.data;
 
         for (let i = 0; i < cData.length; i += 4) {
-          const noise = (Math.random() - 0.5) * 36;
+          const noise = (Math.random() - 0.5) * 28;
           cData[i] = Math.min(255, Math.max(0, cData[i] + noise));
           cData[i+1] = Math.min(255, Math.max(0, cData[i+1] + noise * 0.7));
           cData[i+2] = Math.min(255, Math.max(0, cData[i+2] + noise * 0.5));
 
-          const bNoise = (Math.random() - 0.5) * 55;
+          const bNoise = (Math.random() - 0.5) * 50;
           bData[i] = Math.min(255, Math.max(0, 128 + bNoise));
           bData[i+1] = bData[i];
           bData[i+2] = bData[i];
@@ -7773,86 +8206,35 @@
         cCtx.putImageData(cImg, 0, 0);
         bCtx.putImageData(bImg, 0, 0);
 
-        // 3. Geological Sedimentary Layers, Deltas & Ridge Striations
-        cCtx.strokeStyle = 'rgba(212, 162, 118, 0.45)';
-        bCtx.strokeStyle = '#FFFFFF';
+        // Micro-crater impact pits with raised rims (subtle for Viking and MOLA)
+        if (mode !== 'themis') {
+          for (let i = 0; i < 65; i++) {
+            const cx = Math.random() * size;
+            const cy = Math.random() * size;
+            const cr = 3 + Math.random() * 12;
 
-        // Concentric Crater Rim Terraces
-        for (let r = 120; r < 460; r += 32) {
-          cCtx.lineWidth = 2.5;
-          bCtx.lineWidth = 3.5;
-          cCtx.beginPath();
-          bCtx.beginPath();
-          cCtx.arc(size/2, size/2, r, 0, Math.PI * 2);
-          bCtx.arc(size/2, size/2, r, 0, Math.PI * 2);
-          cCtx.stroke();
-          bCtx.stroke();
-        }
-
-        // River Delta Channels (Jezero Fan) or Ridge Spines
-        if (siteId === 'jezero-crater') {
-          cCtx.strokeStyle = 'rgba(224, 190, 162, 0.75)'; // pale delta clays
-          bCtx.strokeStyle = '#E0E0E0';
-          cCtx.lineWidth = 14;
-          bCtx.lineWidth = 12;
-          cCtx.beginPath();
-          bCtx.beginPath();
-          cCtx.moveTo(80, size/2);
-          cCtx.bezierCurveTo(240, size/2 - 20, 360, size/2 - 50, 480, size/2);
-          bCtx.moveTo(80, size/2);
-          bCtx.bezierCurveTo(240, size/2 - 20, 360, size/2 - 50, 480, size/2);
-          cCtx.stroke();
-          bCtx.stroke();
-
-          // Sinuous Delta Fan Distributaries
-          cCtx.lineWidth = 4;
-          bCtx.lineWidth = 4;
-          for (let angle of [-0.4, -0.2, 0, 0.2, 0.4]) {
+            cCtx.fillStyle = 'rgba(20, 14, 12, 0.75)';
             cCtx.beginPath();
+            cCtx.arc(cx, cy, cr, 0, Math.PI * 2);
+            cCtx.fill();
+
+            bCtx.fillStyle = '#202020';
             bCtx.beginPath();
-            cCtx.moveTo(480, size/2);
-            cCtx.lineTo(580, size/2 + angle * 240);
-            bCtx.moveTo(480, size/2);
-            bCtx.lineTo(580, size/2 + angle * 240);
+            bCtx.arc(cx, cy, cr, 0, Math.PI * 2);
+            bCtx.fill();
+
+            cCtx.strokeStyle = 'rgba(235, 175, 140, 0.7)';
+            cCtx.lineWidth = 1.5;
+            cCtx.beginPath();
+            cCtx.arc(cx, cy, cr + 1.2, -Math.PI/2, Math.PI/2);
             cCtx.stroke();
+
+            bCtx.strokeStyle = '#FFFFFF';
+            bCtx.lineWidth = 2.0;
+            bCtx.beginPath();
+            bCtx.arc(cx, cy, cr + 1.2, -Math.PI/2, Math.PI/2);
             bCtx.stroke();
           }
-
-          // South Seitah dark dune ripples
-          cCtx.fillStyle = 'rgba(26, 22, 21, 0.65)';
-          cCtx.beginPath();
-          cCtx.ellipse(size/2 - 120, size/2 - 70, 75, 45, Math.PI/4, 0, Math.PI*2);
-          cCtx.fill();
-        }
-
-        // Micro-crater impact pits with raised rims
-        for (let i = 0; i < 75; i++) {
-          const cx = Math.random() * size;
-          const cy = Math.random() * size;
-          const cr = 3 + Math.random() * 12;
-
-          cCtx.fillStyle = 'rgba(20, 14, 12, 0.75)';
-          cCtx.beginPath();
-          cCtx.arc(cx, cy, cr, 0, Math.PI * 2);
-          cCtx.fill();
-
-          bCtx.fillStyle = '#202020';
-          bCtx.beginPath();
-          bCtx.arc(cx, cy, cr, 0, Math.PI * 2);
-          bCtx.fill();
-
-          // Raised sunlit rim
-          cCtx.strokeStyle = 'rgba(235, 175, 140, 0.7)';
-          cCtx.lineWidth = 1.5;
-          cCtx.beginPath();
-          cCtx.arc(cx, cy, cr + 1.2, -Math.PI/2, Math.PI/2);
-          cCtx.stroke();
-
-          bCtx.strokeStyle = '#FFFFFF';
-          bCtx.lineWidth = 2.0;
-          bCtx.beginPath();
-          bCtx.arc(cx, cy, cr + 1.2, -Math.PI/2, Math.PI/2);
-          bCtx.stroke();
         }
 
         const colorTex = new THREE.CanvasTexture(colorCanvas);
@@ -7871,7 +8253,27 @@
         const { colorTex, bumpTex } = createPhotorealisticMarsTextures(siteId, mode);
         terrainMesh.material.map = colorTex;
         terrainMesh.material.bumpMap = bumpTex;
+        terrainMesh.material.map.needsUpdate = true;
+        terrainMesh.material.bumpMap.needsUpdate = true;
         terrainMesh.material.needsUpdate = true;
+
+        // Toggle THEMIS Thermal Infrared HUD Legend
+        const themisLegend = document.getElementById('themis-hud-legend');
+        if (themisLegend) {
+          if (mode === 'themis') {
+            themisLegend.style.display = 'block';
+            setTimeout(() => {
+              themisLegend.style.opacity = '1';
+              themisLegend.style.transform = 'translateY(0)';
+            }, 20);
+          } else {
+            themisLegend.style.opacity = '0';
+            themisLegend.style.transform = 'translateY(-6px)';
+            setTimeout(() => {
+              themisLegend.style.display = 'none';
+            }, 260);
+          }
+        }
       }
 
       /* ========================================================================
@@ -8673,7 +9075,24 @@
           document.getElementById('o2-bar-text').textContent = `${o2Pct}% NOMINAL`;
 
           document.getElementById('suit-batt-pct').textContent = `${battPct}%`;
-          document.getElementById('suit-batt-sub').innerHTML = `${battWh} Wh (750 Wh pack)<br>${heatW} W active heating`;
+          
+          // Dynamic THEMIS Surface Temperature in Simulation
+          let simHeatDraw = heatW;
+          if (typeof getMartianTemperature === 'function') {
+            const simTemp = getMartianTemperature(currentSiteId, roverDrive.x, roverDrive.z);
+            const themisLiveEl = document.getElementById('themis-live-temp-display');
+            if (themisLiveEl) {
+              if (simTemp <= -92.0) {
+                themisLiveEl.innerHTML = `<span style="color:#38BDF8; font-weight:700;">❄️ ${simTemp.toFixed(1)}°C (COLD TRAP BREACH)</span>`;
+                simHeatDraw = Math.max(simHeatDraw, 680);
+              } else if (simTemp >= -38.0) {
+                themisLiveEl.innerHTML = `<span style="color:#F59E0B; font-weight:700;">☀️ ${simTemp.toFixed(1)}°C (SUNLIT BASALT RIDGE)</span>`;
+              } else {
+                themisLiveEl.innerHTML = `<span style="color:#F8FAFC; font-weight:600;">${simTemp.toFixed(1)}°C (NOMINAL REGOLITH)</span>`;
+              }
+            }
+          }
+          document.getElementById('suit-batt-sub').innerHTML = `${battWh} Wh (750 Wh pack)<br>${simHeatDraw} W active heating`;
 
           document.getElementById('suit-hr-val').textContent = `${hr} BPM`;
           document.getElementById('suit-hr-sub').innerHTML = `Resting: 78 BPM<br>Slope scaling: 78-${hr}`;

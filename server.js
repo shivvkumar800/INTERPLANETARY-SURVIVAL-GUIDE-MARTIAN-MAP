@@ -104,12 +104,19 @@ const server = http.createServer((req, res) => {
     return;
   }
 
-  // Root or Default Page
-  if (reqPath === '/' || reqPath === '/index.html' || reqPath === '/Mars Survival guide.html') {
+  // Root or Default Page Routing & SPA Fallback
+  const lowerReq = reqPath.toLowerCase();
+  if (
+    reqPath === '/' || 
+    lowerReq === '/index.html' || 
+    lowerReq.includes('mars') || 
+    lowerReq.includes('guide') ||
+    lowerReq.includes('survival')
+  ) {
     reqPath = '/index.html';
   }
 
-  const filePath = path.join(PUBLIC_DIR, reqPath);
+  let filePath = path.join(PUBLIC_DIR, reqPath);
 
   // Security check: ensure path is within PUBLIC_DIR
   if (!filePath.startsWith(PUBLIC_DIR)) {
@@ -119,7 +126,19 @@ const server = http.createServer((req, res) => {
   }
 
   fs.stat(filePath, (err, stats) => {
+    // If not found and it's a page request, fallback to index.html
     if (err || !stats.isFile()) {
+      const fallbackPath = path.join(PUBLIC_DIR, 'index.html');
+      if (fs.existsSync(fallbackPath)) {
+        const indexStats = fs.statSync(fallbackPath);
+        res.writeHead(200, {
+          'Content-Type': 'text/html; charset=UTF-8',
+          'Content-Length': indexStats.size,
+          'Cache-Control': 'no-cache'
+        });
+        fs.createReadStream(fallbackPath).pipe(res);
+        return;
+      }
       res.writeHead(404, { 'Content-Type': 'text/plain' });
       res.end('404 Not Found: ' + reqPath);
       return;
