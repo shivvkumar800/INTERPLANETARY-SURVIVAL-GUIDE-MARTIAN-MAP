@@ -2407,6 +2407,232 @@
       color: #F8FAFC;
     }
 
+
+    /* ==========================================================================
+       OPEN-WORLD 3D MARS GLOBE EXPEDITION & PLANETARY ROVER HUD
+       ========================================================================== */
+    .orbital-expedition-hud {
+      position: absolute;
+      top: 18px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: rgba(15, 17, 22, 0.90);
+      backdrop-filter: blur(18px);
+      -webkit-backdrop-filter: blur(18px);
+      border: 1px solid rgba(255, 255, 255, 0.16);
+      border-radius: var(--radius-pill);
+      box-shadow: 0 12px 36px rgba(0, 0, 0, 0.65);
+      padding: 6px 10px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      z-index: 50;
+      pointer-events: auto;
+    }
+
+    .orbital-expedition-badge {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-family: var(--font-mono);
+      font-size: 10px;
+      font-weight: 700;
+      color: #F8FAFC;
+      padding: 4px 10px;
+      background: rgba(255, 255, 255, 0.05);
+      border-radius: var(--radius-pill);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+    }
+
+    .orbital-pulse-dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: #F59E0B;
+      box-shadow: 0 0 8px #F59E0B;
+      animation: pulseBeacon 1.4s infinite ease-in-out;
+    }
+
+    .sector-tab-group {
+      display: flex;
+      gap: 4px;
+      margin-bottom: 10px;
+      background: rgba(255, 255, 255, 0.04);
+      padding: 3px;
+      border-radius: var(--radius-sm);
+    }
+
+    .sector-tab-btn {
+      flex: 1;
+      border: none;
+      background: transparent;
+      color: #94A3B8;
+      font-family: var(--font-mono);
+      font-size: 9.5px;
+      font-weight: 600;
+      padding: 5px 8px;
+      border-radius: 4px;
+      cursor: pointer;
+      transition: all 0.18s ease;
+      text-align: center;
+    }
+    .sector-tab-btn.active {
+      background: rgba(255, 255, 255, 0.16);
+      color: #FFFFFF;
+    }
+
+    /* Globe Sector Popup Card */
+    .globe-sector-card {
+      position: absolute;
+      bottom: 74px;
+      right: 24px;
+      width: 350px;
+      background: rgba(12, 14, 18, 0.94);
+      backdrop-filter: blur(18px);
+      -webkit-backdrop-filter: blur(18px);
+      border: 1px solid rgba(255, 255, 255, 0.16);
+      border-radius: var(--radius-md);
+      box-shadow: 0 16px 48px rgba(0, 0, 0, 0.75);
+      padding: 16px;
+      z-index: 50;
+      font-family: var(--font-sans);
+      transition: opacity 0.25s ease, transform 0.25s ease;
+      pointer-events: auto;
+    }
+
+    .globe-sector-card.hidden {
+      display: none !important;
+    }
+
+    .sector-card-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      font-family: var(--font-mono);
+      font-size: 8.5px;
+      font-weight: 700;
+      padding: 2px 8px;
+      border-radius: var(--radius-pill);
+      letter-spacing: 0.06em;
+      margin-bottom: 8px;
+    }
+    .sector-card-badge.discovered {
+      background: rgba(245, 158, 11, 0.15);
+      border: 1px solid rgba(245, 158, 11, 0.45);
+      color: #F59E0B;
+    }
+    .sector-card-badge.unexplored {
+      background: rgba(56, 189, 248, 0.15);
+      border: 1px solid rgba(56, 189, 248, 0.45);
+      color: #38BDF8;
+    }
+
+    .sector-card-title {
+      font-size: 17px;
+      font-weight: 600;
+      color: #F8FAFC;
+      margin-bottom: 4px;
+    }
+
+    .sector-card-meta {
+      font-family: var(--font-mono);
+      font-size: 9.5px;
+      color: #94A3B8;
+      margin-bottom: 10px;
+      display: flex;
+      gap: 12px;
+    }
+
+    .sector-card-desc {
+      font-size: 11px;
+      line-height: 1.5;
+      color: #CBD5E1;
+      margin-bottom: 12px;
+    }
+
+    .sector-card-hazard {
+      background: rgba(239, 68, 68, 0.1);
+      border: 1px solid rgba(239, 68, 68, 0.3);
+      border-radius: var(--radius-sm);
+      padding: 6px 10px;
+      font-family: var(--font-mono);
+      font-size: 9px;
+      color: #FCA5A5;
+      margin-bottom: 14px;
+    }
+
+    .sector-card-actions {
+      display: flex;
+      gap: 8px;
+    }
+
+    .btn-sector-primary {
+      flex: 1;
+      background: #FFFFFF;
+      color: #08090C;
+      border: none;
+      border-radius: var(--radius-sm);
+      padding: 8px 12px;
+      font-size: 11px;
+      font-weight: 700;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      transition: all 0.15s ease;
+    }
+    .btn-sector-primary:hover {
+      background: #F1F5F9;
+      transform: translateY(-1px);
+    }
+
+    .btn-sector-secondary {
+      background: rgba(255, 255, 255, 0.08);
+      color: #F8FAFC;
+      border: 1px solid rgba(255, 255, 255, 0.16);
+      border-radius: var(--radius-sm);
+      padding: 8px 12px;
+      font-size: 11px;
+      font-weight: 600;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      transition: all 0.15s ease;
+    }
+    .btn-sector-secondary:hover {
+      background: rgba(255, 255, 255, 0.16);
+    }
+
+    /* Orbital Bottom Telemetry Ribbon */
+    .orbital-telemetry-ribbon {
+      position: absolute;
+      bottom: 16px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: rgba(12, 14, 18, 0.90);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border: 1px solid rgba(255, 255, 255, 0.14);
+      border-radius: var(--radius-pill);
+      box-shadow: 0 10px 32px rgba(0, 0, 0, 0.6);
+      padding: 6px 18px;
+      display: flex;
+      align-items: center;
+      gap: 18px;
+      z-index: 40;
+      font-family: var(--font-mono);
+      font-size: 10px;
+      color: #94A3B8;
+    }
+    .orbital-ribbon-item strong {
+      color: #F8FAFC;
+      font-weight: 700;
+      margin-left: 4px;
+    }
+
   </style>
 </head>
 <body>
@@ -2478,6 +2704,68 @@
     <main id="view-orbital-globe" class="hidden">
       <div id="webgl-orbital-mars-container"></div>
 
+      <!-- Orbital Expedition Floating HUD Bar -->
+      <div class="orbital-expedition-hud">
+        <div class="orbital-expedition-badge">
+          <div class="orbital-pulse-dot"></div>
+          <span>PLANETARY ROVER EXPEDITION</span>
+        </div>
+        <div class="hud-divider"></div>
+        <div class="hud-pill-group">
+          <button class="hud-btn primary" id="btn-globe-sim" title="Run Autonomous Open-World Planetary Traverse">
+            <i data-lucide="play" class="hud-icon" id="globe-sim-icon"></i>
+            <span id="globe-sim-text">Run EVA Sim (Globe)</span>
+          </button>
+          <button class="hud-btn" id="btn-globe-drive" title="Drive Planetary Rover across Globe [WASD]">
+            <i data-lucide="gamepad-2" class="hud-icon"></i>
+            <span id="globe-drive-text">Drive Rover (WASD)</span>
+          </button>
+          <button class="hud-btn" id="btn-globe-reset" title="Reset Planetary Rover & Trail">
+            <i data-lucide="rotate-ccw" class="hud-icon"></i>
+            <span>Reset Expedition</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Orbital Sector Interactive Card -->
+      <div class="globe-sector-card hidden" id="globe-sector-card">
+        <div style="display: flex; justify-content: space-between; align-items: flex-start;">
+          <div class="sector-card-badge discovered" id="globe-card-badge">VERIFIED NASA SURFACE ASSET</div>
+          <button style="background: none; border: none; color: #94A3B8; cursor: pointer; font-size: 16px;" id="btn-close-sector-card">&times;</button>
+        </div>
+        <div class="sector-card-title editorial-italic" id="globe-card-title">Jezero Crater</div>
+        <div class="sector-card-meta">
+          <span id="globe-card-coords">18.38°N, 77.58°E</span>
+          <span id="globe-card-elev">-2,494m</span>
+        </div>
+        <p class="sector-card-desc" id="globe-card-desc">
+          Touchdown location of the Mars 2020 Perseverance mission.
+        </p>
+        <div class="sector-card-hazard" id="globe-card-hazard">
+          HAZARD: 22° Séítah Sand Dunes / Loose Basalt Talus
+        </div>
+        <div class="sector-card-actions">
+          <button class="btn-sector-primary" id="btn-globe-card-launch">
+            <i data-lucide="external-link" style="width: 13px; height: 13px;"></i>
+            <span>Launch 3D Terrain</span>
+          </button>
+          <button class="btn-sector-secondary" id="btn-globe-card-drive">
+            <i data-lucide="navigation" style="width: 13px; height: 13px;"></i>
+            <span>Drive Rover Here</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Clean Orbital Expedition Telemetry Ribbon -->
+      <div class="orbital-telemetry-ribbon">
+        <div class="orbital-ribbon-item">STATUS:<strong id="globe-tele-status">EXPEDITION READY</strong></div>
+        <div class="orbital-ribbon-item">COORDS:<strong id="globe-tele-coords" class="tabular-nums">18.38°N, 77.58°E</strong></div>
+        <div class="orbital-ribbon-item">PLANETARY DIST:<strong id="globe-tele-dist" class="tabular-nums">0.0 km</strong></div>
+        <div class="orbital-ribbon-item">HILLS:<strong id="globe-tele-hills" class="tabular-nums">0</strong></div>
+        <div class="orbital-ribbon-item">PLSS O2:<strong id="globe-tele-o2" class="tabular-nums" style="color: #34D399;">100.0%</strong></div>
+      </div>
+
+
       <!-- Center Hero Typography & Explore Now CTA -->
       <div class="orbital-center-hero">
         <h1 class="orbital-mars-title editorial-italic">Mars Exploration</h1>
@@ -2490,10 +2778,14 @@
       <!-- Left Side: 5 Verified NASA Discovered Landing Sites Picker -->
       <div class="orbital-left-panel">
         <div class="orbital-trajectory-picker">
-          <div class="picker-tag">🎯 VERIFIED NASA LANDED SITES</div>
-          <div class="picker-subtitle">Select Authentic Rover/Lander Zone</div>
+          <div class="sector-tab-group">
+            <button class="sector-tab-btn active" id="tab-sectors-nasa">NASA Sites (5)</button>
+            <button class="sector-tab-btn" id="tab-sectors-unexplored">Unexplored (6)</button>
+          </div>
+          <div class="picker-tag" id="orbital-picker-tag">🎯 VERIFIED NASA LANDED SITES</div>
+          <div class="picker-subtitle" id="orbital-picker-sub">Select Authentic Rover/Lander Zone</div>
           <div class="orbital-site-chips" id="orbital-site-chips">
-            <!-- Populated dynamically with the 5 verified sites -->
+            <!-- Populated dynamically with verified sites or unexplored sectors -->
           </div>
         </div>
       </div>
@@ -2892,6 +3184,7 @@
           <div class="tape-item"><span style="color: var(--text-dim);">COORDS:</span> <strong id="tape-coords" class="tabular-nums">18.3818° N, 77.5778° E</strong></div>
           <div class="tape-item"><span style="color: var(--text-dim);">ELEV:</span> <strong id="tape-elev" class="tabular-nums">-2,494 m</strong></div>
           <div class="tape-item"><span style="color: var(--text-dim);">SLOPE:</span> <strong id="tape-slope" class="tabular-nums">4.2°</strong></div>
+          <div class="tape-item"><span style="color: var(--text-dim);">HILLS:</span> <strong id="tape-hills" class="tabular-nums">0</strong></div>
           <div class="tape-item"><span style="color: var(--text-dim);">DISTANCE:</span> <strong id="tape-dist" class="tabular-nums">0.0 / 10.9 km</strong></div>
           <div class="tape-item"><span style="color: var(--text-dim);">O2 BURN:</span> <strong id="tape-o2" class="tabular-nums">0.88 L/min</strong></div>
         </div>
@@ -5912,6 +6205,75 @@
         opportunity: 'https://images-assets.nasa.gov/image/PIA05237/PIA05237~medium.jpg'
       };
 
+      /* ========================================================================
+         SPACED-OUT UNEXPLORED MARTIAN SECTORS (GLOBE ORBITAL RECON)
+         ======================================================================== */
+      const UNEXPLORED_SECTORS = [
+        {
+          id: 'olympus-mons',
+          name: 'Olympus Mons Caldera',
+          coords: [18.65, 226.20],
+          elev: '+21,287m',
+          feature: 'Shield Volcano Caldera',
+          desc: 'Tallest planetary volcano in the Solar System. 600km shield with vertical 8km scarp cliffs. Unexplored surface telemetry.',
+          hazards: 'Extreme Escarpment / Sub-Zero Low Atmospheric Pressure'
+        },
+        {
+          id: 'valles-marineris',
+          name: 'Valles Marineris Grand Canyon',
+          coords: [-14.00, 301.00],
+          elev: '-7,000m',
+          feature: 'Chasma Tectonic Rifting',
+          desc: 'Vast canyon system stretching 4,000 km across Mars. Wall rock stratigraphy exposes billions of years of crustal evolution.',
+          hazards: '7km Vertical Chasma Drop / Landslide Debris Fields'
+        },
+        {
+          id: 'hellas-basin',
+          name: 'Hellas Impact Basin',
+          coords: [-42.70, 70.00],
+          elev: '-7,152m',
+          feature: 'Deep Ancient Impact Basin',
+          desc: 'Deepest depression on Mars. Highest atmospheric pressure on the planet (12.4 mbar) where liquid CO2/brine condensation can occur.',
+          hazards: 'Severe Global Dust Storm Inception Zone'
+        },
+        {
+          id: 'tharsis-bulge',
+          name: 'Tharsis Volcanic Plateau',
+          coords: [0.00, 250.00],
+          elev: '+8,500m',
+          feature: 'Massive Volcanic Swell',
+          desc: 'Continental-scale volcanic bulge hosting the Tharsis Montes triad: Ascraeus, Pavonis, and Arsia Mons.',
+          hazards: 'Basalt Lava Tubes / Subterranean Collapse Pits'
+        },
+        {
+          id: 'arcadia-planitia',
+          name: 'Arcadia Glacial Ice Plains',
+          coords: [46.70, 192.00],
+          elev: '-4,200m',
+          feature: 'Subsurface Permafrost Ice Sheets',
+          desc: 'Smooth northern volcanic plain with vast shallow water ice sheets 1-2.5 meters below regolith. Prime candidate for future human ISRU base.',
+          hazards: 'Cryo-Thermal Inversion / -110°C Frost Traps'
+        },
+        {
+          id: 'erebus-montes',
+          name: 'Erebus Montes Relict Peaks',
+          coords: [35.70, 185.00],
+          elev: '-1,450m',
+          feature: 'Isolated Hummocky Mountain Peaks',
+          desc: 'Ancient highland massifs projecting through the northern lowlands. Preserves pre-Amazonian bedrock prior to plains infill.',
+          hazards: 'Jagged Basalt Monoliths / Unmapped Scree Slopes'
+        }
+      ];
+
+      function latLonToVector3(latDeg, lonDeg, radius = 1.65) {
+        const phi = (90 - latDeg) * (Math.PI / 180);
+        const theta = (lonDeg + 180) * (Math.PI / 180);
+        const x = -(radius * Math.sin(phi) * Math.cos(theta));
+        const z = (radius * Math.sin(phi) * Math.sin(theta));
+        const y = (radius * Math.cos(phi));
+        return new THREE.Vector3(x, y, z);
+      }
+
       const NASA_LANDED_SITES = {
         'jezero-crater': {
           id: 'jezero-crater',
@@ -6826,6 +7188,87 @@
         tScene.add(emergencyShortPathMesh);
       }
 
+      /* ========================================================================
+         AI SPEECH SYNTHESIS & NASA CHIME RETURN WARNING SYSTEM
+         ======================================================================== */
+      let lastSpokenO2Warning = 0;
+      let isAutoReturnEngaged = false;
+      let hillsTraversedCount = 0;
+      let lastSlopeState = 'flat';
+
+      function playNASAChime() {
+        if (!audio.enabled) return;
+        audio.init();
+        if (!audio.ctx) return;
+        try {
+          const now = audio.ctx.currentTime;
+          const osc1 = audio.ctx.createOscillator();
+          const gain1 = audio.ctx.createGain();
+          osc1.type = 'sine';
+          osc1.frequency.setValueAtTime(960, now);
+          gain1.gain.setValueAtTime(0.08, now);
+          gain1.gain.exponentialRampToValueAtTime(0.0001, now + 0.16);
+          osc1.connect(gain1);
+          gain1.connect(audio.ctx.destination);
+          osc1.start(now);
+          osc1.stop(now + 0.16);
+
+          const osc2 = audio.ctx.createOscillator();
+          const gain2 = audio.ctx.createGain();
+          osc2.type = 'sine';
+          osc2.frequency.setValueAtTime(720, now + 0.14);
+          gain2.gain.setValueAtTime(0.08, now + 0.14);
+          gain2.gain.exponentialRampToValueAtTime(0.0001, now + 0.38);
+          osc2.connect(gain2);
+          gain2.connect(audio.ctx.destination);
+          osc2.start(now + 0.14);
+          osc2.stop(now + 0.38);
+        } catch(e) {}
+      }
+
+      function triggerAIVoiceWarning(level, o2Pct) {
+        const now = Date.now();
+        if (now - lastSpokenO2Warning < 9000) return; // Debounce 9s
+        lastSpokenO2Warning = now;
+
+        playNASAChime();
+
+        if ('speechSynthesis' in window) {
+          window.speechSynthesis.cancel();
+          let msg = "";
+          if (level === 'critical') {
+            msg = "Alert. Oxygen reserve is running low and the auxiliary cylinder is not filled. Turn backside immediately and return to the safe extraction zone.";
+          } else {
+            msg = "Caution. PLSS Oxygen reserve is below thirty percent. Prepare safe return trajectory to base camp.";
+          }
+
+          const utterance = new SpeechSynthesisUtterance(msg);
+          utterance.rate = 1.0;
+          utterance.pitch = 0.95;
+          utterance.volume = 1.0;
+
+          const voices = window.speechSynthesis.getVoices();
+          const enVoice = voices.find(v => v.lang.startsWith('en') && (v.name.includes('Natural') || v.name.includes('Google') || v.name.includes('David') || v.name.includes('Samantha')));
+          if (enVoice) utterance.voice = enVoice;
+
+          window.speechSynthesis.speak(utterance);
+        }
+      }
+
+      function updateHillTraversalTracking(currentSlope) {
+        if (lastSlopeState === 'flat' && currentSlope > 11.5) {
+          lastSlopeState = 'climbing';
+        } else if (lastSlopeState === 'climbing' && currentSlope < 7.0) {
+          hillsTraversedCount++;
+          lastSlopeState = 'flat';
+          audio.playBlip(1040, 0.08);
+          const tapeHills = document.getElementById('tape-hills');
+          if (tapeHills) tapeHills.textContent = hillsTraversedCount;
+          const globeHills = document.getElementById('globe-tele-hills');
+          if (globeHills) globeHills.textContent = hillsTraversedCount;
+        }
+      }
+
       function checkOxygenAlerts(o2Pct, forceTrigger = false) {
         const vignette = document.getElementById('visor-vignette-pulse');
         const banner = document.getElementById('hud-o2-alert-banner');
@@ -6891,6 +7334,7 @@
           if (currentO2AlertState !== 'critical' || forceTrigger) {
             currentO2AlertState = 'critical';
             audio.playOxygenAlertChime(true);
+            triggerAIVoiceWarning('critical', o2Pct);
             if (window.gsap && bigOverlay) {
               gsap.fromTo(bigOverlay, { opacity: 0 }, { opacity: 1, duration: 0.45, ease: 'power2.out' });
             }
@@ -6923,6 +7367,7 @@
           if (bigTitle) bigTitle.textContent = 'PLSS Oxygen Reserve Caution — 30% Threshold Crossed';
           if (bigSubtitle) bigSubtitle.textContent = 'NASA Flight Rule 7.4.2 Advisory: Exploration range boundary reached. Recommend executing safe return corridor.';
 
+          triggerAIVoiceWarning('caution', o2Pct);
           if (bigOverlay && !isBigAlertDismissed) {
             bigOverlay.classList.add('caution-mode');
             bigOverlay.classList.remove('hidden');
@@ -6943,6 +7388,36 @@
           }
         }
       }
+
+      
+        // Hook Auto-Return to Safe Zone Actions
+        const btnBigReturn = document.getElementById('btn-big-execute-return');
+        const btnAutoRoute = document.getElementById('btn-autoroute-return');
+
+        function executeAutoReturnToSafeZone() {
+          audio.playNASAChime();
+          if ('speechSynthesis' in window) {
+            window.speechSynthesis.cancel();
+            const utt = new SpeechSynthesisUtterance("Return trajectory engaged. Auto-navigating along safe extraction corridor to basecamp.");
+            utt.rate = 1.0;
+            utt.pitch = 0.95;
+            window.speechSynthesis.speak(utt);
+          }
+
+          // In 3D Terrain view: reverse heading towards starting basecamp
+          roverDrive.heading = Math.atan2(-roverDrive.x, -roverDrive.z);
+          roverDrive.speed = 10.0;
+
+          // In 3D Globe view: fly back to Jezero basecamp
+          flyGlobeRoverToCoords(18.38, 77.58);
+
+          // Close Big-Screen Alert
+          const bigOverlay = document.getElementById('big-screen-alert-overlay');
+          if (bigOverlay) bigOverlay.classList.add('hidden');
+        }
+
+        if (btnBigReturn) btnBigReturn.addEventListener('click', executeAutoReturnToSafeZone);
+        if (btnAutoRoute) btnAutoRoute.addEventListener('click', executeAutoReturnToSafeZone);
 
       function initAcousticAndAlertControls() {
         // 1. Acoustic Step Sync Toggle Button
@@ -7330,6 +7805,12 @@
         roverDrive.rollDeg = rollRad * (180 / Math.PI);
         roverDrive.slopeDeg = Math.sqrt(roverDrive.pitchDeg * roverDrive.pitchDeg + roverDrive.rollDeg * roverDrive.rollDeg);
 
+        // Update Hill / Ridge Traversal Tracking
+        if (typeof updateHillTraversalTracking === 'function') {
+          updateHillTraversalTracking(roverDrive.slopeDeg);
+        }
+
+
         // Subtle suspension bounce over rocky terrain
         roverDrive.bounceOffset = Math.sin(Date.now() * 0.014) * 0.05 * (Math.abs(roverDrive.speed) / roverDrive.maxSpeed);
 
@@ -7699,24 +8180,99 @@
         document.addEventListener('click', () => dropdown.classList.remove('open'));
       }
 
+      let activeGlobeTab = 'nasa';
+
       function buildOrbitalSiteChips() {
         const container = document.getElementById('orbital-site-chips');
+        const pickerTag = document.getElementById('orbital-picker-tag');
+        const pickerSub = document.getElementById('orbital-picker-sub');
+        const tabNasa = document.getElementById('tab-sectors-nasa');
+        const tabUnexplored = document.getElementById('tab-sectors-unexplored');
+
         if (!container) return;
         container.innerHTML = '';
 
-        Object.keys(NASA_LANDED_SITES).forEach(siteId => {
-          const site = NASA_LANDED_SITES[siteId];
-          const chip = document.createElement('div');
-          chip.className = 'orbital-site-chip' + (siteId === currentSiteId ? ' active' : '');
-          chip.innerHTML = `
-            <span class="chip-name editorial-italic" style="font-size: 13px;">${site.name}</span>
-            <span class="chip-sol">${site.roverTitle.split(' ')[0]} • Sol ${site.sol}</span>
-          `;
-          chip.addEventListener('click', () => {
-            switchLandingSite(siteId);
-            enterTactical3DTerrain();
+        if (tabNasa && tabUnexplored) {
+          tabNasa.classList.toggle('active', activeGlobeTab === 'nasa');
+          tabUnexplored.classList.toggle('active', activeGlobeTab === 'unexplored');
+
+          tabNasa.onclick = () => {
+            activeGlobeTab = 'nasa';
+            buildOrbitalSiteChips();
+            audio.playBlip(780);
+          };
+          tabUnexplored.onclick = () => {
+            activeGlobeTab = 'unexplored';
+            buildOrbitalSiteChips();
+            audio.playBlip(780);
+          };
+        }
+
+        if (activeGlobeTab === 'nasa') {
+          if (pickerTag) pickerTag.textContent = '🎯 VERIFIED NASA LANDED SITES';
+          if (pickerSub) pickerSub.textContent = 'Select Authentic Rover/Lander Zone';
+
+          Object.keys(NASA_LANDED_SITES).forEach(siteId => {
+            const site = NASA_LANDED_SITES[siteId];
+            const chip = document.createElement('div');
+            chip.className = 'orbital-site-chip' + (siteId === currentSiteId ? ' active' : '');
+            chip.innerHTML = `
+              <span class="chip-name editorial-italic" style="font-size: 13px;">${site.name}</span>
+              <span class="chip-sol">${site.roverTitle.split(' ')[0]} • Sol ${site.sol}</span>
+            `;
+            chip.addEventListener('click', () => {
+              switchLandingSite(siteId);
+              openGlobeSectorCard({
+                type: 'discovered',
+                siteId: siteId,
+                name: site.name,
+                coords: site.coords,
+                elev: '-2,494m',
+                desc: site.desc,
+                hazard: 'Crater Rim Escarpment / Dark Ripple Dunes'
+              });
+              focusGlobeOnCoords(site.coords[0], site.coords[1]);
+            });
+            container.appendChild(chip);
           });
-          container.appendChild(chip);
+        } else {
+          if (pickerTag) pickerTag.textContent = '🛰️ UNEXPLORED MARTIAN SECTORS';
+          if (pickerSub) pickerSub.textContent = 'Orbital Reconnaissance Telemetry';
+
+          UNEXPLORED_SECTORS.forEach(sec => {
+            const chip = document.createElement('div');
+            chip.className = 'orbital-site-chip';
+            chip.innerHTML = `
+              <span class="chip-name editorial-italic" style="font-size: 13px;">${sec.name}</span>
+              <span class="chip-sol" style="color: #38BDF8;">${sec.elev} • ${sec.feature.split(' ')[0]}</span>
+            `;
+            chip.addEventListener('click', () => {
+              openGlobeSectorCard({
+                type: 'unexplored',
+                secId: sec.id,
+                name: sec.name,
+                coords: sec.coords,
+                elev: sec.elev,
+                desc: sec.desc,
+                hazard: sec.hazards
+              });
+              focusGlobeOnCoords(sec.coords[0], sec.coords[1]);
+            });
+            container.appendChild(chip);
+          });
+        }
+      }
+
+      function focusGlobeOnCoords(lat, lon) {
+        if (!oCamera || !oControls || !oMarsMesh) return;
+        const targetPos = latLonToVector3(lat, lon, 3.8);
+        gsap.to(oCamera.position, {
+          x: targetPos.x,
+          y: Math.max(0.4, targetPos.y),
+          z: targetPos.z,
+          duration: 1.4,
+          ease: 'power2.inOut',
+          onUpdate: () => oControls.update()
         });
       }
 
@@ -9774,6 +10330,529 @@
       /* ========================================================================
          VIEW A: THREE.JS 3D ORBITAL MARS GLOBE (DAY/NIGHT & ATMOSPHERE)
          ======================================================================== */
+      /* ========================================================================
+         VIEW A: OPEN-WORLD 3D MARS GLOBE EXPEDITION & PLANETARY ROVER ENGINE
+         ======================================================================== */
+      let globeBeacons = [];
+      let globeRoverGroup = null;
+      let globeTrailMesh = null;
+      let globeTrailPoints = [];
+      let isGlobeChaseCam = false;
+      let isGlobeAutonomousSim = false;
+      let globeSimIndex = 0;
+      let globeSimTimer = null;
+
+      const gRover = {
+        lat: 18.38,
+        lon: 77.58,
+        heading: 0,
+        speed: 0,
+        maxSpeed: 0.035,
+        accel: 0.08,
+        friction: 0.05,
+        turnRate: 1.8,
+        wheels: [],
+        beacon: null,
+        totalKm: 0,
+        o2Pct: 100.0
+      };
+
+      function createGlobeMiniRover() {
+        const group = new THREE.Group();
+        group.name = 'GLOBE_PLANETARY_ROVER';
+
+        // Miniature chassis (Scale ~0.038)
+        const chassisGeo = new THREE.BoxGeometry(0.065, 0.024, 0.085);
+        const chassisMat = new THREE.MeshStandardMaterial({
+          color: 0x1A1E24,
+          metalness: 0.8,
+          roughness: 0.35
+        });
+        const chassis = new THREE.Mesh(chassisGeo, chassisMat);
+        chassis.position.y = 0.022;
+        group.add(chassis);
+
+        // Solar Array Top Deck with Gold Trims
+        const solarGeo = new THREE.BoxGeometry(0.058, 0.003, 0.075);
+        const solarMat = new THREE.MeshStandardMaterial({
+          color: 0x0F172A,
+          emissive: 0x1E293B,
+          emissiveIntensity: 0.4
+        });
+        const solar = new THREE.Mesh(solarGeo, solarMat);
+        solar.position.y = 0.036;
+        group.add(solar);
+
+        // Mastcam Head
+        const mastGeo = new THREE.CylinderGeometry(0.002, 0.002, 0.035, 6);
+        const mastMat = new THREE.MeshBasicMaterial({ color: 0xD1D5DB });
+        const mast = new THREE.Mesh(mastGeo, mastMat);
+        mast.position.set(0.015, 0.052, 0.025);
+        group.add(mast);
+
+        // Mastcam Amber Navigation Beacon
+        const beaconGeo = new THREE.OctahedronGeometry(0.008, 0);
+        const beaconMat = new THREE.MeshBasicMaterial({ color: 0xF59E0B });
+        const beacon = new THREE.Mesh(beaconGeo, beaconMat);
+        beacon.position.set(0.015, 0.072, 0.025);
+        group.add(beacon);
+        gRover.beacon = beacon;
+
+        // Ground Headlight Cone projecting on sphere surface
+        const lightGeo = new THREE.ConeGeometry(0.045, 0.16, 12, 1, true);
+        lightGeo.rotateX(-Math.PI / 2);
+        lightGeo.translate(0, 0, 0.08);
+        const lightMat = new THREE.MeshBasicMaterial({
+          color: 0xFEF08A,
+          transparent: true,
+          opacity: 0.25,
+          side: THREE.DoubleSide
+        });
+        const lightMesh = new THREE.Mesh(lightGeo, lightMat);
+        lightMesh.position.set(0, 0.018, 0.035);
+        group.add(lightMesh);
+
+        // 6 Miniature Wheels
+        gRover.wheels = [];
+        const wheelGeo = new THREE.CylinderGeometry(0.012, 0.012, 0.009, 12);
+        wheelGeo.rotateZ(Math.PI / 2);
+        const wheelMat = new THREE.MeshStandardMaterial({ color: 0x1F2937, roughness: 0.7 });
+        const wheelPos = [
+          [-0.042, 0.012,  0.03],
+          [ 0.042, 0.012,  0.03],
+          [-0.045, 0.012,  0.00],
+          [ 0.045, 0.012,  0.00],
+          [-0.042, 0.012, -0.03],
+          [ 0.042, 0.012, -0.03]
+        ];
+
+        wheelPos.forEach(wp => {
+          const w = new THREE.Mesh(wheelGeo, wheelMat);
+          w.position.set(wp[0], wp[1], wp[2]);
+          group.add(w);
+          gRover.wheels.push(w);
+        });
+
+        return group;
+      }
+
+      function buildGlobeBeacons() {
+        if (!oMarsMesh) return;
+        globeBeacons = [];
+
+        // 1. 5 Discovered NASA Landing Sites
+        Object.keys(NASA_LANDED_SITES).forEach(siteId => {
+          const site = NASA_LANDED_SITES[siteId];
+          const pos = latLonToVector3(site.coords[0], site.coords[1], 1.65);
+          const stemPos = latLonToVector3(site.coords[0], site.coords[1], 1.78);
+
+          // Stem drop-line
+          const stemGeo = new THREE.BufferGeometry().setFromPoints([pos, stemPos]);
+          const stemMat = new THREE.LineBasicMaterial({ color: 0xF59E0B, transparent: true, opacity: 0.75 });
+          const stem = new THREE.Line(stemGeo, stemMat);
+          oMarsMesh.add(stem);
+
+          // Pulsing Golden Octahedron Pin Head
+          const pinGeo = new THREE.OctahedronGeometry(0.032, 0);
+          const pinMat = new THREE.MeshBasicMaterial({ color: 0xF59E0B });
+          const pin = new THREE.Mesh(pinGeo, pinMat);
+          pin.position.copy(stemPos);
+          pin.userData = {
+            type: 'discovered',
+            siteId: siteId,
+            name: site.name,
+            coords: site.coords,
+            elev: '-2,494m',
+            desc: site.desc,
+            hazard: 'Crater Rim Escarpment / Dark Ripple Dunes'
+          };
+          oMarsMesh.add(pin);
+          globeBeacons.push(pin);
+
+          // Pulsing Radar Ring
+          const ringGeo = new THREE.RingGeometry(0.035, 0.045, 24);
+          const ringMat = new THREE.MeshBasicMaterial({ color: 0xF59E0B, side: THREE.DoubleSide, transparent: true, opacity: 0.6 });
+          const ring = new THREE.Mesh(ringGeo, ringMat);
+          ring.position.copy(pos.clone().multiplyScalar(1.002));
+          ring.lookAt(pos.clone().multiplyScalar(2));
+          oMarsMesh.add(ring);
+        });
+
+        // 2. 6 Spaced-Out Unexplored Martian Sectors
+        UNEXPLORED_SECTORS.forEach(sec => {
+          const pos = latLonToVector3(sec.coords[0], sec.coords[1], 1.65);
+          const stemPos = latLonToVector3(sec.coords[0], sec.coords[1], 1.78);
+
+          // Cyan Stem
+          const stemGeo = new THREE.BufferGeometry().setFromPoints([pos, stemPos]);
+          const stemMat = new THREE.LineBasicMaterial({ color: 0x38BDF8, transparent: true, opacity: 0.75 });
+          const stem = new THREE.Line(stemGeo, stemMat);
+          oMarsMesh.add(stem);
+
+          // Cyan Radar Pin
+          const pinGeo = new THREE.OctahedronGeometry(0.032, 0);
+          const pinMat = new THREE.MeshBasicMaterial({ color: 0x38BDF8 });
+          const pin = new THREE.Mesh(pinGeo, pinMat);
+          pin.position.copy(stemPos);
+          pin.userData = {
+            type: 'unexplored',
+            secId: sec.id,
+            name: sec.name,
+            coords: sec.coords,
+            elev: sec.elev,
+            desc: sec.desc,
+            hazard: sec.hazards
+          };
+          oMarsMesh.add(pin);
+          globeBeacons.push(pin);
+
+          // Pulsing Cyan Radar Ring
+          const ringGeo = new THREE.RingGeometry(0.035, 0.045, 24);
+          const ringMat = new THREE.MeshBasicMaterial({ color: 0x38BDF8, side: THREE.DoubleSide, transparent: true, opacity: 0.65 });
+          const ring = new THREE.Mesh(ringGeo, ringMat);
+          ring.position.copy(pos.clone().multiplyScalar(1.002));
+          ring.lookAt(pos.clone().multiplyScalar(2));
+          oMarsMesh.add(ring);
+        });
+      }
+
+      function initGlobeExpeditionControls() {
+        const btnSim = document.getElementById('btn-globe-sim');
+        const btnDrive = document.getElementById('btn-globe-drive');
+        const btnReset = document.getElementById('btn-globe-reset');
+        const btnCloseCard = document.getElementById('btn-close-sector-card');
+        const btnLaunchTerrain = document.getElementById('btn-globe-card-launch');
+        const btnDriveTo = document.getElementById('btn-globe-card-drive');
+
+        if (btnSim) {
+          btnSim.addEventListener('click', toggleGlobeAutonomousExpedition);
+        }
+
+        if (btnDrive) {
+          btnDrive.addEventListener('click', () => {
+            isGlobeChaseCam = !isGlobeChaseCam;
+            btnDrive.classList.toggle('active', isGlobeChaseCam);
+            audio.playBlip(isGlobeChaseCam ? 920 : 640);
+            if (isGlobeChaseCam && oControls) {
+              oControls.minDistance = 1.85;
+              oControls.maxDistance = 5.0;
+            } else if (oControls) {
+              oControls.minDistance = 3.2;
+              oControls.maxDistance = 10.0;
+            }
+          });
+        }
+
+        if (btnReset) {
+          btnReset.addEventListener('click', () => {
+            resetGlobeExpedition();
+            audio.playBlip(540);
+          });
+        }
+
+        if (btnCloseCard) {
+          btnCloseCard.addEventListener('click', () => {
+            document.getElementById('globe-sector-card').classList.add('hidden');
+          });
+        }
+
+        if (btnLaunchTerrain) {
+          btnLaunchTerrain.addEventListener('click', () => {
+            const card = document.getElementById('globe-sector-card');
+            const targetSite = card.dataset.siteId || 'jezero-crater';
+            switchLandingSite(targetSite);
+            showTacticalTerrain();
+          });
+        }
+
+        if (btnDriveTo) {
+          btnDriveTo.addEventListener('click', () => {
+            const card = document.getElementById('globe-sector-card');
+            const lat = parseFloat(card.dataset.lat || 18.38);
+            const lon = parseFloat(card.dataset.lon || 77.58);
+            flyGlobeRoverToCoords(lat, lon);
+          });
+        }
+
+        // Raycasting for Beacon Clicks on 3D Globe
+        const container = document.getElementById('webgl-orbital-mars-container');
+        if (container) {
+          const raycaster = new THREE.Raycaster();
+          const mouse = new THREE.Vector2();
+
+          container.addEventListener('click', (evt) => {
+            if (!oCamera || globeBeacons.length === 0) return;
+            const rect = container.getBoundingClientRect();
+            mouse.x = ((evt.clientX - rect.left) / rect.width) * 2 - 1;
+            mouse.y = -((evt.clientY - rect.top) / rect.height) * 2 + 1;
+
+            raycaster.setFromCamera(mouse, oCamera);
+            const intersects = raycaster.intersectObjects(globeBeacons);
+            if (intersects.length > 0) {
+              const hit = intersects[0].object;
+              openGlobeSectorCard(hit.userData);
+              audio.playBlip(1080);
+            }
+          });
+        }
+      }
+
+      function openGlobeSectorCard(data) {
+        const card = document.getElementById('globe-sector-card');
+        if (!card || !data) return;
+
+        card.dataset.siteId = data.siteId || '';
+        card.dataset.lat = data.coords[0];
+        card.dataset.lon = data.coords[1];
+
+        const badge = document.getElementById('globe-card-badge');
+        const title = document.getElementById('globe-card-title');
+        const coords = document.getElementById('globe-card-coords');
+        const elev = document.getElementById('globe-card-elev');
+        const desc = document.getElementById('globe-card-desc');
+        const hazard = document.getElementById('globe-card-hazard');
+        const btnLaunch = document.getElementById('btn-globe-card-launch');
+
+        title.textContent = data.name;
+        coords.textContent = `${data.coords[0]}°N, ${data.coords[1]}°E`;
+        elev.textContent = data.elev;
+        desc.textContent = data.desc;
+        hazard.textContent = `HAZARD: ${data.hazard}`;
+
+        if (data.type === 'discovered') {
+          badge.className = 'sector-card-badge discovered';
+          badge.textContent = 'VERIFIED NASA SURFACE ASSET';
+          btnLaunch.style.display = 'flex';
+        } else {
+          badge.className = 'sector-card-badge unexplored';
+          badge.textContent = 'UNEXPLORED SECTOR // ORBITAL RECON ONLY';
+          btnLaunch.style.display = 'none';
+        }
+
+        card.classList.remove('hidden');
+      }
+
+      function flyGlobeRoverToCoords(targetLat, targetLon) {
+        if (!gRover) return;
+        const startLat = gRover.lat;
+        const startLon = gRover.lon;
+        const obj = { t: 0 };
+
+        gsap.to(obj, {
+          t: 1,
+          duration: 2.2,
+          ease: 'power2.inOut',
+          onUpdate: () => {
+            gRover.lat = startLat + (targetLat - startLat) * obj.t;
+            gRover.lon = startLon + (targetLon - startLon) * obj.t;
+            gRover.totalKm += 18.5;
+            updateGlobeRoverPosition();
+          },
+          onComplete: () => {
+            audio.playBlip(1180, 0.1);
+          }
+        });
+      }
+
+      function updateGlobeRoverPosition() {
+        if (!globeRoverGroup || !oMarsMesh) return;
+        const pos = latLonToVector3(gRover.lat, gRover.lon, 1.66);
+        globeRoverGroup.position.copy(pos);
+
+        const normal = pos.clone().normalize();
+        const northPole = new THREE.Vector3(0, 1, 0);
+        const east = new THREE.Vector3().crossVectors(northPole, normal).normalize();
+        const north = new THREE.Vector3().crossVectors(normal, east).normalize();
+        const forward = new THREE.Vector3().addScaledVector(north, Math.cos(gRover.heading)).addScaledVector(east, Math.sin(gRover.heading)).normalize();
+        const right = new THREE.Vector3().crossVectors(normal, forward).normalize();
+        const rotMat = new THREE.Matrix4().makeBasis(right, normal, forward);
+        globeRoverGroup.quaternion.setFromRotationMatrix(rotMat);
+
+        // Add point to geodesic trail
+        if (globeTrailPoints.length === 0 || globeTrailPoints[globeTrailPoints.length - 1].distanceTo(pos) > 0.04) {
+          globeTrailPoints.push(pos.clone().multiplyScalar(1.002));
+          if (globeTrailPoints.length > 250) globeTrailPoints.shift();
+          if (globeTrailMesh) {
+            globeTrailMesh.geometry.setFromPoints(globeTrailPoints);
+          }
+        }
+
+        // Update Globe Telemetry Ribbon
+        const teleCoords = document.getElementById('globe-tele-coords');
+        const teleDist = document.getElementById('globe-tele-dist');
+        const teleO2 = document.getElementById('globe-tele-o2');
+        if (teleCoords) teleCoords.textContent = `${gRover.lat.toFixed(2)}°N, ${gRover.lon.toFixed(2)}°E`;
+        if (teleDist) teleDist.textContent = `${gRover.totalKm.toFixed(1)} km`;
+        if (teleO2) {
+          teleO2.textContent = `${gRover.o2Pct.toFixed(1)}%`;
+          if (gRover.o2Pct <= 15.0) teleO2.style.color = '#EF4444';
+          else if (gRover.o2Pct <= 30.0) teleO2.style.color = '#F59E0B';
+          else teleO2.style.color = '#34D399';
+        }
+
+        // Check Oxygen Warning on Globe
+        if (gRover.o2Pct <= 15.0) {
+          triggerAIVoiceWarning('critical', gRover.o2Pct);
+        } else if (gRover.o2Pct <= 30.0) {
+          triggerAIVoiceWarning('caution', gRover.o2Pct);
+        }
+      }
+
+      function toggleGlobeAutonomousExpedition() {
+        const btnSim = document.getElementById('btn-globe-sim');
+        const statusEl = document.getElementById('globe-tele-status');
+
+        if (isGlobeAutonomousSim) {
+          clearInterval(globeSimTimer);
+          isGlobeAutonomousSim = false;
+          if (btnSim) btnSim.innerHTML = '<i data-lucide="play" class="hud-icon"></i> <span>Resume EVA (Globe)</span>';
+          if (statusEl) statusEl.textContent = 'EXPEDITION PAUSED';
+          if (window.lucide) lucide.createIcons();
+          return;
+        }
+
+        isGlobeAutonomousSim = true;
+        if (btnSim) btnSim.innerHTML = '<i data-lucide="pause" class="hud-icon"></i> <span>Pause EVA (Globe)</span>';
+        if (statusEl) statusEl.textContent = 'AUTONOMOUS EXPEDITION ACTIVE';
+        if (window.lucide) lucide.createIcons();
+        audio.playBlip(980);
+
+        // Planetary Geodesic Waypoints connecting Discovered & Unexplored Sectors
+        const expeditionStops = [
+          { lat: 18.38, lon: 77.58,  name: 'Jezero Crater' },
+          { lat: 18.65, lon: 226.20, name: 'Olympus Mons' },
+          { lat: 0.00,  lon: 250.00, name: 'Tharsis Bulge' },
+          { lat: -14.00, lon: 301.00, name: 'Valles Marineris' },
+          { lat: -1.95, lon: 354.47, name: 'Meridiani Planum' },
+          { lat: -42.70, lon: 70.00, name: 'Hellas Basin' },
+          { lat: -4.59, lon: 137.44, name: 'Gale Crater' },
+          { lat: 46.70, lon: 192.00, name: 'Arcadia Ice Plains' },
+          { lat: 18.38, lon: 77.58,  name: 'Return Basecamp' }
+        ];
+
+        let stopIdx = 0;
+        let progress = 0;
+
+        globeSimTimer = setInterval(() => {
+          progress += 0.018;
+          if (progress >= 1.0) {
+            progress = 0;
+            stopIdx++;
+            if (stopIdx >= expeditionStops.length - 1) {
+              clearInterval(globeSimTimer);
+              isGlobeAutonomousSim = false;
+              if (btnSim) btnSim.innerHTML = '<i data-lucide="rotate-ccw" class="hud-icon"></i> <span>Expedition Complete</span>';
+              if (statusEl) statusEl.textContent = 'EXPEDITION COMPLETE';
+              if (window.lucide) lucide.createIcons();
+              audio.playBlip(1200, 0.2);
+              return;
+            }
+          }
+
+          const curStop = expeditionStops[stopIdx];
+          const nextStop = expeditionStops[stopIdx + 1];
+
+          // Geodesic Great Circle Interpolation
+          const pA = latLonToVector3(curStop.lat, curStop.lon, 1.66);
+          const pB = latLonToVector3(nextStop.lat, nextStop.lon, 1.66);
+
+          const dot = Math.max(-1, Math.min(1, (pA.x*pB.x + pA.y*pB.y + pA.z*pB.z) / (1.66*1.66)));
+          const angle = Math.acos(dot);
+          const sinA = Math.sin(angle);
+          const s0 = Math.sin((1 - progress) * angle) / sinA;
+          const s1 = Math.sin(progress * angle) / sinA;
+          const pt = new THREE.Vector3(
+            pA.x * s0 + pB.x * s1,
+            pA.y * s0 + pB.y * s1,
+            pA.z * s0 + pB.z * s1
+          );
+
+          // Convert back to lat/lon for telemetry
+          const r = pt.length();
+          gRover.lat = 90 - (Math.acos(pt.y / r) * 180 / Math.PI);
+          gRover.lon = ((Math.atan2(pt.z, -pt.x) * 180 / Math.PI) - 180 + 360) % 360;
+
+          gRover.totalKm += 12.4;
+          gRover.o2Pct = Math.max(12.0, 100.0 - (gRover.totalKm / 12000.0) * 85.0);
+
+          // Rotate wheels
+          gRover.wheels.forEach(w => w.rotation.x += 0.25);
+          if (gRover.beacon) gRover.beacon.rotation.y += 0.08;
+
+          updateGlobeRoverPosition();
+
+          // Camera smooth chase track
+          if (isGlobeChaseCam && oCamera) {
+            const normal = pt.clone().normalize();
+            const camTarget = pt.clone().addScaledVector(normal, 0.65);
+            oCamera.position.lerp(camTarget, 0.08);
+            oCamera.lookAt(pt);
+          }
+        }, 120);
+      }
+
+      function resetGlobeExpedition() {
+        if (globeSimTimer) clearInterval(globeSimTimer);
+        isGlobeAutonomousSim = false;
+        gRover.lat = 18.38;
+        gRover.lon = 77.58;
+        gRover.speed = 0;
+        gRover.heading = 0;
+        gRover.totalKm = 0;
+        gRover.o2Pct = 100.0;
+        globeTrailPoints = [];
+        if (globeTrailMesh) globeTrailMesh.geometry.setFromPoints([]);
+
+        const btnSim = document.getElementById('btn-globe-sim');
+        if (btnSim) btnSim.innerHTML = '<i data-lucide="play" class="hud-icon"></i> <span>Run EVA Sim (Globe)</span>';
+        const statusEl = document.getElementById('globe-tele-status');
+        if (statusEl) statusEl.textContent = 'EXPEDITION READY';
+        if (window.lucide) lucide.createIcons();
+
+        updateGlobeRoverPosition();
+      }
+
+      function updateGlobeRoverPhysics(dt) {
+        if (!gRover || isGlobeAutonomousSim) return;
+
+        // Drive Keys (W / S / A / D) in Globe View
+        if (driveKeys.forward) {
+          gRover.speed = Math.min(gRover.maxSpeed, gRover.speed + gRover.accel * dt);
+        } else if (driveKeys.backward) {
+          gRover.speed = Math.max(-gRover.maxSpeed * 0.45, gRover.speed - gRover.accel * dt);
+        } else {
+          if (gRover.speed > 0) gRover.speed = Math.max(0, gRover.speed - gRover.friction * dt);
+          else if (gRover.speed < 0) gRover.speed = Math.min(0, gRover.speed + gRover.friction * dt);
+        }
+
+        if (driveKeys.left) gRover.heading += gRover.turnRate * dt;
+        if (driveKeys.right) gRover.heading -= gRover.turnRate * dt;
+
+        if (Math.abs(gRover.speed) > 0.001) {
+          const dLat = Math.cos(gRover.heading) * gRover.speed * dt * 28.0;
+          const dLon = Math.sin(gRover.heading) * gRover.speed * dt * 28.0 / Math.cos(gRover.lat * Math.PI / 180);
+          gRover.lat = Math.max(-85, Math.min(85, gRover.lat + dLat));
+          gRover.lon = (gRover.lon + dLon + 360) % 360;
+
+          gRover.totalKm += Math.abs(gRover.speed * dt * 450.0);
+          gRover.o2Pct = Math.max(12.0, gRover.o2Pct - Math.abs(gRover.speed * dt * 0.45));
+
+          gRover.wheels.forEach(w => w.rotation.x += gRover.speed * 8.0);
+          if (gRover.beacon) gRover.beacon.rotation.y += 0.08;
+
+          updateGlobeRoverPosition();
+
+          if (isGlobeChaseCam && oCamera && globeRoverGroup) {
+            const worldPos = new THREE.Vector3();
+            globeRoverGroup.getWorldPosition(worldPos);
+            const normal = worldPos.clone().normalize();
+            const camTarget = worldPos.clone().addScaledVector(normal, 0.75);
+            oCamera.position.lerp(camTarget, 0.08);
+            oCamera.lookAt(worldPos);
+          }
+        }
+      }
+
       function initOrbitalGlobe() {
         const container = document.getElementById('webgl-orbital-mars-container');
         if (!container) return;
@@ -9799,7 +10878,29 @@
         oControls.maxDistance = 10.0;
         oControls.enablePan = false;
 
-        // Directional Sun Light for Day/Night Terminator
+        // 1. Deep Celestial Starfield (1500 Stars)
+        const starCount = 1500;
+        const starGeo = new THREE.BufferGeometry();
+        const starPos = new Float32Array(starCount * 3);
+        for (let i = 0; i < starCount * 3; i += 3) {
+          const r = 25 + Math.random() * 45;
+          const theta = Math.random() * Math.PI * 2;
+          const phi = Math.acos((Math.random() * 2) - 1);
+          starPos[i] = r * Math.sin(phi) * Math.cos(theta);
+          starPos[i+1] = r * Math.sin(phi) * Math.sin(theta);
+          starPos[i+2] = r * Math.cos(phi);
+        }
+        starGeo.setAttribute('position', new THREE.BufferAttribute(starPos, 3));
+        const starMat = new THREE.PointsMaterial({
+          color: 0xE2E8F0,
+          size: 0.12,
+          transparent: true,
+          opacity: 0.85
+        });
+        const stars = new THREE.Points(starGeo, starMat);
+        oScene.add(stars);
+
+        // 2. Directional Sun Light for Day/Night Terminator
         const sunLight = new THREE.DirectionalLight(0xFFE4CC, 2.5);
         sunLight.position.set(6, 2.5, 5);
         oScene.add(sunLight);
@@ -9807,7 +10908,7 @@
         const ambientLight = new THREE.AmbientLight(0x2B1A16, 0.45);
         oScene.add(ambientLight);
 
-        // Mars Sphere with Viking Color Texture + Relief Bump
+        // 3. Mars Sphere with High-Detail Topography
         const sphereGeo = new THREE.SphereGeometry(1.65, 64, 64);
         const textureLoader = new THREE.TextureLoader();
 
@@ -9849,13 +10950,44 @@
         oInnerAtmoMesh = new THREE.Mesh(innerAtmoGeo, innerAtmoMat);
         oScene.add(oInnerAtmoMesh);
 
+        // 4. Build Discovered & Unexplored Sector Beacons on Globe
+        buildGlobeBeacons();
+
+        // 5. Spawn Miniature 3D Planetary Rover on Globe
+        globeRoverGroup = createGlobeMiniRover();
+        oMarsMesh.add(globeRoverGroup);
+
+        // 6. Glowing Golden Geodesic Trail
+        const trailGeo = new THREE.BufferGeometry();
+        const trailMat = new THREE.LineBasicMaterial({
+          color: 0xF59E0B,
+          linewidth: 2.5,
+          transparent: true,
+          opacity: 0.85
+        });
+        globeTrailMesh = new THREE.Line(trailGeo, trailMat);
+        oMarsMesh.add(globeTrailMesh);
+
+        updateGlobeRoverPosition();
+        initGlobeExpeditionControls();
+
+        let lastGlobeTime = performance.now();
         function animateOrbital() {
           requestAnimationFrame(animateOrbital);
-          if (oMarsMesh) {
-            oMarsMesh.rotation.y += 0.0012;
-            oAtmoMesh.rotation.y += 0.0012;
-            oInnerAtmoMesh.rotation.y += 0.0012;
+          const now = performance.now();
+          const dt = Math.min(0.1, (now - lastGlobeTime) / 1000);
+          lastGlobeTime = now;
+
+          // Gentle planetary idle rotation when not manually steering
+          if (oMarsMesh && !isGlobeChaseCam && !isGlobeAutonomousSim && Math.abs(gRover.speed) < 0.001) {
+            oMarsMesh.rotation.y += 0.0006;
+            oAtmoMesh.rotation.y += 0.0006;
+            oInnerAtmoMesh.rotation.y += 0.0006;
           }
+
+          // Update Planetary Rover physics
+          updateGlobeRoverPhysics(dt);
+
           oControls.update();
           oRenderer.render(oScene, oCamera);
         }
