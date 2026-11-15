@@ -3,7 +3,7 @@ const fs = require('fs');
 const path = require('path');
 
 const PORT = process.env.PORT || 8080;
-const PUBLIC_DIR = __dirname;
+const PUBLIC_DIR = path.resolve(__dirname);
 
 const MIME_TYPES = {
   '.html': 'text/html; charset=UTF-8',
@@ -116,10 +116,10 @@ const server = http.createServer((req, res) => {
     reqPath = '/index.html';
   }
 
-  let filePath = path.join(PUBLIC_DIR, reqPath);
+  let filePath = path.resolve(PUBLIC_DIR, '.' + reqPath);
 
   // Security check: ensure path is within PUBLIC_DIR
-  if (!filePath.startsWith(PUBLIC_DIR)) {
+  if (!filePath.toLowerCase().startsWith(PUBLIC_DIR.toLowerCase())) {
     res.writeHead(403, { 'Content-Type': 'text/plain' });
     res.end('403 Forbidden');
     return;

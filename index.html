@@ -398,16 +398,7 @@
     }
 
     .orbital-center-hero {
-      position: absolute;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 16px;
-      z-index: 20;
-      pointer-events: none;
+      display: none !important;
     }
 
     .orbital-mars-title {
@@ -2766,14 +2757,7 @@
       </div>
 
 
-      <!-- Center Hero Typography & Explore Now CTA -->
-      <div class="orbital-center-hero">
-        <h1 class="orbital-mars-title editorial-italic">Mars Exploration</h1>
-        <button class="btn-explore-now-cta" id="btn-explore-now">
-          <span>Explore 3D Terrain</span>
-          <i data-lucide="arrow-right" style="width: 16px; height: 16px;"></i>
-        </button>
-      </div>
+      <!-- Center Hero Typography Removed to Keep Globe 100% Unobstructed -->
 
       <!-- Left Side: 5 Verified NASA Discovered Landing Sites Picker -->
       <div class="orbital-left-panel">
@@ -2790,27 +2774,35 @@
         </div>
       </div>
 
-      <!-- Right Side: Celestial Metrics Column -->
+      <!-- Right Side: Live Planetary & PLSS Telemetry Column -->
       <div class="orbital-specs-column">
         <div class="spec-block">
-          <div class="spec-label">MOONS</div>
-          <div class="spec-value">Phobos &amp; Deimos</div>
+          <div class="spec-label">EXPEDITION STATUS</div>
+          <div class="spec-value" id="globe-spec-status" style="color: #34D399;">STANDBY [WASD]</div>
         </div>
         <div class="spec-block">
-          <div class="spec-label">RADIUS</div>
-          <div class="spec-value">3,389.5 km</div>
+          <div class="spec-label">ROVER VELOCITY</div>
+          <div class="spec-value tabular-nums" id="globe-spec-speed">0.0 km/h</div>
         </div>
         <div class="spec-block">
-          <div class="spec-label">DISTANCE FROM SUN</div>
-          <div class="spec-value">227.9 million km</div>
+          <div class="spec-label">PLSS OXYGEN RESERVE</div>
+          <div class="spec-value tabular-nums" id="globe-spec-o2" style="color: #34D399;">100.0%</div>
         </div>
         <div class="spec-block">
-          <div class="spec-label">ORBITAL PERIOD</div>
-          <div class="spec-value">687 Earth Days</div>
+          <div class="spec-label">HILLS TRAVERSED</div>
+          <div class="spec-value tabular-nums" id="globe-spec-hills">0 Hills</div>
+        </div>
+        <div class="spec-block">
+          <div class="spec-label">PLANETARY TRAVERSE</div>
+          <div class="spec-value tabular-nums" id="globe-spec-dist">0.0 km</div>
         </div>
         <div class="spec-block">
           <div class="spec-label">SURFACE GRAVITY</div>
           <div class="spec-value">0.38 g (3.72 m/s²)</div>
+        </div>
+        <div class="spec-block">
+          <div class="spec-label">ATMOSPHERIC PRESSURE</div>
+          <div class="spec-value">6.1 mbar (CO2 95.3%)</div>
         </div>
       </div>
     </main>
@@ -7236,10 +7228,8 @@
         if ('speechSynthesis' in window) {
           window.speechSynthesis.cancel();
           let msg = "";
-          if (level === 'critical') {
-            msg = "Alert. Oxygen reserve is running low and the auxiliary cylinder is not filled. Turn backside immediately and return to the safe extraction zone.";
-          } else {
-            msg = "Caution. PLSS Oxygen reserve is below thirty percent. Prepare safe return trajectory to base camp.";
+          if (level === 'critical' || level === 'caution') {
+            msg = "Warning. Oxygen reserve is low and the cylinder is not filled. Turn backside immediately and return toward the safe extraction zone.";
           }
 
           const utterance = new SpeechSynthesisUtterance(msg);
@@ -7741,13 +7731,13 @@
       }
 
       function updateCockpitDrivingPhysics(dt) {
-        // 1. Throttle / Acceleration
+        // 1. Throttle / Acceleration along Heading Vector (Strict Manual WASD)
         if (driveKeys.forward) {
           roverDrive.speed = Math.min(roverDrive.maxSpeed, roverDrive.speed + roverDrive.accel * dt);
         } else if (driveKeys.backward) {
           roverDrive.speed = Math.max(-roverDrive.maxSpeed * 0.45, roverDrive.speed - roverDrive.accel * dt);
         } else {
-          // Friction deceleration
+          // Smooth inertial friction braking back to 0.0 km/h
           if (roverDrive.speed > 0) {
             roverDrive.speed = Math.max(0, roverDrive.speed - roverDrive.friction * dt);
           } else if (roverDrive.speed < 0) {
@@ -7755,12 +7745,18 @@
           }
         }
 
-        // 2. Steering
+        // 2. Steering & Front-Wheel Turn Angle
         if (driveKeys.left) {
           roverDrive.heading += roverDrive.turnRate * dt;
         }
         if (driveKeys.right) {
           roverDrive.heading -= roverDrive.turnRate * dt;
+        }
+
+        const steerAngleTarget = driveKeys.left ? 0.35 : (driveKeys.right ? -0.35 : 0);
+        if (roverMarkerMesh && roverMarkerMesh.userData && roverMarkerMesh.userData.wheels) {
+          if (roverMarkerMesh.userData.wheels[0]) roverMarkerMesh.userData.wheels[0].rotation.y = steerAngleTarget;
+          if (roverMarkerMesh.userData.wheels[1]) roverMarkerMesh.userData.wheels[1].rotation.y = steerAngleTarget;
         }
 
         // 3. Position Translation & Boundary Clamping
@@ -7775,7 +7771,8 @@
         }
 
         // Distance accumulated
-        roverDrive.distanceDrivenMeters += Math.abs(roverDrive.speed * dt * 3.8);
+        const frameDistM = Math.abs(roverDrive.speed * dt * 3.8);
+        roverDrive.distanceDrivenMeters += frameDistM;
 
         // 4. Sample 4 Wheel Contact Points for Real-Time Pitch & Roll
         const halfW = 1.3;
@@ -7810,6 +7807,20 @@
           updateHillTraversalTracking(roverDrive.slopeDeg);
         }
 
+        // Real-Time Realistic PLSS Oxygen Depletion (Slope & Cold Trap Weighted)
+        const spec = MISSION_O2_SPECS[currentSiteId] || MISSION_O2_SPECS['jezero-crater'];
+        const slopeWeight = 1.0 + (roverDrive.slopeDeg > 20.0 ? (roverDrive.slopeDeg - 20.0) * 0.12 : (roverDrive.slopeDeg / 20.0) * 0.35);
+        let coldTrapWeight = 1.0;
+        if (typeof getMartianTemperature === 'function') {
+          const tC = getMartianTemperature(currentSiteId, roverDrive.x, roverDrive.z);
+          if (tC <= -92.0) coldTrapWeight = 1.6;
+        }
+        const isMoving = Math.abs(roverDrive.speed) > 0.05;
+        const burnRateLPerSec = (spec.burnRate / 60.0) * slopeWeight * coldTrapWeight * (isMoving ? 1.0 : 0.12);
+        if (roverDrive.o2RemainingL === undefined) roverDrive.o2RemainingL = 420.0;
+        roverDrive.o2RemainingL = Math.max(8.0, roverDrive.o2RemainingL - burnRateLPerSec * dt);
+        roverDrive.o2Pct = (roverDrive.o2RemainingL / 420.0) * 100.0;
+        checkOxygenAlerts(roverDrive.o2Pct);
 
         // Subtle suspension bounce over rocky terrain
         roverDrive.bounceOffset = Math.sin(Date.now() * 0.014) * 0.05 * (Math.abs(roverDrive.speed) / roverDrive.maxSpeed);
@@ -7818,61 +7829,69 @@
         let targetCamX, targetCamY, targetCamZ;
         let targetLookX, targetLookY, targetLookZ;
 
-        if (currentPOVMode === 'chase') {
-          // Elevated Chase-Cam: 14m above terrain, 22m behind, looking 45m ahead to horizon
-          targetCamX = roverDrive.x - Math.sin(roverDrive.heading) * 22.0;
-          targetCamZ = roverDrive.z - Math.cos(roverDrive.heading) * 22.0;
-          const groundBehindY = getTerrainElevation(currentSiteId, targetCamX, targetCamZ);
-          targetCamY = Math.max(roverDrive.centerY + 14.0, groundBehindY + 8.0) + roverDrive.bounceOffset;
+        if (isCockpitMode) {
+          if (currentPOVMode === 'chase') {
+            // Elevated Chase-Cam: 14m above terrain, 22m behind, looking 45m ahead to horizon
+            targetCamX = roverDrive.x - Math.sin(roverDrive.heading) * 22.0;
+            targetCamZ = roverDrive.z - Math.cos(roverDrive.heading) * 22.0;
+            const groundBehindY = getTerrainElevation(currentSiteId, targetCamX, targetCamZ);
+            targetCamY = Math.max(roverDrive.centerY + 14.0, groundBehindY + 8.0) + roverDrive.bounceOffset;
 
-          targetLookX = roverDrive.x + Math.sin(roverDrive.heading) * 45.0;
-          targetLookZ = roverDrive.z + Math.cos(roverDrive.heading) * 45.0;
-          targetLookY = roverDrive.centerY + 4.0;
+            targetLookX = roverDrive.x + Math.sin(roverDrive.heading) * 45.0;
+            targetLookZ = roverDrive.z + Math.cos(roverDrive.heading) * 45.0;
+            targetLookY = roverDrive.centerY + 4.0;
 
-          cockpitCamPos.lerp(new THREE.Vector3(targetCamX, targetCamY, targetCamZ), 0.16);
-          cockpitLookPos.lerp(new THREE.Vector3(targetLookX, targetLookY, targetLookZ), 0.16);
+            cockpitCamPos.lerp(new THREE.Vector3(targetCamX, targetCamY, targetCamZ), 0.16);
+            cockpitLookPos.lerp(new THREE.Vector3(targetLookX, targetLookY, targetLookZ), 0.16);
 
-          tCamera.position.copy(cockpitCamPos);
-          tCamera.lookAt(cockpitLookPos);
-          tCamera.rotation.z = -rollRad * 0.22; // subtle cinematic roll
+            tCamera.position.copy(cockpitCamPos);
+            tCamera.lookAt(cockpitLookPos);
+            tCamera.rotation.z = -rollRad * 0.22; // subtle cinematic roll
 
-        } else if (currentPOVMode === 'drone') {
-          // High-Altitude Ingenuity Drone Recon (45m follow-cam)
-          targetCamX = roverDrive.x - Math.sin(roverDrive.heading) * 12.0;
-          targetCamZ = roverDrive.z - Math.cos(roverDrive.heading) * 12.0;
-          targetCamY = roverDrive.centerY + 45.0;
+          } else if (currentPOVMode === 'drone') {
+            // High-Altitude Ingenuity Drone Recon (45m follow-cam)
+            targetCamX = roverDrive.x - Math.sin(roverDrive.heading) * 12.0;
+            targetCamZ = roverDrive.z - Math.cos(roverDrive.heading) * 12.0;
+            targetCamY = roverDrive.centerY + 45.0;
 
-          targetLookX = roverDrive.x + Math.sin(roverDrive.heading) * 16.0;
-          targetLookZ = roverDrive.z + Math.cos(roverDrive.heading) * 16.0;
-          targetLookY = roverDrive.centerY;
+            targetLookX = roverDrive.x + Math.sin(roverDrive.heading) * 16.0;
+            targetLookZ = roverDrive.z + Math.cos(roverDrive.heading) * 16.0;
+            targetLookY = roverDrive.centerY;
 
-          cockpitCamPos.lerp(new THREE.Vector3(targetCamX, targetCamY, targetCamZ), 0.14);
-          cockpitLookPos.lerp(new THREE.Vector3(targetLookX, targetLookY, targetLookZ), 0.14);
+            cockpitCamPos.lerp(new THREE.Vector3(targetCamX, targetCamY, targetCamZ), 0.14);
+            cockpitLookPos.lerp(new THREE.Vector3(targetLookX, targetLookY, targetLookZ), 0.14);
 
-          tCamera.position.copy(cockpitCamPos);
-          tCamera.lookAt(cockpitLookPos);
+            tCamera.position.copy(cockpitCamPos);
+            tCamera.lookAt(cockpitLookPos);
 
+          } else {
+            // Visor POV: First-Person 2.0m height
+            const eyeY = roverDrive.centerY + 2.0 + roverDrive.bounceOffset;
+            const lookDist = 35.0;
+            targetLookX = roverDrive.x + Math.sin(roverDrive.heading) * lookDist;
+            targetLookZ = roverDrive.z + Math.cos(roverDrive.heading) * lookDist;
+            targetLookY = eyeY + Math.tan(pitchRad) * lookDist;
+
+            cockpitCamPos.lerp(new THREE.Vector3(roverDrive.x, eyeY, roverDrive.z), 0.25);
+            cockpitLookPos.lerp(new THREE.Vector3(targetLookX, targetLookY, targetLookZ), 0.25);
+
+            tCamera.position.copy(cockpitCamPos);
+            tCamera.lookAt(cockpitLookPos);
+            tCamera.rotation.z = -rollRad * 0.45;
+          }
         } else {
-          // Visor POV: First-Person 2.0m height
-          const eyeY = roverDrive.centerY + 2.0 + roverDrive.bounceOffset;
-          const lookDist = 35.0;
-          targetLookX = roverDrive.x + Math.sin(roverDrive.heading) * lookDist;
-          targetLookZ = roverDrive.z + Math.cos(roverDrive.heading) * lookDist;
-          targetLookY = eyeY + Math.tan(pitchRad) * lookDist;
-
-          cockpitCamPos.lerp(new THREE.Vector3(roverDrive.x, eyeY, roverDrive.z), 0.25);
-          cockpitLookPos.lerp(new THREE.Vector3(targetLookX, targetLookY, targetLookZ), 0.25);
-
-          tCamera.position.copy(cockpitCamPos);
-          tCamera.lookAt(cockpitLookPos);
-          tCamera.rotation.z = -rollRad * 0.45;
+          // ZERO Forced Zoom-In: Keep tControls enabled!
+          // Only smoothly lerp target so camera tracks the rover without overriding user mouse-wheel zoom distance:
+          if (tControls) {
+            tControls.target.lerp(new THREE.Vector3(roverDrive.x, roverDrive.centerY, roverDrive.z), 0.05);
+          }
         }
 
         // Update 3D Articulated Rover Model & Animate Wheel Roll
         if (roverMarkerMesh) {
           roverMarkerMesh.position.set(roverDrive.x, roverDrive.centerY, roverDrive.z);
           roverMarkerMesh.rotation.set(pitchRad, roverDrive.heading, rollRad);
-          roverMarkerMesh.visible = (currentPOVMode !== 'visor');
+          roverMarkerMesh.visible = (!isCockpitMode || currentPOVMode !== 'visor');
           if (roverMarkerMesh.userData && roverMarkerMesh.userData.animateRoll) {
             roverMarkerMesh.userData.animateRoll(Math.abs(roverDrive.speed * dt * 3.8));
           }
@@ -8925,8 +8944,14 @@
         tScene.add(pinsGroup);
 
         // Render Loop
+        let lastTerrainTime = performance.now();
         function animate3DTerrain() {
           requestAnimationFrame(animate3DTerrain);
+          const now = performance.now();
+          const dt = Math.min(0.08, (now - lastTerrainTime) / 1000);
+          lastTerrainTime = now;
+
+          updateCockpitDrivingPhysics(dt);
           tControls.update();
 
           // Animate Luminous Directional Chevrons
@@ -10148,152 +10173,70 @@
 
       function toggleSimulation() {
         const btnPlayPause = document.getElementById('btn-sim-play-pause');
+        const statusEl = document.getElementById('tape-status');
 
         if (isSimulating) {
-          clearInterval(simTimer);
           isSimulating = false;
-          btnPlayPause.innerHTML = '<i data-lucide="play" class="hud-icon"></i> <span id="sim-text">Resume EVA</span>';
+          roverDrive.speed = 0;
+          if (btnPlayPause) {
+            btnPlayPause.innerHTML = '<i data-lucide="play" class="hud-icon"></i> <span id="sim-text">Arm EVA Drive [WASD]</span>';
+          }
+          if (statusEl) statusEl.textContent = 'STANDBY // EVA DISARMED';
           if (window.lucide) lucide.createIcons();
+          audio.playBlip(640);
           return;
         }
 
+        // STRICT MANUAL WASD: Arm EVA mode, rover stays stationary (0.0 km/h) until W/A/S/D pressed
         isSimulating = true;
-        btnPlayPause.innerHTML = '<i data-lucide="pause" class="hud-icon"></i> <span id="sim-text">Pause EVA</span>';
+        roverDrive.speed = 0;
+        if (btnPlayPause) {
+          btnPlayPause.innerHTML = '<i data-lucide="pause" class="hud-icon"></i> <span id="sim-text">Disarm EVA Drive</span>';
+        }
+        if (statusEl) statusEl.textContent = 'EVA ARMED // HOLD W-A-S-D TO DRIVE';
         if (window.lucide) lucide.createIcons();
         audio.playBlip(980);
-
-        const traj = ALL_TRAJECTORIES[currentSiteId] || ALL_TRAJECTORIES['jezero-crater'];
-        const safePath = traj.safe_survival_path.coordinates;
-        const total = safePath.length;
-        const spec = MISSION_O2_SPECS[currentSiteId] || MISSION_O2_SPECS['jezero-crater'];
-
-        simTimer = setInterval(() => {
-          simIndex++;
-          if (simIndex >= total) {
-            simIndex = total - 1;
-            clearInterval(simTimer);
-            isSimulating = false;
-            btnPlayPause.innerHTML = '<i data-lucide="rotate-ccw" class="hud-icon"></i> <span id="sim-text">Traverse Done</span>';
-            if (window.lucide) lucide.createIcons();
-            audio.playBlip(1200, 0.15);
-          }
-
-          const curPt = safePath[simIndex];
-          const tProgress = simIndex / (total - 1);
-          const curDistKm = (tProgress * spec.totalKm).toFixed(2);
-          const elev = traj.safe_survival_path.elevation_array[simIndex] || spec.baseElev;
-          const slope = traj.safe_survival_path.slope_array[simIndex] || (spec.maxSlope * 0.7);
-
-          // 1. Move 3D Rover Beacon & Sync Cockpit POV along curve
-          if (currentCorridorCurve) {
-            const pt3D = currentCorridorCurve.getPointAt(tProgress);
-            const tangent = currentCorridorCurve.getTangentAt(tProgress);
-
-            roverDrive.x = pt3D.x;
-            roverDrive.z = pt3D.z;
-            roverDrive.centerY = pt3D.y - 1.8;
-            roverDrive.heading = Math.atan2(tangent.x, tangent.z);
-            roverDrive.distanceDrivenMeters = tProgress * spec.totalM;
-
-            if (roverMarkerMesh) {
-              roverMarkerMesh.position.copy(pt3D);
-              roverMarkerMesh.rotation.y = roverDrive.heading;
-              roverMarkerMesh.visible = (!isCockpitMode || currentPOVMode !== 'visor');
-              if (roverMarkerMesh.userData && roverMarkerMesh.userData.animateRoll) {
-                roverMarkerMesh.userData.animateRoll(3.8);
-              }
-            }
-
-            if (isCockpitMode) {
-              if (currentPOVMode === 'chase') {
-                const behindX = pt3D.x - tangent.x * 22.0;
-                const behindZ = pt3D.z - tangent.z * 22.0;
-                const groundBehindY = getTerrainElevation(currentSiteId, behindX, behindZ);
-                const camY = Math.max(pt3D.y + 14.0, groundBehindY + 8.0);
-                tCamera.position.set(behindX, camY, behindZ);
-                tCamera.lookAt(pt3D.x + tangent.x * 45.0, pt3D.y + 4.0, pt3D.z + tangent.z * 45.0);
-              } else if (currentPOVMode === 'drone') {
-                tCamera.position.set(pt3D.x - tangent.x * 12.0, pt3D.y + 45.0, pt3D.z - tangent.z * 12.0);
-                tCamera.lookAt(pt3D.x + tangent.x * 16.0, pt3D.y, pt3D.z + tangent.z * 16.0);
-              } else {
-                tCamera.position.set(pt3D.x, pt3D.y + 2.0, pt3D.z);
-                tCamera.lookAt(pt3D.x + tangent.x * 35.0, pt3D.y + 1.0, pt3D.z + tangent.z * 35.0);
-              }
-            }
-          }
-
-          // 2. Slow, continuous, realistic mission-specific O2 depletion
-          // Elysium: 96.4%, Gusev: 87.2%, Jezero: 83.5%, Meridiani: 78.9%, Gale: 69.4%
-          const deltaO2 = 100.0 - spec.finalO2Pct;
-          const o2Pct = Math.max(spec.finalO2Pct, 100.0 - (tProgress * deltaO2)).toFixed(1);
-          const o2Kg = (1.42 * (o2Pct / 100)).toFixed(2);
-          const o2Burn = (spec.burnRate + (slope / 15.0) * 0.25).toFixed(2);
-          const o2MarginH = ((o2Pct / 100) * 6.2).toFixed(1);
-
-          const battPct = Math.max(20, Math.round(100 - tProgress * 28));
-          const battWh = Math.round(750 * (battPct / 100));
-          const heatW = Math.round(210 + (slope / 15.0) * 45);
-
-          const hr = Math.round(76 + (slope / 15.0) * 42);
-
-          // Update UI DOM with Tabular numbers
-          document.getElementById('tape-coords').textContent = `${curPt.lat.toFixed(4)}° N, ${curPt.lon.toFixed(4)}° E`;
-          document.getElementById('tape-elev').textContent = `${elev.toLocaleString()} m`;
-          document.getElementById('tape-slope').textContent = `${slope.toFixed(1)}°`;
-          document.getElementById('tape-dist').textContent = `${curDistKm} / ${spec.totalKm.toFixed(1)} km`;
-
-          document.getElementById('suit-o2-pct').textContent = `${o2Pct}%`;
-          document.getElementById('suit-o2-sub').innerHTML = `${o2Kg} kg • ${o2Burn} L/min<br>+${o2MarginH}h safety margin`;
-          document.getElementById('o2-progress-fill').style.width = `${o2Pct}%`;
-          document.getElementById('o2-bar-text').textContent = `${o2Pct}% NOMINAL`;
-
-          document.getElementById('suit-batt-pct').textContent = `${battPct}%`;
-          
-          // Dynamic THEMIS Surface Temperature in Simulation
-          let simHeatDraw = heatW;
-          if (typeof getMartianTemperature === 'function') {
-            const simTemp = getMartianTemperature(currentSiteId, roverDrive.x, roverDrive.z);
-            const themisLiveEl = document.getElementById('themis-live-temp-display');
-            if (themisLiveEl) {
-              if (simTemp <= -92.0) {
-                themisLiveEl.innerHTML = `<span style="color:#38BDF8; font-weight:700;">❄️ ${simTemp.toFixed(1)}°C (COLD TRAP BREACH)</span>`;
-                simHeatDraw = Math.max(simHeatDraw, 680);
-              } else if (simTemp >= -38.0) {
-                themisLiveEl.innerHTML = `<span style="color:#F59E0B; font-weight:700;">☀️ ${simTemp.toFixed(1)}°C (SUNLIT BASALT RIDGE)</span>`;
-              } else {
-                themisLiveEl.innerHTML = `<span style="color:#F8FAFC; font-weight:600;">${simTemp.toFixed(1)}°C (NOMINAL REGOLITH)</span>`;
-              }
-            }
-          }
-          document.getElementById('suit-batt-sub').innerHTML = `${battWh} Wh (750 Wh pack)<br>${simHeatDraw} W active heating`;
-
-          document.getElementById('suit-hr-val').textContent = `${hr} BPM`;
-          document.getElementById('suit-hr-sub').innerHTML = `Resting: 78 BPM<br>Slope scaling: 78-${hr}`;
-
-          // Update Cockpit HUD Instruments if visible
-          updateCockpitHUDInstruments();
-          checkOxygenAlerts(Number(o2Pct));
-        }, 280);
       }
 
       function resetSimulation() {
         if (simTimer) clearInterval(simTimer);
         isSimulating = false;
         simIndex = 0;
+        roverDrive.speed = 0;
+        roverDrive.distanceDrivenMeters = 0;
+        roverDrive.o2RemainingL = 420.0;
+        roverDrive.o2Pct = 100.0;
+        hillsTraversedCount = 0;
 
         const btnPlayPause = document.getElementById('btn-sim-play-pause');
         if (btnPlayPause) {
-          btnPlayPause.innerHTML = '<i data-lucide="play" class="hud-icon"></i> <span id="sim-text">Run EVA Sim</span>';
+          btnPlayPause.innerHTML = '<i data-lucide="play" class="hud-icon"></i> <span id="sim-text">Arm EVA Drive [WASD]</span>';
         }
         if (window.lucide) lucide.createIcons();
 
-        if (roverMarkerMesh && currentCorridorCurve) {
-          roverMarkerMesh.position.copy(currentCorridorCurve.getPointAt(0));
+        // Reset rover to trajectory start point
+        if (currentCorridorCurve) {
+          const pt0 = currentCorridorCurve.getPointAt(0);
+          roverDrive.x = pt0.x;
+          roverDrive.z = pt0.z;
+          roverDrive.centerY = pt0.y - 1.8;
+          roverDrive.heading = 0.82;
+          if (roverMarkerMesh) {
+            roverMarkerMesh.position.copy(pt0);
+            roverMarkerMesh.rotation.y = roverDrive.heading;
+          }
         }
+
+        const statusEl = document.getElementById('tape-status');
+        if (statusEl) statusEl.textContent = 'STANDBY // READY FOR EVA';
 
         // Reset Telemetry Cards
         document.getElementById('suit-o2-pct').textContent = '100%';
         document.getElementById('suit-o2-sub').innerHTML = '1.42 kg • 0.88 L/min<br>+4.8h safety margin';
+        const o2Fill = document.getElementById('o2-progress-fill');
+        if (o2Fill) o2Fill.style.width = '100%';
+        const o2BarText = document.getElementById('o2-bar-text');
+        if (o2BarText) o2BarText.textContent = '100% NOMINAL';
 
         document.getElementById('suit-batt-pct').textContent = '94%';
         document.getElementById('suit-batt-sub').innerHTML = '706 Wh (750 Wh pack)<br>210 W active heating';
@@ -10304,10 +10247,12 @@
         document.getElementById('suit-hr-val').textContent = '82 BPM';
         document.getElementById('suit-hr-sub').innerHTML = 'Resting: 78 BPM<br>Slope scaling: 78-138';
 
-        const o2Fill = document.getElementById('o2-progress-fill');
-        if (o2Fill) o2Fill.style.width = '100%';
-        document.getElementById('o2-bar-text').textContent = '100% NOMINAL';
-        document.getElementById('tape-status').textContent = 'NOMINAL';
+        const tapeHills = document.getElementById('tape-hills');
+        if (tapeHills) tapeHills.textContent = '0';
+        const tapeDist = document.getElementById('tape-dist');
+        if (tapeDist) tapeDist.textContent = '0.00 / 10.9 km';
+
+        syncCockpitTelemetry();
       }
 
       function initAudioToggle() {
@@ -10703,92 +10648,32 @@
         const statusEl = document.getElementById('globe-tele-status');
 
         if (isGlobeAutonomousSim) {
-          clearInterval(globeSimTimer);
           isGlobeAutonomousSim = false;
-          if (btnSim) btnSim.innerHTML = '<i data-lucide="play" class="hud-icon"></i> <span>Resume EVA (Globe)</span>';
-          if (statusEl) statusEl.textContent = 'EXPEDITION PAUSED';
+          gRover.speed = 0;
+          if (btnSim) btnSim.innerHTML = '<i data-lucide="play" class="hud-icon"></i> <span>Arm Planetary EVA [WASD]</span>';
+          if (statusEl) statusEl.textContent = 'STANDBY // EVA DISARMED';
+          const specStatus = document.getElementById('globe-spec-status');
+          if (specStatus) {
+            specStatus.textContent = 'STANDBY [WASD]';
+            specStatus.style.color = '#F59E0B';
+          }
           if (window.lucide) lucide.createIcons();
+          audio.playBlip(640);
           return;
         }
 
+        // STRICT MANUAL WASD: Arm Planetary EVA, rover stays stationary (0.0 km/h) until W/A/S/D pressed
         isGlobeAutonomousSim = true;
-        if (btnSim) btnSim.innerHTML = '<i data-lucide="pause" class="hud-icon"></i> <span>Pause EVA (Globe)</span>';
-        if (statusEl) statusEl.textContent = 'AUTONOMOUS EXPEDITION ACTIVE';
+        gRover.speed = 0;
+        if (btnSim) btnSim.innerHTML = '<i data-lucide="pause" class="hud-icon"></i> <span>Disarm Planetary EVA</span>';
+        if (statusEl) statusEl.textContent = 'EVA ARMED // HOLD W-A-S-D TO DRIVE';
+        const specStatus = document.getElementById('globe-spec-status');
+        if (specStatus) {
+          specStatus.textContent = 'EVA ARMED [WASD]';
+          specStatus.style.color = '#34D399';
+        }
         if (window.lucide) lucide.createIcons();
         audio.playBlip(980);
-
-        // Planetary Geodesic Waypoints connecting Discovered & Unexplored Sectors
-        const expeditionStops = [
-          { lat: 18.38, lon: 77.58,  name: 'Jezero Crater' },
-          { lat: 18.65, lon: 226.20, name: 'Olympus Mons' },
-          { lat: 0.00,  lon: 250.00, name: 'Tharsis Bulge' },
-          { lat: -14.00, lon: 301.00, name: 'Valles Marineris' },
-          { lat: -1.95, lon: 354.47, name: 'Meridiani Planum' },
-          { lat: -42.70, lon: 70.00, name: 'Hellas Basin' },
-          { lat: -4.59, lon: 137.44, name: 'Gale Crater' },
-          { lat: 46.70, lon: 192.00, name: 'Arcadia Ice Plains' },
-          { lat: 18.38, lon: 77.58,  name: 'Return Basecamp' }
-        ];
-
-        let stopIdx = 0;
-        let progress = 0;
-
-        globeSimTimer = setInterval(() => {
-          progress += 0.018;
-          if (progress >= 1.0) {
-            progress = 0;
-            stopIdx++;
-            if (stopIdx >= expeditionStops.length - 1) {
-              clearInterval(globeSimTimer);
-              isGlobeAutonomousSim = false;
-              if (btnSim) btnSim.innerHTML = '<i data-lucide="rotate-ccw" class="hud-icon"></i> <span>Expedition Complete</span>';
-              if (statusEl) statusEl.textContent = 'EXPEDITION COMPLETE';
-              if (window.lucide) lucide.createIcons();
-              audio.playBlip(1200, 0.2);
-              return;
-            }
-          }
-
-          const curStop = expeditionStops[stopIdx];
-          const nextStop = expeditionStops[stopIdx + 1];
-
-          // Geodesic Great Circle Interpolation
-          const pA = latLonToVector3(curStop.lat, curStop.lon, 1.66);
-          const pB = latLonToVector3(nextStop.lat, nextStop.lon, 1.66);
-
-          const dot = Math.max(-1, Math.min(1, (pA.x*pB.x + pA.y*pB.y + pA.z*pB.z) / (1.66*1.66)));
-          const angle = Math.acos(dot);
-          const sinA = Math.sin(angle);
-          const s0 = Math.sin((1 - progress) * angle) / sinA;
-          const s1 = Math.sin(progress * angle) / sinA;
-          const pt = new THREE.Vector3(
-            pA.x * s0 + pB.x * s1,
-            pA.y * s0 + pB.y * s1,
-            pA.z * s0 + pB.z * s1
-          );
-
-          // Convert back to lat/lon for telemetry
-          const r = pt.length();
-          gRover.lat = 90 - (Math.acos(pt.y / r) * 180 / Math.PI);
-          gRover.lon = ((Math.atan2(pt.z, -pt.x) * 180 / Math.PI) - 180 + 360) % 360;
-
-          gRover.totalKm += 12.4;
-          gRover.o2Pct = Math.max(12.0, 100.0 - (gRover.totalKm / 12000.0) * 85.0);
-
-          // Rotate wheels
-          gRover.wheels.forEach(w => w.rotation.x += 0.25);
-          if (gRover.beacon) gRover.beacon.rotation.y += 0.08;
-
-          updateGlobeRoverPosition();
-
-          // Camera smooth chase track
-          if (isGlobeChaseCam && oCamera) {
-            const normal = pt.clone().normalize();
-            const camTarget = pt.clone().addScaledVector(normal, 0.65);
-            oCamera.position.lerp(camTarget, 0.08);
-            oCamera.lookAt(pt);
-          }
-        }, 120);
       }
 
       function resetGlobeExpedition() {
@@ -10800,33 +10685,60 @@
         gRover.heading = 0;
         gRover.totalKm = 0;
         gRover.o2Pct = 100.0;
-        globeTrailPoints = [];
-        if (globeTrailMesh) globeTrailMesh.geometry.setFromPoints([]);
+        hillsTraversedCount = 0;
+        globeTrailPoints.length = 0;
 
-        const btnSim = document.getElementById('btn-globe-sim');
-        if (btnSim) btnSim.innerHTML = '<i data-lucide="play" class="hud-icon"></i> <span>Run EVA Sim (Globe)</span>';
-        const statusEl = document.getElementById('globe-tele-status');
-        if (statusEl) statusEl.textContent = 'EXPEDITION READY';
-        if (window.lucide) lucide.createIcons();
+        if (globeTrailMesh) {
+          globeTrailMesh.geometry.setFromPoints([]);
+        }
 
         updateGlobeRoverPosition();
+
+        const btnSim = document.getElementById('btn-globe-sim');
+        const statusEl = document.getElementById('globe-tele-status');
+        if (btnSim) btnSim.innerHTML = '<i data-lucide="play" class="hud-icon"></i> <span>Arm Planetary EVA [WASD]</span>';
+        if (statusEl) statusEl.textContent = 'STANDBY // READY FOR EVA';
+        if (window.lucide) lucide.createIcons();
+
+        // Reset Right-Side Telemetry Card
+        const specSpeed = document.getElementById('globe-spec-speed');
+        const specDist = document.getElementById('globe-spec-dist');
+        const specHills = document.getElementById('globe-spec-hills');
+        const specO2 = document.getElementById('globe-spec-o2');
+        const specStatus = document.getElementById('globe-spec-status');
+        if (specSpeed) specSpeed.textContent = '0.0 km/h';
+        if (specDist) specDist.textContent = '0.0 km';
+        if (specHills) specHills.textContent = '0 Hills';
+        if (specO2) specO2.textContent = '100.0%';
+        if (specStatus) {
+          specStatus.textContent = 'MANUAL DRIVE [WASD]';
+          specStatus.style.color = '#34D399';
+        }
       }
 
       function updateGlobeRoverPhysics(dt) {
-        if (!gRover || isGlobeAutonomousSim) return;
+        if (!gRover) return;
 
-        // Drive Keys (W / S / A / D) in Globe View
+        // Drive Keys (W / S / A / D) in Globe View (Strict Manual WASD)
         if (driveKeys.forward) {
           gRover.speed = Math.min(gRover.maxSpeed, gRover.speed + gRover.accel * dt);
         } else if (driveKeys.backward) {
           gRover.speed = Math.max(-gRover.maxSpeed * 0.45, gRover.speed - gRover.accel * dt);
         } else {
+          // Smooth inertial friction braking back to 0.0 km/h
           if (gRover.speed > 0) gRover.speed = Math.max(0, gRover.speed - gRover.friction * dt);
           else if (gRover.speed < 0) gRover.speed = Math.min(0, gRover.speed + gRover.friction * dt);
         }
 
         if (driveKeys.left) gRover.heading += gRover.turnRate * dt;
         if (driveKeys.right) gRover.heading -= gRover.turnRate * dt;
+
+        // Animate front wheel steering
+        const steerAngle = driveKeys.left ? 0.35 : (driveKeys.right ? -0.35 : 0);
+        if (gRover.wheels && gRover.wheels.length >= 2) {
+          gRover.wheels[0].rotation.y = steerAngle;
+          gRover.wheels[1].rotation.y = steerAngle;
+        }
 
         if (Math.abs(gRover.speed) > 0.001) {
           const dLat = Math.cos(gRover.heading) * gRover.speed * dt * 28.0;
@@ -10842,14 +10754,47 @@
 
           updateGlobeRoverPosition();
 
-          if (isGlobeChaseCam && oCamera && globeRoverGroup) {
+          // Camera tracking: smoothly lerp oControls.target so user has 100% free mouse-wheel zoom control!
+          if (isGlobeChaseCam && oControls && globeRoverGroup) {
             const worldPos = new THREE.Vector3();
             globeRoverGroup.getWorldPosition(worldPos);
-            const normal = worldPos.clone().normalize();
-            const camTarget = worldPos.clone().addScaledVector(normal, 0.75);
-            oCamera.position.lerp(camTarget, 0.08);
-            oCamera.lookAt(worldPos);
+            oControls.target.lerp(worldPos, 0.06);
           }
+        }
+
+        // Live Right-Side Telemetry Card & Top Ribbon Readouts
+        const specSpeed = document.getElementById('globe-spec-speed');
+        const specDist = document.getElementById('globe-spec-dist');
+        const specHills = document.getElementById('globe-spec-hills');
+        const specO2 = document.getElementById('globe-spec-o2');
+        const specStatus = document.getElementById('globe-spec-status');
+        const speedVal = (Math.abs(gRover.speed) * 120.0).toFixed(1);
+        if (specSpeed) specSpeed.textContent = `${speedVal} km/h`;
+        if (specDist) specDist.textContent = `${gRover.totalKm.toFixed(1)} km`;
+        if (specHills) specHills.textContent = `${hillsTraversedCount} Hills`;
+        if (specO2) specO2.textContent = `${gRover.o2Pct.toFixed(1)}%`;
+        if (specStatus) {
+          if (Math.abs(gRover.speed) > 0.001) {
+            specStatus.textContent = 'DRIVING [WASD]';
+            specStatus.style.color = '#38BDF8';
+          } else if (isGlobeAutonomousSim) {
+            specStatus.textContent = 'EVA ARMED [WASD]';
+            specStatus.style.color = '#34D399';
+          } else {
+            specStatus.textContent = 'STANDBY [WASD]';
+            specStatus.style.color = '#94A3B8';
+          }
+        }
+
+        const teleSpeed = document.getElementById('globe-tele-speed');
+        const teleDist = document.getElementById('globe-tele-dist');
+        const teleO2 = document.getElementById('globe-tele-o2');
+        if (teleSpeed) teleSpeed.textContent = `${speedVal} km/h`;
+        if (teleDist) teleDist.textContent = `${gRover.totalKm.toFixed(1)} km`;
+        if (teleO2) teleO2.textContent = `${gRover.o2Pct.toFixed(1)}%`;
+
+        if (gRover.o2Pct <= 30.0) {
+          triggerAIVoiceWarning(gRover.o2Pct <= 15.0 ? 'critical' : 'caution', gRover.o2Pct);
         }
       }
 
