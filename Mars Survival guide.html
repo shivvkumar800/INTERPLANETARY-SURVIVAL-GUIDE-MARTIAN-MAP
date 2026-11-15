@@ -5410,6 +5410,14 @@
   }
 };
 
+            const ROVER_SURFACE_FALLBACKS = {
+        perseverance: 'https://images-assets.nasa.gov/image/PIA24424/PIA24424~orig.jpg',
+        spirit: 'https://images-assets.nasa.gov/image/PIA05015/PIA05015~orig.jpg',
+        curiosity: 'https://images-assets.nasa.gov/image/PIA16051/PIA16051~orig.jpg',
+        insight: 'https://images-assets.nasa.gov/image/PIA22959/PIA22959~orig.jpg',
+        opportunity: 'https://images-assets.nasa.gov/image/PIA05237/PIA05237~orig.jpg'
+      };
+
       const NASA_LANDED_SITES = {
         'jezero-crater': {
           id: 'jezero-crater',
@@ -5420,55 +5428,66 @@
           sol: 1245,
           desc: 'Perseverance biosignature cache traverse. 8-directional Weighted A* pathfinding resolving steep Séítah sand dunes and crater rim scarps.',
           landmarks: [
-            { id: 'octavia-butler', name: 'Octavia E. Butler Landing', coords: [18.38, 77.58], local: [-120, -100], sol: 0, camera: 'NAVCAM', elev: '-2,494m', img: 'https://images-assets.nasa.gov/image/PIA24424/PIA24424~orig.jpg', desc: 'Touchdown location of the Mars 2020 mission on Feb 18, 2021. Primary staging basecamp for western delta traverse.' },
-            { id: 'south-seitah', name: 'South Séítah', coords: [18.42, 77.56], local: [-50, -30], sol: 214, camera: 'MASTCAM-Z', elev: '-2,460m', img: 'https://images-assets.nasa.gov/image/PIA24836/PIA24836~orig.jpg', desc: 'Undulating ripple fields and olivine-rich cumulate rock units with severe wheel entrapment risks.' },
-            { id: 'kodiak-butte', name: 'Kodiak Butte', coords: [18.44, 77.54], local: [10, 40], sol: 350, camera: 'SUPERCAM', elev: '-2,382m', img: 'https://images-assets.nasa.gov/image/PIA24923/PIA24923~orig.jpg', desc: 'Isolated delta butte remnant confirming ancient deep lake deposition and catastrophic river discharge.' },
-            { id: 'three-forks', name: 'Three Forks Sample Depot', coords: [18.46, 77.50], local: [70, 90], sol: 650, camera: 'FRONT_HAZCAM', elev: '-2,478m', img: 'https://images-assets.nasa.gov/image/PIA25684/PIA25684~orig.jpg', desc: 'First extraterrestrial sample depot where 10 titanium sample tubes were safely cached on the crater floor.' },
-            { id: 'cheyava-falls', name: 'Cheyava Falls (Organic Veins)', coords: [18.45, 77.45], local: [130, 120], sol: 1210, camera: 'SHERLOC-WATSON', elev: '-2,418m', img: 'https://images-assets.nasa.gov/image/PIA26367/PIA26367~orig.jpg', desc: 'Reddish rock face showing leopard spots indicative of ancient chemical energy sources used by microbial life.' }
-          ]
-        },
-        'gale-crater': {
-          id: 'gale-crater',
-          name: 'Gale Crater / Mount Sharp',
-          rover: 'curiosity',
-          roverTitle: 'Curiosity (2012–Present)',
-          coords: [-5.45, 137.44],
-          sol: 4320,
-          desc: 'Curiosity rover lower Mount Sharp traverse. Contours sulfate-bearing layered ridges, safely bypassing 23.4° Gediz Vallis debris scarp.',
-          landmarks: [
-            { id: 'bradbury-landing', name: 'Bradbury Landing', coords: [-5.45, 137.44], local: [-130, -110], sol: 0, camera: 'NAVCAM', elev: '-4,450m', img: 'https://images-assets.nasa.gov/image/PIA16073/PIA16073~orig.jpg', desc: 'August 2012 touchdown site of the Mars Science Laboratory (MSL) Curiosity rover in the northern crater plains.' },
-            { id: 'yellowknife-bay', name: 'Yellowknife Bay', coords: [-5.46, 137.43], local: [-80, -70], sol: 120, camera: 'MASTCAM', elev: '-4,420m', img: 'https://images-assets.nasa.gov/image/PIA16837/PIA16837~orig.jpg', desc: 'Ancient mudstone bedrock where drill samples confirmed an ancient habitable freshwater lake with carbon and nitrogen.' },
-            { id: 'vera-rubin-ridge', name: 'Vera Rubin Ridge', coords: [-5.48, 137.41], local: [10, 20], sol: 1800, camera: 'MASTCAM', elev: '-4,180m', img: 'https://images-assets.nasa.gov/image/PIA22221/PIA22221~orig.jpg', desc: 'Prominent hematite-bearing bedrock ridge offering high-contrast layered sedimentary exposures.' },
-            { id: 'gediz-vallis', name: 'Gediz Vallis Boxwork', coords: [-5.515, 137.36], local: [110, 110], sol: 4320, camera: 'MAHLI', elev: '-3,820m', img: 'https://images-assets.nasa.gov/image/PIA26300/PIA26300~orig.jpg', desc: 'Subterranean mineral web veins left behind when ancient groundwater circulated through fractured bedrock.' }
-          ]
-        },
-        'elysium-planitia': {
-          id: 'elysium-planitia',
-          name: 'Elysium Planitia',
-          rover: 'insight',
-          roverTitle: 'InSight Lander (2018–2022)',
-          coords: [4.50, 135.62],
-          sol: 1440,
-          desc: 'Smooth volcanic basalt plain. Safely maps ground stability, circumventing loose impact crater ejecta blankets and active seismic fault scarps.',
-          landmarks: [
-            { id: 'homestead-hollow', name: 'Homestead Hollow', coords: [4.502, 135.623], local: [-90, -90], sol: 0, camera: 'IDC', elev: '-2,613m', img: 'https://images-assets.nasa.gov/image/PIA22877/PIA22877~orig.jpg', desc: 'Shallow impact depression filled with fine-grained dust where InSight landed in November 2018.' },
-            { id: 'seis-zone', name: 'SEIS Seismometer Zone', coords: [4.510, 135.632], local: [0, 10], sol: 60, camera: 'ICC', elev: '-2,605m', img: 'https://images-assets.nasa.gov/image/PIA23000/PIA23000~orig.jpg', desc: 'Ultra-sensitive seismometer deployment site recording over 1,300 marsquakes and meteoroid impact tremors.' },
-            { id: 'hp3-mole', name: 'HP3 Heat Flow Mole Site', coords: [4.518, 135.641], local: [90, 80], sol: 110, camera: 'IDC', elev: '-2,595m', img: 'https://images-assets.nasa.gov/image/PIA23620/PIA23620~orig.jpg', desc: 'InSight robotic arm scoop pushing HP3 mole probe into the red Martian soil at Elysium Planitia.' }
-          ]
-        },
-        'meridiani-planum': {
-          id: 'meridiani-planum',
-          name: 'Meridiani Planum',
-          rover: 'opportunity',
-          roverTitle: 'Opportunity (2004–2018)',
-          coords: [-1.95, 354.47],
-          sol: 5111,
-          desc: 'Opportunity rover hematite blueberry plain. Safely circumvents loose Purgatory ripple dunes with indurated sulfate bedrock routing.',
-          landmarks: [
-            { id: 'eagle-crater', name: 'Eagle Crater', coords: [-1.946, 354.473], local: [-120, -110], sol: 1, camera: 'PANCAM', elev: '-1,440m', img: 'https://images-assets.nasa.gov/image/PIA05227/PIA05227~orig.jpg', desc: 'Initial 22-meter impact crater touchdown site where Opportunity discovered gray hematite spherules (blueberries).' },
-            { id: 'endurance-crater', name: 'Endurance Crater', coords: [-1.947, 354.504], local: [-40, -40], sol: 130, camera: 'PANCAM', elev: '-1,420m', img: 'https://images-assets.nasa.gov/image/PIA06792/PIA06792~orig.jpg', desc: 'Deep stadium-sized crater whose exposed layered cliffs revealed ancient acidic lake evaporites.' },
-            { id: 'victoria-crater', name: 'Victoria Crater', coords: [-2.050, 354.498], local: [40, 30], sol: 950, camera: 'NAVCAM', elev: '-1,400m', img: 'https://images-assets.nasa.gov/image/PIA08813/PIA08813~orig.jpg', desc: '800-meter wide scalloped crater featuring dramatic promontories and bays displaying stratified sediment columns.' },
-            { id: 'endeavour-rim', name: 'Endeavour Crater Rim', coords: [-2.280, 354.670], local: [120, 110], sol: 2700, camera: 'PANCAM', elev: '-1,390m', img: 'https://images-assets.nasa.gov/image/PIA14498/PIA14498~orig.jpg', desc: 'Ancient 22-km impact basin rim revealing gypsum veins and neutral-pH clay minerals from early Mars.' }
+            {
+              id: 'octavia-butler',
+              name: 'Octavia E. Butler Landing',
+              coords: [18.38, 77.58],
+              local: [-120, -100],
+              sol: 0,
+              camera: 'NAVCAM',
+              elev: '-2,494m',
+              img: 'https://mars.nasa.gov/mars2020-raw-images/pub/ods/surface/sol/00003/ids/edr/browse/ncam/NLF_0003_0667201371_000ECM_N0010052AUT_04096_00_2I3J01_1200.jpg',
+              fallback: 'https://images-assets.nasa.gov/image/PIA24424/PIA24424~orig.jpg',
+              desc: 'Perseverance Navcam/Mastcam-Z surface touchdown horizon & wheel tracks on the floor of Jezero Crater.'
+            },
+            {
+              id: 'south-seitah',
+              name: 'South Séítah',
+              coords: [18.42, 77.56],
+              local: [-50, -30],
+              sol: 214,
+              camera: 'MASTCAM-Z',
+              elev: '-2,460m',
+              img: 'https://mars.nasa.gov/mars2020-raw-images/pub/ods/surface/sol/00214/ids/edr/browse/zcam/ZL0_0214_0685947236_054EBY_N0071836ZCAM08206_1100LMJ01_1200.jpg',
+              fallback: 'https://images-assets.nasa.gov/image/PIA24836/PIA24836~orig.jpg',
+              desc: 'Perseverance Mastcam-Z layered olivine bedrock, fractured pavers, and hazardous dark ripple dunes.'
+            },
+            {
+              id: 'kodiak-butte',
+              name: 'Kodiak Butte',
+              coords: [18.44, 77.54],
+              local: [10, 40],
+              sol: 84,
+              camera: 'MASTCAM-Z',
+              elev: '-2,382m',
+              img: 'https://mars.nasa.gov/mars2020-raw-images/pub/ods/surface/sol/00084/ids/edr/browse/zcam/ZL0_0084_0674410688_662EBY_N0040000ZCAM08036_1100LMJ01_1200.jpg',
+              fallback: 'https://images-assets.nasa.gov/image/PIA24923/PIA24923~orig.jpg',
+              desc: 'Perseverance Mastcam-Z western delta remnant stratigraphy displaying bottomset and inclined foreset delta beds.'
+            },
+            {
+              id: 'three-forks',
+              name: 'Three Forks Sample Depot',
+              coords: [18.46, 77.50],
+              local: [70, 90],
+              sol: 658,
+              camera: 'NAVCAM',
+              elev: '-2,478m',
+              img: 'https://mars.nasa.gov/mars2020-raw-images/pub/ods/surface/sol/00658/ids/edr/browse/ncam/NLF_0658_0725365592_689ECM_N0311330NCAM00501_01_195J01_1200.jpg',
+              fallback: 'https://images-assets.nasa.gov/image/PIA25684/PIA25684~orig.jpg',
+              desc: 'Perseverance WATSON/Navcam sample tubes cached directly on the red Martian surface at Three Forks.'
+            },
+            {
+              id: 'cheyava-falls',
+              name: 'Cheyava Falls',
+              coords: [18.45, 77.45],
+              local: [130, 120],
+              sol: 1218,
+              camera: 'MASTCAM-Z',
+              elev: '-2,418m',
+              img: 'https://mars.nasa.gov/mars2020-raw-images/pub/ods/surface/sol/01218/ids/edr/browse/zcam/ZL0_1218_0775077030_391EBY_N0561736ZCAM09279_1100LMJ01_1200.jpg',
+              fallback: 'https://images-assets.nasa.gov/image/PIA26367/PIA26367~orig.jpg',
+              desc: 'Perseverance Mastcam-Z leopard-spot mudstone rock containing iron phosphate reaction rings and organic veins.'
+            }
           ]
         },
         'gusev-crater': {
@@ -5480,14 +5499,199 @@
           sol: 2210,
           desc: 'Spirit rover Columbia Hills traverse. Switchback ascent up Husband Hill safely navigating loose talus scree cliffs down to Home Plate.',
           landmarks: [
-            { id: 'columbia-station', name: 'Columbia Memorial Station', coords: [-14.568, 175.473], local: [-110, -100], sol: 0, camera: 'PANCAM', elev: '-1,940m', img: 'https://images-assets.nasa.gov/image/PIA05047/PIA05047~orig.jpg', desc: 'January 2004 touchdown base of the Spirit rover on the basaltic plains of ancient Gusev crater.' },
-            { id: 'husband-hill', name: 'Husband Hill Summit', coords: [-14.590, 175.520], local: [10, 20], sol: 580, camera: 'PANCAM', elev: '-1,833m', img: 'https://images-assets.nasa.gov/image/PIA07949/PIA07949~orig.jpg', desc: '107-meter summit climb providing 360-degree panoramas of the Columbia Hills complex and dust devil corridors.' },
-            { id: 'home-plate', name: 'Home Plate Silica Deposit', coords: [-14.602, 175.535], local: [110, 100], sol: 750, camera: 'MI', elev: '-1,915m', img: 'https://images-assets.nasa.gov/image/PIA10197/PIA10197~orig.jpg', desc: 'Plateau of layered volcanic ash deposits where Spirit uncovered 90% pure opaline silica formed by ancient hydrothermal hot springs.' }
+            {
+              id: 'columbia-station',
+              name: 'Columbia Memorial Station',
+              coords: [-14.568, 175.473],
+              local: [-110, -100],
+              sol: 0,
+              camera: 'PANCAM',
+              elev: '-1,940m',
+              img: 'https://photojournal.jpl.nasa.gov/jpegMod/PIA05015_modest.jpg',
+              fallback: 'https://images-assets.nasa.gov/image/PIA05015/PIA05015~orig.jpg',
+              desc: 'Spirit Pancam Gusev Crater plains surface touchdown horizon and lander airbag impressions.'
+            },
+            {
+              id: 'husband-hill',
+              name: 'Husband Hill Summit',
+              coords: [-14.590, 175.520],
+              local: [10, 20],
+              sol: 580,
+              camera: 'PANCAM',
+              elev: '-1,833m',
+              img: 'https://photojournal.jpl.nasa.gov/jpegMod/PIA07997_modest.jpg',
+              fallback: 'https://images-assets.nasa.gov/image/PIA07997/PIA07997~orig.jpg',
+              desc: 'Spirit Pancam summit panoramic view overlooking the Inner Basin, Tennessee Valley, and dust devils.'
+            },
+            {
+              id: 'home-plate',
+              name: 'Home Plate Silica Deposit',
+              coords: [-14.602, 175.535],
+              local: [110, 100],
+              sol: 750,
+              camera: 'PANCAM',
+              elev: '-1,915m',
+              img: 'https://photojournal.jpl.nasa.gov/jpegMod/PIA10214_modest.jpg',
+              fallback: 'https://images-assets.nasa.gov/image/PIA10214/PIA10214~orig.jpg',
+              desc: 'Spirit Pancam layered volcanic ash & bright white silica soil trench churned up by rover wheels.'
+            }
+          ]
+        },
+        'gale-crater': {
+          id: 'gale-crater',
+          name: 'Gale Crater / Mount Sharp',
+          rover: 'curiosity',
+          roverTitle: 'Curiosity (2012–Present)',
+          coords: [-5.45, 137.44],
+          sol: 4320,
+          desc: 'Curiosity rover lower Mount Sharp traverse. Contours sulfate-bearing layered ridges, safely bypassing 23.4° Gediz Vallis debris scarp.',
+          landmarks: [
+            {
+              id: 'bradbury-landing',
+              name: 'Bradbury Landing',
+              coords: [-5.45, 137.44],
+              local: [-130, -110],
+              sol: 0,
+              camera: 'MASTCAM',
+              elev: '-4,450m',
+              img: 'https://photojournal.jpl.nasa.gov/jpegMod/PIA16051_modest.jpg',
+              fallback: 'https://images-assets.nasa.gov/image/PIA16051/PIA16051~orig.jpg',
+              desc: 'Curiosity Mastcam landing site and Aeolis Mons (Mount Sharp) base panorama on Mars.'
+            },
+            {
+              id: 'yellowknife-bay',
+              name: 'Yellowknife Bay',
+              coords: [-5.46, 137.43],
+              local: [-80, -70],
+              sol: 120,
+              camera: 'MASTCAM',
+              elev: '-4,420m',
+              img: 'https://photojournal.jpl.nasa.gov/jpegMod/PIA16564_modest.jpg',
+              fallback: 'https://images-assets.nasa.gov/image/PIA16564/PIA16564~orig.jpg',
+              desc: 'Curiosity Mastcam Sheepbed mudstone ancient freshwater lakebed confirming habitable conditions.'
+            },
+            {
+              id: 'vera-rubin-ridge',
+              name: 'Vera Rubin Ridge',
+              coords: [-5.48, 137.41],
+              local: [10, 20],
+              sol: 1800,
+              camera: 'MASTCAM',
+              elev: '-4,180m',
+              img: 'https://photojournal.jpl.nasa.gov/jpegMod/PIA22210_modest.jpg',
+              fallback: 'https://images-assets.nasa.gov/image/PIA22210/PIA22210~medium.jpg',
+              desc: 'Curiosity Mastcam hematite ridge stratigraphy and finely laminated sedimentary rock formations.'
+            },
+            {
+              id: 'gediz-vallis',
+              name: 'Gediz Vallis Boxwork',
+              coords: [-5.515, 137.36],
+              local: [110, 110],
+              sol: 4320,
+              camera: 'MASTCAM',
+              elev: '-3,820m',
+              img: 'https://photojournal.jpl.nasa.gov/jpegMod/PIA26281_modest.jpg',
+              fallback: 'https://images-assets.nasa.gov/image/PIA26281/PIA26281~orig.jpg',
+              desc: 'Curiosity Mastcam sulfate-bearing ridge and boulder-strewn debris channel in upper Gediz Vallis.'
+            }
+          ]
+        },
+        'elysium-planitia': {
+          id: 'elysium-planitia',
+          name: 'Elysium Planitia',
+          rover: 'insight',
+          roverTitle: 'InSight Lander (2018–2022)',
+          coords: [4.50, 135.62],
+          sol: 1440,
+          desc: 'Smooth volcanic basalt plain. Safely maps ground stability, circumventing loose impact crater ejecta blankets and active seismic fault scarps.',
+          landmarks: [
+            {
+              id: 'homestead-hollow',
+              name: 'Homestead Hollow',
+              coords: [4.502, 135.623],
+              local: [-90, -90],
+              sol: 0,
+              camera: 'IDC',
+              elev: '-2,613m',
+              img: 'https://photojournal.jpl.nasa.gov/jpegMod/PIA22959_modest.jpg',
+              fallback: 'https://images-assets.nasa.gov/image/PIA22959/PIA22959~orig.jpg',
+              desc: 'InSight IDC surface view of smooth sandy hollow and pebble field on the Martian plains.'
+            },
+            {
+              id: 'seis-zone',
+              name: 'SEIS Seismometer Zone',
+              coords: [4.510, 135.632],
+              local: [0, 10],
+              sol: 60,
+              camera: 'IDC',
+              elev: '-2,605m',
+              img: 'https://photojournal.jpl.nasa.gov/jpegMod/PIA22977_modest.jpg',
+              fallback: 'https://images-assets.nasa.gov/image/PIA22977/PIA22977~orig.jpg',
+              desc: 'InSight dome seismometer (SEIS) and wind and thermal shield deployed directly on Mars soil.'
+            },
+            {
+              id: 'hp3-mole',
+              name: 'HP3 Heat Flow Mole Site',
+              coords: [4.518, 135.641],
+              local: [90, 80],
+              sol: 110,
+              camera: 'IDC',
+              elev: '-2,595m',
+              img: 'https://photojournal.jpl.nasa.gov/jpegMod/PIA23302_modest.jpg',
+              fallback: 'https://images-assets.nasa.gov/image/PIA23302/PIA23302~orig.jpg',
+              desc: 'InSight HP3 mole support structure and self-hammering heat probe embedded in Martian regolith.'
+            }
+          ]
+        },
+        'meridiani-planum': {
+          id: 'meridiani-planum',
+          name: 'Meridiani Planum',
+          rover: 'opportunity',
+          roverTitle: 'Opportunity (2004–2018)',
+          coords: [-1.95, 354.47],
+          sol: 5111,
+          desc: 'Opportunity rover hematite blueberry plain. Safely circumvents loose Purgatory ripple dunes with indurated sulfate bedrock routing.',
+          landmarks: [
+            {
+              id: 'eagle-crater',
+              name: 'Eagle Crater',
+              coords: [-1.946, 354.473],
+              local: [-120, -110],
+              sol: 1,
+              camera: 'PANCAM',
+              elev: '-1,440m',
+              img: 'https://photojournal.jpl.nasa.gov/jpegMod/PIA05237_modest.jpg',
+              fallback: 'https://images-assets.nasa.gov/image/PIA05237/PIA05237~orig.jpg',
+              desc: 'Opportunity Pancam bedrock outcrop and hematite spherules at the landing crater.'
+            },
+            {
+              id: 'victoria-crater',
+              name: 'Victoria Crater',
+              coords: [-2.050, 354.498],
+              local: [40, 30],
+              sol: 950,
+              camera: 'PANCAM',
+              elev: '-1,400m',
+              img: 'https://photojournal.jpl.nasa.gov/jpegMod/PIA08813_modest.jpg',
+              fallback: 'https://images-assets.nasa.gov/image/PIA08813/PIA08813~orig.jpg',
+              desc: 'Opportunity Pancam Cape Verde cliff promontory and dramatic stratified canyon walls.'
+            },
+            {
+              id: 'endeavour-rim',
+              name: 'Endeavour Rim',
+              coords: [-2.280, 354.670],
+              local: [120, 110],
+              sol: 2700,
+              camera: 'PANCAM',
+              elev: '-1,390m',
+              img: 'https://photojournal.jpl.nasa.gov/jpegMod/PIA14764_modest.jpg',
+              fallback: 'https://images-assets.nasa.gov/image/PIA14764/PIA14764~orig.jpg',
+              desc: 'Opportunity Pancam Cape York crater rim ridge revealing gypsum veins and ancient sulfate rock.'
+            }
           ]
         }
       };
 
-      
       /* MISSION-SPECIFIC O2 AND DISTANCE SPECIFICATIONS */
       const MISSION_O2_SPECS = {
         'elysium-planitia': { totalKm: 2.4, totalM: 2400, maxSlope: 2.1, finalO2Pct: 96.4, burnRate: 0.84, baseElev: -2613, defaultTarget: 'HP3 Heat Flow Mole Site' },
@@ -7695,6 +7899,40 @@
       /* ========================================================================
          WAYPOINT ALTITUDE DROP-LINES & DISCOVERED SITE 3D BEACON PINS
          ======================================================================== */
+      
+      function createPinLabelSprite(text) {
+        const canvas = document.createElement('canvas');
+        canvas.width = 512;
+        canvas.height = 120;
+        const ctx = canvas.getContext('2d');
+
+        // Dark Obsidian glassmorphic pill background with subtle amber border
+        ctx.fillStyle = 'rgba(15, 17, 22, 0.90)';
+        ctx.strokeStyle = 'rgba(245, 158, 11, 0.55)';
+        ctx.lineWidth = 3;
+        if (ctx.roundRect) {
+          ctx.roundRect(10, 16, 492, 88, 44);
+        } else {
+          ctx.rect(10, 16, 492, 88);
+        }
+        ctx.fill();
+        ctx.stroke();
+
+        // High-Fashion Editorial Italic text
+        ctx.fillStyle = '#FFFFFF';
+        ctx.font = 'italic 30px "Instrument Serif", Georgia, serif';
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle';
+        ctx.fillText(text, 256, 60);
+
+        const tex = new THREE.CanvasTexture(canvas);
+        tex.minFilter = THREE.LinearFilter;
+        const mat = new THREE.SpriteMaterial({ map: tex, transparent: true });
+        const sprite = new THREE.Sprite(mat);
+        sprite.scale.set(22, 5.2, 1);
+        return sprite;
+      }
+
       function build3DDiscoveredPins(siteId) {
         stemsGroup.clear();
         pinsGroup.clear();
