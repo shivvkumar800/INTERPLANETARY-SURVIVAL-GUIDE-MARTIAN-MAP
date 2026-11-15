@@ -1555,6 +1555,215 @@
       color: rgba(255, 255, 255, 0.2);
     }
 
+  
+    /* ==========================================================================
+       UPGRADE 5 & 6: ACOUSTIC STEP SYNC & LOW-OXYGEN ALERT HUD STYLES
+       ========================================================================== */
+    .acoustic-slider-container {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      border-radius: var(--radius-pill);
+      padding: 3px 10px;
+    }
+    .acoustic-slider-container.hidden { display: none !important; }
+
+    .acoustic-label {
+      font-family: var(--font-mono);
+      font-size: 8px;
+      color: var(--text-silver);
+      letter-spacing: 0.06em;
+    }
+
+    .acoustic-range {
+      width: 70px;
+      height: 4px;
+      accent-color: #F59E0B;
+      cursor: pointer;
+    }
+
+    .acoustic-val {
+      font-family: var(--font-mono);
+      font-size: 9px;
+      color: #FFFFFF;
+      min-width: 26px;
+    }
+
+    .hud-btn.acoustic-active {
+      background: rgba(245, 158, 11, 0.22) !important;
+      color: #FBBF24 !important;
+      border: 1px solid rgba(245, 158, 11, 0.45) !important;
+    }
+
+    /* Stride counter badge in cockpit */
+    .acoustic-stride-badge {
+      align-self: center;
+      margin-top: 8px;
+      background: rgba(15, 17, 22, 0.90);
+      backdrop-filter: blur(14px);
+      border: 1px solid rgba(245, 158, 11, 0.35);
+      border-radius: var(--radius-pill);
+      padding: 4px 14px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.6);
+      pointer-events: auto;
+      font-family: var(--font-mono);
+      font-size: 10px;
+      color: #FBBF24;
+      transition: all 0.2s ease;
+    }
+    .acoustic-stride-badge.hidden { display: none !important; }
+    
+    .stride-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: #F59E0B;
+      box-shadow: 0 0 8px #F59E0B;
+      animation: pulseBeacon 1.2s infinite ease-in-out;
+    }
+
+    /* Visor Low-Oxygen Breathing Vignette Glow */
+    .visor-vignette-pulse {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: 440;
+      opacity: 0;
+      transition: opacity 0.6s ease;
+    }
+
+    .visor-vignette-pulse.caution {
+      opacity: 1;
+      animation: breathingCaution 2.8s infinite ease-in-out;
+    }
+
+    .visor-vignette-pulse.critical {
+      opacity: 1;
+      animation: breathingCritical 1.6s infinite ease-in-out;
+    }
+
+    @keyframes breathingCaution {
+      0%, 100% { box-shadow: inset 0 0 60px rgba(245, 158, 11, 0.25); }
+      50% { box-shadow: inset 0 0 120px rgba(245, 158, 11, 0.60); }
+    }
+
+    @keyframes breathingCritical {
+      0%, 100% { box-shadow: inset 0 0 80px rgba(239, 68, 68, 0.35); }
+      50% { box-shadow: inset 0 0 150px rgba(239, 68, 68, 0.75); }
+    }
+
+    /* Glassmorphic Low-Oxygen Telemetry Alert Banner */
+    .hud-o2-alert-banner {
+      position: absolute;
+      top: 64px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: rgba(15, 17, 22, 0.94);
+      backdrop-filter: blur(18px);
+      -webkit-backdrop-filter: blur(18px);
+      border: 1px solid rgba(245, 158, 11, 0.4);
+      border-radius: var(--radius-md);
+      box-shadow: 0 12px 36px rgba(0, 0, 0, 0.7), 0 0 20px rgba(245, 158, 11, 0.15);
+      padding: 10px 18px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      z-index: 520;
+      pointer-events: auto;
+      min-width: 440px;
+      transition: border-color 0.3s ease;
+    }
+    .hud-o2-alert-banner.hidden { display: none !important; }
+    .hud-o2-alert-banner.critical-mode {
+      border-color: rgba(239, 68, 68, 0.6);
+      box-shadow: 0 12px 36px rgba(0, 0, 0, 0.7), 0 0 24px rgba(239, 68, 68, 0.25);
+    }
+
+    .alert-banner-header {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .alert-pulse-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: #F59E0B;
+      box-shadow: 0 0 10px #F59E0B;
+      animation: pulseBeacon 1.2s infinite ease-in-out;
+    }
+    .alert-pulse-dot.critical {
+      background: #EF4444;
+      box-shadow: 0 0 12px #EF4444;
+    }
+
+    .alert-headline {
+      font-size: 15px;
+      color: #F59E0B;
+      letter-spacing: 0.02em;
+    }
+    .alert-headline.critical {
+      color: #EF4444;
+    }
+
+    .alert-banner-body {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 14px;
+      padding-top: 4px;
+      border-top: 1px solid rgba(255, 255, 255, 0.08);
+    }
+
+    .alert-metric-item {
+      display: flex;
+      flex-direction: column;
+      gap: 1px;
+    }
+
+    .alert-metric-label {
+      font-family: var(--font-mono);
+      font-size: 8px;
+      color: var(--text-silver);
+      letter-spacing: 0.08em;
+    }
+
+    .alert-metric-item strong {
+      font-family: var(--font-mono);
+      font-size: 13px;
+      color: #FFFFFF;
+    }
+
+    .btn-alert-autoroute {
+      background: #FFFFFF;
+      color: #08090C;
+      border: none;
+      border-radius: var(--radius-pill);
+      padding: 6px 14px;
+      font-family: var(--font-sans);
+      font-size: 11px;
+      font-weight: 700;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.16s ease;
+      box-shadow: 0 2px 8px rgba(255, 255, 255, 0.2);
+    }
+    .btn-alert-autoroute:hover {
+      background: #E2E8F0;
+      transform: scale(1.03);
+    }
+
   </style>
 </head>
 <body>
@@ -1676,6 +1885,31 @@
         
         <div class="tactical-canvas-viewport">
           
+          <!-- Subtle Visor Edge Pulse Vignette (Breathing Amber / Crimson) -->
+          <div class="visor-vignette-pulse" id="visor-vignette-pulse"></div>
+
+          <!-- Glassmorphic Low-Oxygen Telemetry Alert Banner -->
+          <div class="hud-o2-alert-banner hidden" id="hud-o2-alert-banner">
+            <div class="alert-banner-header">
+              <div class="alert-pulse-dot" id="o2-alert-dot"></div>
+              <span class="alert-headline editorial-italic" id="o2-alert-headline">PLSS Oxygen Reserve Warning — 30% Threshold Crossed</span>
+            </div>
+            <div class="alert-banner-body">
+              <div class="alert-metric-item">
+                <span class="alert-metric-label">WALK-BACK DIST:</span>
+                <strong class="tabular-nums" id="o2-alert-dist">0.00 km</strong>
+              </div>
+              <div class="alert-metric-item">
+                <span class="alert-metric-label">EST. REMAINING:</span>
+                <strong class="tabular-nums" id="o2-alert-time">-- min</strong>
+              </div>
+              <button class="btn-alert-autoroute" id="btn-autoroute-return" title="Engage automatic safe return trajectory to basecamp">
+                <i data-lucide="rotate-ccw" style="width: 12px; height: 12px;"></i>
+                <span>Auto-Route Safe Return</span>
+              </button>
+            </div>
+          </div>
+          
           <!-- 3D Perspective Controls Pill -->
           <div class="camera-hud-badge">
             <span>PERSPECTIVE:</span>
@@ -1726,6 +1960,11 @@
           <!-- FIRST-PERSON ROVER / ASTRONAUT COCKPIT HUD (AEROSPACE MONOCHROME) -->
           <div class="cockpit-hud-overlay hidden" id="cockpit-hud-overlay">
             <!-- Top Magnetic Compass Tape -->
+            <div class="acoustic-stride-badge hidden" id="acoustic-stride-badge">
+              <div class="stride-dot"></div>
+              <span id="acoustic-stride-text">STEPS: 0 | LAST STRIDE: +0.85m / -0.014L O2</span>
+            </div>
+
             <div class="hud-compass-container">
               <div class="hud-compass-header" id="hud-compass-heading-text">
                 Heading 048° NE — Surface Reconnaissance Active
@@ -4965,6 +5204,87 @@
           }
           if (this.ctx && this.ctx.state === 'suspended') this.ctx.resume();
         }
+        playOxygenAlertChime(isCritical = false) {
+          if (!this.enabled) return;
+          this.init();
+          if (!this.ctx) return;
+          try {
+            const now = this.ctx.currentTime;
+            const f1 = isCritical ? 960 : 880;
+            const f2 = isCritical ? 720 : 660;
+
+            const osc1 = this.ctx.createOscillator();
+            const gain1 = this.ctx.createGain();
+            osc1.type = 'sine';
+            osc1.frequency.setValueAtTime(f1, now);
+            gain1.gain.setValueAtTime(0.06, now);
+            gain1.gain.exponentialRampToValueAtTime(0.0001, now + 0.12);
+            osc1.connect(gain1);
+            gain1.connect(this.ctx.destination);
+            osc1.start(now);
+            osc1.stop(now + 0.12);
+
+            const osc2 = this.ctx.createOscillator();
+            const gain2 = this.ctx.createGain();
+            osc2.type = 'sine';
+            osc2.frequency.setValueAtTime(f2, now + 0.14);
+            gain2.gain.setValueAtTime(0.06, now + 0.14);
+            gain2.gain.exponentialRampToValueAtTime(0.0001, now + 0.32);
+            osc2.connect(gain2);
+            gain2.connect(this.ctx.destination);
+            osc2.start(now + 0.14);
+            osc2.stop(now + 0.32);
+          } catch(e) {}
+        }
+
+        playBootCrunch() {
+          if (!this.enabled) return;
+          this.init();
+          if (!this.ctx) return;
+          try {
+            const bufferSize = Math.floor(this.ctx.sampleRate * 0.08);
+            const buffer = this.ctx.createBuffer(1, bufferSize, this.ctx.sampleRate);
+            const data = buffer.getChannelData(0);
+            for (let i = 0; i < bufferSize; i++) {
+              data[i] = (Math.random() * 2 - 1) * Math.exp(-i / (bufferSize * 0.32));
+            }
+            const whiteNoise = this.ctx.createBufferSource();
+            whiteNoise.buffer = buffer;
+
+            const filter = this.ctx.createBiquadFilter();
+            filter.type = 'bandpass';
+            filter.frequency.value = 420;
+            filter.Q.value = 1.8;
+
+            const gain = this.ctx.createGain();
+            gain.gain.setValueAtTime(0.09, this.ctx.currentTime);
+            gain.gain.exponentialRampToValueAtTime(0.0001, this.ctx.currentTime + 0.08);
+
+            whiteNoise.connect(filter);
+            filter.connect(gain);
+            gain.connect(this.ctx.destination);
+            whiteNoise.start();
+          } catch(e) {}
+        }
+
+        playBreatherCadence() {
+          if (!this.enabled) return;
+          this.init();
+          if (!this.ctx) return;
+          try {
+            const osc = this.ctx.createOscillator();
+            const gain = this.ctx.createGain();
+            osc.type = 'sine';
+            osc.frequency.setValueAtTime(140, this.ctx.currentTime);
+            gain.gain.setValueAtTime(0.015, this.ctx.currentTime);
+            gain.gain.exponentialRampToValueAtTime(0.0001, this.ctx.currentTime + 0.28);
+            osc.connect(gain);
+            gain.connect(this.ctx.destination);
+            osc.start();
+            osc.stop(this.ctx.currentTime + 0.28);
+          } catch(e) {}
+        }
+
         playBlip(freq = 880, dur = 0.05, type = 'sine') {
           if (!this.enabled) return;
           this.init();
@@ -5026,6 +5346,305 @@
          MAIN INITIALIZATION
          ======================================================================== */
       
+      
+      /* ========================================================================
+         UPGRADE 5: OFFLINE 1-STEP-PER-SOUND ACOUSTIC STEP ENGINE (0.85M STRIDE)
+         ======================================================================== */
+      class AcousticStepEngine {
+        constructor() {
+          this.stream = null;
+          this.ctx = null;
+          this.analyser = null;
+          this.dataArray = null;
+          this.isActive = false;
+          this.animId = null;
+          this.lastStepTime = 0;
+          this.sensitivity = 45;
+          this.totalSteps = 0;
+          this.headBobAngle = 0;
+        }
+
+        toggle() {
+          if (this.isActive) this.stop();
+          else this.start();
+        }
+
+        async start() {
+          try {
+            if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+              this.enableManualFallback('Microphone API unsupported on this browser.');
+              return;
+            }
+            this.stream = await navigator.mediaDevices.getUserMedia({ audio: true, video: false });
+            const AudioCtx = window.AudioContext || window.webkitAudioContext;
+            this.ctx = new AudioCtx();
+            const source = this.ctx.createMediaStreamSource(this.stream);
+            this.analyser = this.ctx.createAnalyser();
+            this.analyser.fftSize = 512;
+            this.analyser.smoothingTimeConstant = 0.2;
+            source.connect(this.analyser);
+            this.dataArray = new Uint8Array(this.analyser.fftSize);
+            this.isActive = true;
+
+            const btn = document.getElementById('btn-acoustic-toggle');
+            if (btn) {
+              btn.classList.add('acoustic-active');
+              btn.innerHTML = '<i data-lucide="mic" class="hud-icon"></i> <span>Acoustic Sync ON</span>';
+              if (window.lucide) lucide.createIcons();
+            }
+            const sliderWrap = document.getElementById('acoustic-slider-container');
+            if (sliderWrap) sliderWrap.classList.remove('hidden');
+
+            const badge = document.getElementById('acoustic-stride-badge');
+            if (badge) badge.classList.remove('hidden');
+
+            if (!isCockpitMode) enterCockpitMode();
+            audio.playBlip(980, 0.1);
+            this.detectLoop();
+          } catch(err) {
+            console.warn('Microphone access denied:', err);
+            this.enableManualFallback('Microphone access restricted.');
+          }
+        }
+
+        enableManualFallback(reason) {
+          this.isActive = true;
+          const btn = document.getElementById('btn-acoustic-toggle');
+          if (btn) {
+            btn.classList.add('acoustic-active');
+            btn.innerHTML = '<i data-lucide="footprints" class="hud-icon"></i> <span>Manual Stride ON [N]</span>';
+            if (window.lucide) lucide.createIcons();
+          }
+          const badge = document.getElementById('acoustic-stride-badge');
+          if (badge) badge.classList.remove('hidden');
+          if (!isCockpitMode) enterCockpitMode();
+          audio.playBlip(740, 0.1);
+        }
+
+        stop() {
+          this.isActive = false;
+          if (this.animId) cancelAnimationFrame(this.animId);
+          if (this.stream) {
+            this.stream.getTracks().forEach(t => t.stop());
+            this.stream = null;
+          }
+          if (this.ctx && this.ctx.state !== 'closed') {
+            this.ctx.close();
+            this.ctx = null;
+          }
+
+          const btn = document.getElementById('btn-acoustic-toggle');
+          if (btn) {
+            btn.classList.remove('acoustic-active');
+            btn.innerHTML = '<i data-lucide="mic" class="hud-icon"></i> <span>Acoustic Sync</span>';
+            if (window.lucide) lucide.createIcons();
+          }
+          const sliderWrap = document.getElementById('acoustic-slider-container');
+          if (sliderWrap) sliderWrap.classList.add('hidden');
+          audio.playBlip(520, 0.1);
+        }
+
+        detectLoop() {
+          if (!this.isActive || !this.analyser) return;
+
+          this.analyser.getByteTimeDomainData(this.dataArray);
+          let maxDelta = 0;
+          for (let i = 1; i < this.dataArray.length; i++) {
+            const delta = Math.abs(this.dataArray[i] - this.dataArray[i - 1]) / 128.0;
+            if (delta > maxDelta) maxDelta = delta;
+          }
+
+          // Inverted: higher sensitivity slider value means lower threshold
+          const threshold = 0.58 - (this.sensitivity / 100) * 0.46;
+          const now = Date.now();
+
+          if (maxDelta > threshold && (now - this.lastStepTime > 280)) {
+            this.lastStepTime = now;
+            executeSingleFootstep(0.85);
+          }
+
+          this.animId = requestAnimationFrame(() => this.detectLoop());
+        }
+      }
+
+      const acousticEngine = new AcousticStepEngine();
+
+      function executeSingleFootstep(strideMeters = 0.85) {
+        acousticEngine.totalSteps++;
+        roverDrive.distanceDrivenMeters += strideMeters;
+
+        const spec = MISSION_O2_SPECS[currentSiteId] || MISSION_O2_SPECS['jezero-crater'];
+
+        // Advance along safe corridor curve
+        if (currentCorridorCurve) {
+          const tProgress = Math.min(1.0, roverDrive.distanceDrivenMeters / spec.totalM);
+          const pt = currentCorridorCurve.getPointAt(tProgress);
+          const tangent = currentCorridorCurve.getTangentAt(tProgress);
+
+          roverDrive.x = pt.x;
+          roverDrive.z = pt.z;
+          roverDrive.centerY = pt.y - 1.8;
+          roverDrive.heading = Math.atan2(tangent.x, tangent.z);
+
+          if (roverMarkerMesh) {
+            roverMarkerMesh.position.copy(pt);
+            roverMarkerMesh.visible = !isCockpitMode;
+          }
+        } else {
+          roverDrive.x += Math.sin(roverDrive.heading) * (strideMeters * 0.35);
+          roverDrive.z += Math.cos(roverDrive.heading) * (strideMeters * 0.35);
+        }
+
+        // Realistic Helmet Gait Head-Bob
+        acousticEngine.headBobAngle += Math.PI;
+        roverDrive.bounceOffset = Math.sin(acousticEngine.headBobAngle) * 0.14;
+
+        // Offline Synthesized Regolith Boot Crunch & Breather Whisper
+        audio.playBootCrunch();
+        if (acousticEngine.totalSteps % 3 === 0) {
+          audio.playBreatherCadence();
+        }
+
+        // Exact slope-weighted O2 per step
+        const slopeWeight = 1.0 + (roverDrive.slopeDeg / 15.0) * 0.5;
+        const o2BurnStepL = (0.014 * slopeWeight).toFixed(3);
+
+        const badgeText = document.getElementById('acoustic-stride-text');
+        if (badgeText) {
+          badgeText.textContent = `STEPS: ${acousticEngine.totalSteps} | LAST STRIDE: +${strideMeters.toFixed(2)}m / -${o2BurnStepL}L O2`;
+        }
+
+        syncCockpitTelemetry();
+        updateCockpitHUDInstruments();
+      }
+
+      /* ========================================================================
+         UPGRADE 6: ARCHITECTURAL LOW-OXYGEN ALERT & SAFE RETURN SYSTEM
+         ======================================================================== */
+      let currentO2AlertState = 'nominal';
+
+      function checkOxygenAlerts(o2Pct) {
+        const vignette = document.getElementById('visor-vignette-pulse');
+        const banner = document.getElementById('hud-o2-alert-banner');
+        const headline = document.getElementById('o2-alert-headline');
+        const dot = document.getElementById('o2-alert-dot');
+        const distEl = document.getElementById('o2-alert-dist');
+        const timeEl = document.getElementById('o2-alert-time');
+
+        const spec = MISSION_O2_SPECS[currentSiteId] || MISSION_O2_SPECS['jezero-crater'];
+        const kmDriven = (roverDrive.distanceDrivenMeters / 1000).toFixed(2);
+        const remainingL = (o2Pct / 100) * 420;
+        const burnRate = spec.burnRate + (roverDrive.slopeDeg / 15.0) * 0.25;
+        const estMins = Math.max(1, Math.round(remainingL / burnRate));
+
+        if (o2Pct < 15.0) {
+          // CRITICAL ALERT (< 15%)
+          if (vignette) {
+            vignette.classList.remove('caution');
+            vignette.classList.add('critical');
+          }
+          if (banner) {
+            banner.classList.remove('hidden');
+            banner.classList.add('critical-mode');
+          }
+          if (headline) {
+            headline.textContent = 'PLSS Oxygen Reserve Critical — Immediate Walk-Back Required';
+            headline.classList.add('critical');
+          }
+          if (dot) dot.classList.add('critical');
+          if (distEl) distEl.textContent = `${kmDriven} km`;
+          if (timeEl) timeEl.textContent = `${estMins} min`;
+
+          if (currentO2AlertState !== 'critical') {
+            currentO2AlertState = 'critical';
+            audio.playOxygenAlertChime(true);
+            if (window.gsap && banner) {
+              gsap.fromTo(banner, { y: -30, opacity: 0 }, { y: 0, opacity: 1, duration: 0.45, ease: 'power2.out' });
+            }
+          }
+        } else if (o2Pct < 30.0) {
+          // CAUTION ALERT (< 30%)
+          if (vignette) {
+            vignette.classList.remove('critical');
+            vignette.classList.add('caution');
+          }
+          if (banner) {
+            banner.classList.remove('hidden', 'critical-mode');
+          }
+          if (headline) {
+            headline.textContent = 'PLSS Oxygen Reserve Caution — 30% Threshold Crossed';
+            headline.classList.remove('critical');
+          }
+          if (dot) dot.classList.remove('critical');
+          if (distEl) distEl.textContent = `${kmDriven} km`;
+          if (timeEl) timeEl.textContent = `${estMins} min`;
+
+          if (currentO2AlertState !== 'caution') {
+            currentO2AlertState = 'caution';
+            audio.playOxygenAlertChime(false);
+            if (window.gsap && banner) {
+              gsap.fromTo(banner, { y: -30, opacity: 0 }, { y: 0, opacity: 1, duration: 0.45, ease: 'power2.out' });
+            }
+          }
+        } else {
+          // NOMINAL (>= 30%)
+          if (currentO2AlertState !== 'nominal') {
+            currentO2AlertState = 'nominal';
+            if (vignette) vignette.classList.remove('caution', 'critical');
+            if (banner) {
+              if (window.gsap) {
+                gsap.to(banner, { y: -20, opacity: 0, duration: 0.35, onComplete: () => banner.classList.add('hidden') });
+              } else {
+                banner.classList.add('hidden');
+              }
+            }
+          }
+        }
+      }
+
+      function initAcousticAndAlertControls() {
+        // 1. Acoustic Step Sync Toggle Button
+        const btnAcoustic = document.getElementById('btn-acoustic-toggle');
+        if (btnAcoustic) {
+          btnAcoustic.addEventListener('click', () => acousticEngine.toggle());
+        }
+
+        // 2. Sensitivity Slider
+        const slider = document.getElementById('mic-thresh-slider');
+        const valDisplay = document.getElementById('mic-thresh-val');
+        if (slider && valDisplay) {
+          slider.addEventListener('input', (e) => {
+            const val = Number(e.target.value);
+            valDisplay.textContent = `${val}%`;
+            acousticEngine.sensitivity = val;
+          });
+        }
+
+        // 3. Manual +1 Stride Button
+        const btnManual = document.getElementById('btn-manual-step');
+        if (btnManual) {
+          btnManual.addEventListener('click', () => executeSingleFootstep(0.85));
+        }
+
+        // 4. Auto-Route Safe Return Button
+        const btnReturn = document.getElementById('btn-autoroute-return');
+        if (btnReturn) {
+          btnReturn.addEventListener('click', () => {
+            audio.playBlip(1100, 0.15);
+            roverDrive.heading = (roverDrive.heading + Math.PI) % (Math.PI * 2);
+            if (isSimulating) toggleSimulation();
+            const headline = document.getElementById('o2-alert-headline');
+            if (headline) headline.textContent = 'Safe Return Trajectory Engaged // Heading 180° to Basecamp';
+            setTimeout(() => {
+              const banner = document.getElementById('hud-o2-alert-banner');
+              if (banner && window.gsap) {
+                gsap.to(banner, { y: -20, opacity: 0, duration: 0.5, onComplete: () => banner.classList.add('hidden') });
+              }
+            }, 2600);
+          });
+        }
+      }
+
       /* ========================================================================
          FIRST-PERSON ROVER / ASTRONAUT COCKPIT ENGINE (WASD DRIVE & PHYSICS)
          ======================================================================== */
@@ -5085,6 +5704,12 @@
           if (e.code === 'KeyV') {
             e.preventDefault();
             toggleCockpitMode();
+            return;
+          }
+
+          if (e.code === 'KeyN') {
+            e.preventDefault();
+            executeSingleFootstep(0.85);
             return;
           }
 
@@ -5551,6 +6176,7 @@
         const hr = Math.round(76 + (roverDrive.slopeDeg / 18.0) * 36 + (Math.abs(roverDrive.speed) / roverDrive.maxSpeed) * 18);
         const suitHrValEl = document.getElementById('suit-hr-val');
         if (suitHrValEl) suitHrValEl.textContent = `${hr} BPM`;
+        checkOxygenAlerts(Number(o2Pct));
       }
 
       window.addEventListener('DOMContentLoaded', () => {
@@ -5564,6 +6190,7 @@
         initChartTabs();
         initSimControls();
         initCockpitControls();
+        initAcousticAndAlertControls();
         buildCompassTapeStrip();
         initAudioToggle();
 
@@ -6987,6 +7614,7 @@
 
           // Update Cockpit HUD Instruments if visible
           updateCockpitHUDInstruments();
+          checkOxygenAlerts(Number(o2Pct));
         }, 280);
       }
 
