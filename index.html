@@ -5540,7 +5540,9 @@
         initRouteControls();
         initChartTabs();
         initSimControls();
-        initCockpitControls();
+        if (typeof initCockpitControls === 'function') {
+          initCockpitControls();
+        }
         buildCompassTapeStrip();
         initAudioToggle();
 
