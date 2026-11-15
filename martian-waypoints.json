@@ -1,0 +1,42 @@
+{
+  "map_version": "1.0",
+  "planet": "Mars",
+  "waypoints": [
+    {
+      "id": "WP-001",
+      "name": "Jezero Crater Base",
+      "coordinates": {
+        "latitude": 18.38,
+        "longitude": 77.58
+      },
+      "elevation_m": -2570,
+      "type": "Primary Landing & Research Zone",
+      "resources": ["Ancient clay deposits", "Subsurface ice potential"],
+      "hazard_level": "Low"
+    },
+    {
+      "id": "WP-002",
+      "name": "Olympus Mons Lava Tubes",
+      "coordinates": {
+        "latitude": 18.65,
+        "longitude": 226.2
+      },
+      "elevation_m": 21229,
+      "type": "Natural Radiation Shelter",
+      "resources": ["Basalt shielding", "Thermal stability"],
+      "hazard_level": "Moderate (Steep terrain)"
+    },
+    {
+      "id": "WP-003",
+      "name": "Hellas Planitia Basin",
+      "coordinates": {
+        "latitude": -42.4,
+        "longitude": 70.5
+      },
+      "elevation_m": -7152,
+      "type": "High-Pressure Zone",
+      "resources": ["Higher atmospheric pressure", "Subsurface water ice"],
+      "hazard_level": "High (Frequent dust accumulation)"
+    }
+  ]
+}
