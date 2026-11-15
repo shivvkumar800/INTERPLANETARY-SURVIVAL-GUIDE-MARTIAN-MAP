@@ -92,6 +92,12 @@ const server = http.createServer((req, res) => {
     }
   }
 
+  if (reqPath === '/favicon.ico') {
+    res.writeHead(204);
+    res.end();
+    return;
+  }
+
   if (reqPath === '/api/health') {
     res.writeHead(200, { 'Content-Type': 'application/json' });
     res.end(JSON.stringify({ status: 'active', mission: 'SPACEWEB-ARES-2026', timestamp: new Date().toISOString() }));

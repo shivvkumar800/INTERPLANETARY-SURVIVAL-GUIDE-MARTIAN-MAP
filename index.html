@@ -3,6 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="icon" href="data:,">
   <title>ARES // 3D Photorealistic Mars Terrain &amp; ML Mission Control</title>
   
   <!-- High-Fashion Editorial Typography: Instrument Serif, Plus Jakarta Sans, JetBrains Mono -->
@@ -12,524 +13,7 @@
 
   <!-- Core Aerospace & Graphics Libraries via CDN -->
   <!-- 1. GSAP for Smooth Motion & flyTo Animations -->
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js">
-      /* ========================================================================
-         FIRST-PERSON ROVER / ASTRONAUT COCKPIT ENGINE (WASD DRIVE & PHYSICS)
-         ======================================================================== */
-      function buildCompassTapeStrip() {
-        const strip = document.getElementById('hud-compass-tape-strip');
-        if (!strip) return;
-        strip.innerHTML = '';
-
-        // Build 3 sets of 0-360 degrees for seamless infinite wrap
-        const cardinals = { 0: 'N', 90: 'E', 180: 'S', 270: 'W' };
-        for (let set = 0; set < 3; set++) {
-          for (let deg = 0; deg < 360; deg += 10) {
-            const tick = document.createElement('div');
-            const isMajor = (deg % 30 === 0);
-            const isCardinal = (deg in cardinals);
-            tick.className = 'compass-tick' + (isMajor ? ' major' : '') + (isCardinal ? ' cardinal' : '');
-
-            const line = document.createElement('div');
-            line.className = 'tick-line';
-            tick.appendChild(line);
-
-            if (isMajor) {
-              const label = document.createElement('div');
-              label.className = 'tick-label';
-              label.textContent = isCardinal ? cardinals[deg] : String(deg).padStart(3, '0');
-              tick.appendChild(label);
-            }
-            strip.appendChild(tick);
-          }
-        }
-      }
-
-      function initCockpitControls() {
-        const btnToggle = document.getElementById('btn-toggle-cockpit');
-        if (btnToggle) {
-          btnToggle.addEventListener('click', toggleCockpitMode);
-        }
-
-        const btnInspect = document.getElementById('btn-hud-inspect-discovery');
-        if (btnInspect) {
-          btnInspect.addEventListener('click', () => {
-            const site = NASA_LANDED_SITES[currentSiteId];
-            if (site && site.landmarks) {
-              const nearest = findNearestLandmark(roverDrive.x, roverDrive.z);
-              if (nearest) openLandmarkModal(nearest);
-            }
-          });
-        }
-
-        // Global Key Listeners for WASD / Arrows / V / E
-        window.addEventListener('keydown', (e) => {
-          if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return;
-
-          if (e.code === 'KeyV') {
-            e.preventDefault();
-            toggleCockpitMode();
-            return;
-          }
-
-          if (e.code === 'KeyE') {
-            if (isCockpitMode) {
-              const site = NASA_LANDED_SITES[currentSiteId];
-              if (site && site.landmarks) {
-                const nearest = findNearestLandmark(roverDrive.x, roverDrive.z);
-                if (nearest && nearest.dist < 26) {
-                  e.preventDefault();
-                  openLandmarkModal(nearest);
-                }
-              }
-            }
-            return;
-          }
-
-          if (e.code === 'KeyW' || e.code === 'ArrowUp') {
-            driveKeys.forward = true;
-            if (isCockpitMode) e.preventDefault();
-          }
-          if (e.code === 'KeyS' || e.code === 'ArrowDown') {
-            driveKeys.backward = true;
-            if (isCockpitMode) e.preventDefault();
-          }
-          if (e.code === 'KeyA' || e.code === 'ArrowLeft') {
-            driveKeys.left = true;
-            if (isCockpitMode) e.preventDefault();
-          }
-          if (e.code === 'KeyD' || e.code === 'ArrowRight') {
-            driveKeys.right = true;
-            if (isCockpitMode) e.preventDefault();
-          }
-        });
-
-        window.addEventListener('keyup', (e) => {
-          if (e.code === 'KeyW' || e.code === 'ArrowUp') driveKeys.forward = false;
-          if (e.code === 'KeyS' || e.code === 'ArrowDown') driveKeys.backward = false;
-          if (e.code === 'KeyA' || e.code === 'ArrowLeft') driveKeys.left = false;
-          if (e.code === 'KeyD' || e.code === 'ArrowRight') driveKeys.right = false;
-        });
-      }
-
-      function toggleCockpitMode() {
-        if (isTransitioningCockpit) return;
-        if (isCockpitMode) {
-          exitCockpitMode();
-        } else {
-          enterCockpitMode();
-        }
-      }
-
-      function enterCockpitMode() {
-        if (!tCamera || !tControls) return;
-        isTransitioningCockpit = true;
-        audio.playBlip(720, 0.12);
-
-        // Save current orbital perspective
-        savedOrbitalCamPos.copy(tCamera.position);
-        savedOrbitalCamTarget.copy(tControls.target);
-        tControls.enabled = false;
-
-        // Position camera smoothly at rover coordinates
-        const eyeY = getTerrainElevation(currentSiteId, roverDrive.x, roverDrive.z) + 1.8;
-        const lookDist = 20.0;
-        const lookX = roverDrive.x + Math.sin(roverDrive.heading) * lookDist;
-        const lookZ = roverDrive.z + Math.cos(roverDrive.heading) * lookDist;
-
-        // Update button UI
-        const btnToggle = document.getElementById('btn-toggle-cockpit');
-        if (btnToggle) {
-          btnToggle.classList.add('active');
-          btnToggle.innerHTML = '<i data-lucide="video-off" class="hud-icon"></i> <span>Exit Cockpit [V]</span>';
-          if (window.lucide) lucide.createIcons();
-        }
-
-        // Camera badge
-        const badge = document.querySelector('.camera-hud-badge');
-        if (badge) {
-          badge.innerHTML = '<span>PERSPECTIVE:</span> <strong style="color: #FFFFFF;">SURFACE COCKPIT // WASD DRIVE</strong>';
-        }
-
-        // Swoop camera down with GSAP
-        gsap.to(tCamera.position, {
-          x: roverDrive.x,
-          y: eyeY,
-          z: roverDrive.z,
-          duration: 1.5,
-          ease: 'power2.inOut'
-        });
-
-        gsap.to(tControls.target, {
-          x: lookX,
-          y: eyeY,
-          z: lookZ,
-          duration: 1.5,
-          ease: 'power2.inOut',
-          onComplete: () => {
-            isTransitioningCockpit = false;
-            isCockpitMode = true;
-            const hud = document.getElementById('cockpit-hud-overlay');
-            if (hud) {
-              hud.classList.remove('hidden');
-            }
-            if (lidarRibbonMesh) lidarRibbonMesh.visible = true;
-            if (roverDustMesh) roverDustMesh.visible = true;
-          }
-        });
-      }
-
-      function exitCockpitMode() {
-        if (!tCamera || !tControls) return;
-        isTransitioningCockpit = true;
-        isCockpitMode = false;
-        audio.playBlip(540, 0.12);
-
-        // Hide HUD overlay
-        const hud = document.getElementById('cockpit-hud-overlay');
-        if (hud) hud.classList.add('hidden');
-        if (lidarRibbonMesh) lidarRibbonMesh.visible = false;
-        if (roverDustMesh) roverDustMesh.visible = false;
-
-        // Reset button UI
-        const btnToggle = document.getElementById('btn-toggle-cockpit');
-        if (btnToggle) {
-          btnToggle.classList.remove('active');
-          btnToggle.innerHTML = '<i data-lucide="video" class="hud-icon"></i> <span>Surface Cockpit (WASD)</span>';
-          if (window.lucide) lucide.createIcons();
-        }
-
-        // Camera badge
-        const badge = document.querySelector('.camera-hud-badge');
-        if (badge) {
-          badge.innerHTML = '<span>PERSPECTIVE:</span> <strong>3D TILT 55° // BEARING -20°</strong>';
-        }
-
-        // Swoop camera back up with GSAP
-        gsap.to(tCamera.position, {
-          x: savedOrbitalCamPos.x || 90,
-          y: savedOrbitalCamPos.y || 220,
-          z: savedOrbitalCamPos.z || 270,
-          duration: 1.3,
-          ease: 'power2.inOut'
-        });
-
-        gsap.to(tControls.target, {
-          x: savedOrbitalCamTarget.x || 0,
-          y: savedOrbitalCamTarget.y || 0,
-          z: savedOrbitalCamTarget.z || 0,
-          duration: 1.3,
-          ease: 'power2.inOut',
-          onComplete: () => {
-            isTransitioningCockpit = false;
-            tControls.enabled = true;
-          }
-        });
-      }
-
-      function updateCockpitDrivingPhysics(dt) {
-        // 1. Throttle / Acceleration
-        if (driveKeys.forward) {
-          roverDrive.speed = Math.min(roverDrive.maxSpeed, roverDrive.speed + roverDrive.accel * dt);
-        } else if (driveKeys.backward) {
-          roverDrive.speed = Math.max(-roverDrive.maxSpeed * 0.45, roverDrive.speed - roverDrive.accel * dt);
-        } else {
-          // Friction deceleration
-          if (roverDrive.speed > 0) {
-            roverDrive.speed = Math.max(0, roverDrive.speed - roverDrive.friction * dt);
-          } else if (roverDrive.speed < 0) {
-            roverDrive.speed = Math.min(0, roverDrive.speed + roverDrive.friction * dt);
-          }
-        }
-
-        // 2. Steering
-        if (driveKeys.left) {
-          roverDrive.heading += roverDrive.turnRate * dt;
-        }
-        if (driveKeys.right) {
-          roverDrive.heading -= roverDrive.turnRate * dt;
-        }
-
-        // 3. Position Translation & Boundary Clamping
-        roverDrive.x += Math.sin(roverDrive.heading) * roverDrive.speed * dt;
-        roverDrive.z += Math.cos(roverDrive.heading) * roverDrive.speed * dt;
-
-        const radDist = Math.hypot(roverDrive.x, roverDrive.z);
-        if (radDist > 270) {
-          roverDrive.x = (roverDrive.x / radDist) * 270;
-          roverDrive.z = (roverDrive.z / radDist) * 270;
-          roverDrive.speed = 0;
-        }
-
-        // Distance accumulated
-        roverDrive.distanceDrivenMeters += Math.abs(roverDrive.speed * dt * 3.8);
-
-        // 4. Sample 4 Wheel Contact Points for Real-Time Pitch & Roll
-        const halfW = 1.3;
-        const halfL = 1.8;
-        const sinH = Math.sin(roverDrive.heading);
-        const cosH = Math.cos(roverDrive.heading);
-
-        const fl_x = roverDrive.x + sinH * halfL - cosH * halfW;
-        const fl_z = roverDrive.z + cosH * halfL + sinH * halfW;
-        const fr_x = roverDrive.x + sinH * halfL + cosH * halfW;
-        const fr_z = roverDrive.z + cosH * halfL - sinH * halfW;
-        const rl_x = roverDrive.x - sinH * halfL - cosH * halfW;
-        const rl_z = roverDrive.z - cosH * halfL + sinH * halfW;
-        const rr_x = roverDrive.x - sinH * halfL + cosH * halfW;
-        const rr_z = roverDrive.z - cosH * halfL - sinH * halfW;
-
-        const hFL = getTerrainElevation(currentSiteId, fl_x, fl_z);
-        const hFR = getTerrainElevation(currentSiteId, fr_x, fr_z);
-        const hRL = getTerrainElevation(currentSiteId, rl_x, rl_z);
-        const hRR = getTerrainElevation(currentSiteId, rr_x, rr_z);
-
-        roverDrive.centerY = (hFL + hFR + hRL + hRR) * 0.25;
-        const pitchRad = Math.atan2((hFL + hFR) - (hRL + hRR), halfL * 3.8);
-        const rollRad = Math.atan2((hFL + hRL) - (hFR + hRR), halfW * 3.8);
-
-        roverDrive.pitchDeg = pitchRad * (180 / Math.PI);
-        roverDrive.rollDeg = rollRad * (180 / Math.PI);
-        roverDrive.slopeDeg = Math.sqrt(roverDrive.pitchDeg * roverDrive.pitchDeg + roverDrive.rollDeg * roverDrive.rollDeg);
-
-        // Subtle suspension bounce over rocky terrain
-        roverDrive.bounceOffset = Math.sin(Date.now() * 0.014) * 0.05 * (Math.abs(roverDrive.speed) / roverDrive.maxSpeed);
-
-        // 5. Update Camera POV
-        const eyeY = roverDrive.centerY + 1.8 + roverDrive.bounceOffset;
-        tCamera.position.set(roverDrive.x, eyeY, roverDrive.z);
-
-        const lookDist = 20.0;
-        const lookX = roverDrive.x + Math.sin(roverDrive.heading) * lookDist;
-        const lookZ = roverDrive.z + Math.cos(roverDrive.heading) * lookDist;
-        const lookY = eyeY + Math.tan(pitchRad) * lookDist;
-
-        tCamera.lookAt(lookX, lookY, lookZ);
-        tCamera.rotation.z = -rollRad * 0.65;
-
-        // Sync 3D Rover Marker in scene
-        if (roverMarkerMesh) {
-          roverMarkerMesh.position.set(roverDrive.x, roverDrive.centerY + 1.0, roverDrive.z);
-        }
-
-        // 6. Update Ground-Projected Lidar Path Ribbon Ahead
-        updateLidarRibbonAhead();
-
-        // 7. Update Regolith Dust Kick-Up Trail Behind Wheels
-        updateRoverDustParticles(rl_x, rl_z, rr_x, rr_z, dt);
-
-        // 8. Update Cockpit HUD Instruments & Telemetry
-        updateCockpitHUDInstruments();
-        syncCockpitTelemetry();
-      }
-
-      function updateLidarRibbonAhead() {
-        if (!lidarRibbonMesh) {
-          const ribbonCount = 24;
-          const ribbonGeo = new THREE.BufferGeometry();
-          const ribbonArr = new Float32Array(ribbonCount * 3);
-          ribbonGeo.setAttribute('position', new THREE.BufferAttribute(ribbonArr, 3));
-          const ribbonMat = new THREE.LineBasicMaterial({
-            color: 0xFFFFFF,
-            transparent: true,
-            opacity: 0.85,
-            linewidth: 2
-          });
-          lidarRibbonMesh = new THREE.Line(ribbonGeo, ribbonMat);
-          lidarRibbonMesh.frustumCulled = false;
-          tScene.add(lidarRibbonMesh);
-        }
-
-        const ribbonArr = lidarRibbonMesh.geometry.attributes.position.array;
-        for (let i = 0; i < 24; i++) {
-          const t = i / 23.0;
-          const dist = t * 34.0;
-          const rx = roverDrive.x + Math.sin(roverDrive.heading) * dist;
-          const rz = roverDrive.z + Math.cos(roverDrive.heading) * dist;
-          const ry = getTerrainElevation(currentSiteId, rx, rz) + 0.35;
-          ribbonArr[i * 3] = rx;
-          ribbonArr[i * 3 + 1] = ry;
-          ribbonArr[i * 3 + 2] = rz;
-        }
-        lidarRibbonMesh.geometry.attributes.position.needsUpdate = true;
-      }
-
-      function updateRoverDustParticles(rl_x, rl_z, rr_x, rr_z, dt) {
-        if (!roverDustMesh) {
-          const geo = new THREE.BufferGeometry();
-          const pos = new Float32Array(roverDustCount * 3);
-          for (let i = 0; i < roverDustCount * 3; i++) pos[i] = 0;
-          geo.setAttribute('position', new THREE.BufferAttribute(pos, 3));
-          const mat = new THREE.PointsMaterial({
-            color: 0xC46242,
-            size: 2.6,
-            transparent: true,
-            opacity: 0.45,
-            blending: THREE.AdditiveBlending
-          });
-          roverDustMesh = new THREE.Points(geo, mat);
-          roverDustMesh.frustumCulled = false;
-          tScene.add(roverDustMesh);
-        }
-
-        const pos = roverDustMesh.geometry.attributes.position.array;
-        const isMoving = Math.abs(roverDrive.speed) > 0.6;
-
-        for (let i = 0; i < roverDustCount; i++) {
-          pos[i * 3 + 1] += 0.04; // float upward
-          pos[i * 3] += 0.08;     // drift with Martian breeze
-
-          // Respawn at wheels when old or moving
-          if (pos[i * 3 + 1] > roverDrive.centerY + 4.5 || (isMoving && Math.random() < 0.08)) {
-            const isLeft = (i % 2 === 0);
-            pos[i * 3] = isLeft ? rl_x : rr_x;
-            pos[i * 3 + 1] = roverDrive.centerY + 0.2;
-            pos[i * 3 + 2] = isLeft ? rl_z : rr_z;
-          }
-        }
-        roverDustMesh.geometry.attributes.position.needsUpdate = true;
-      }
-
-      function findNearestLandmark(x, z) {
-        const site = NASA_LANDED_SITES[currentSiteId];
-        if (!site || !site.landmarks) return null;
-        let nearest = null;
-        let minDist = Infinity;
-
-        site.landmarks.forEach(lm => {
-          const dx = lm.local[0] - x;
-          const dz = lm.local[1] - z;
-          const d = Math.hypot(dx, dz);
-          if (d < minDist) {
-            minDist = d;
-            nearest = { ...lm, dist: d };
-          }
-        });
-        return nearest;
-      }
-
-      function updateCockpitHUDInstruments() {
-        // 1. Sliding Compass Tape & Heading Readout
-        const degRaw = (roverDrive.heading * 180 / Math.PI) % 360;
-        const deg = (degRaw + 360) % 360;
-        const strip = document.getElementById('hud-compass-tape-strip');
-        if (strip) {
-          // Each 360 deg is 864px (2.4px per degree)
-          const pxPerDeg = 2.4;
-          const offset = -(864 + deg * pxPerDeg);
-          strip.style.transform = `translateX(${offset.toFixed(1)}px)`;
-        }
-
-        const cardinals = ['N', 'NE', 'E', 'SE', 'S', 'SW', 'W', 'NW', 'N'];
-        const cardName = cardinals[Math.round(deg / 45) % 8];
-        const nearest = findNearestLandmark(roverDrive.x, roverDrive.z);
-        const headingText = document.getElementById('hud-compass-heading-text');
-        if (headingText) {
-          const targetStr = nearest ? `Toward ${nearest.name} (${Math.round(nearest.dist * 6)}m)` : 'Terrain Sector Scanning';
-          headingText.textContent = `Heading ${String(Math.round(deg)).padStart(3, '0')}° ${cardName} — ${targetStr}`;
-        }
-
-        // 2. Artificial Horizon Gimbal (Pitch & Roll)
-        const rotator = document.getElementById('hud-gimbal-rotator');
-        if (rotator) {
-          const transY = (roverDrive.pitchDeg * 3.2).toFixed(1);
-          const rotDeg = (-roverDrive.rollDeg).toFixed(1);
-          rotator.style.transform = `translateY(${transY}px) rotate(${rotDeg}deg)`;
-        }
-
-        // 3. Lidar Rangefinder
-        const lidarDistEl = document.getElementById('hud-lidar-dist');
-        const lidarSlopeEl = document.getElementById('hud-lidar-slope');
-        if (lidarDistEl && lidarSlopeEl) {
-          const forwardDist = Math.max(8.0, Math.min(75.0, 38.0 - roverDrive.pitchDeg * 1.4));
-          lidarDistEl.textContent = `${forwardDist.toFixed(1)} m`;
-          lidarSlopeEl.textContent = `SLOPE: ${roverDrive.slopeDeg.toFixed(1)}°`;
-          if (roverDrive.slopeDeg > 15) {
-            lidarSlopeEl.style.color = '#EF4444';
-          } else if (roverDrive.slopeDeg > 9) {
-            lidarSlopeEl.style.color = '#EAB308';
-          } else {
-            lidarSlopeEl.style.color = '#10B981';
-          }
-        }
-
-        // 4. Proximity Discovery Toast
-        const toast = document.getElementById('hud-proximity-toast');
-        const toastName = document.getElementById('hud-proximity-name');
-        const toastDist = document.getElementById('hud-proximity-dist');
-        if (toast && nearest) {
-          if (nearest.dist < 26) {
-            toast.classList.remove('hidden');
-            if (toastName) toastName.textContent = nearest.name;
-            if (toastDist) toastDist.textContent = `Distance: ${Math.round(nearest.dist * 6)}m`;
-          } else {
-            toast.classList.add('hidden');
-          }
-        }
-      }
-
-      function syncCockpitTelemetry() {
-        const traj = ALL_TRAJECTORIES[currentSiteId] || ALL_TRAJECTORIES['jezero-crater'];
-        
-        // Distance
-        const kmDriven = (roverDrive.distanceDrivenMeters / 1000).toFixed(2);
-        const totalDist = (traj.safe_survival_path.total_distance_m / 1000).toFixed(1);
-        const tapeDistEl = document.getElementById('tape-dist');
-        if (tapeDistEl) tapeDistEl.textContent = `${kmDriven} / ${totalDist} km`;
-
-        // Elevation
-        const elevM = Math.round(-2450 + (roverDrive.centerY || -22) * 3.5);
-        const tapeElevEl = document.getElementById('tape-elev');
-        if (tapeElevEl) tapeElevEl.textContent = `${elevM.toLocaleString()} m`;
-
-        // Slope
-        const tapeSlopeEl = document.getElementById('tape-slope');
-        if (tapeSlopeEl) tapeSlopeEl.textContent = `${roverDrive.slopeDeg.toFixed(1)}°`;
-
-        // Coords
-        const site = NASA_LANDED_SITES[currentSiteId];
-        if (site) {
-          const lat = (site.lat + (roverDrive.z / 1000) * 0.016).toFixed(4);
-          const lon = (site.lon + (roverDrive.x / 1000) * 0.016).toFixed(4);
-          const tapeCoordsEl = document.getElementById('tape-coords');
-          if (tapeCoordsEl) tapeCoordsEl.textContent = `${lat}° N, ${lon}° E`;
-        }
-
-        // Oxygen & Life Support
-        const distRatio = Math.min(1.0, roverDrive.distanceDrivenMeters / 4500);
-        const o2Pct = Math.max(8.0, 100 - distRatio * 38 - (roverDrive.slopeDeg / 20.0) * 4);
-        const o2Kg = (1.42 * (o2Pct / 100)).toFixed(2);
-        const o2Burn = (0.78 + (roverDrive.slopeDeg / 15.0) * 0.42).toFixed(2);
-        const o2MarginH = ((o2Pct / 100) * 6.2).toFixed(1);
-
-        const suitO2PctEl = document.getElementById('suit-o2-pct');
-        if (suitO2PctEl) suitO2PctEl.textContent = `${o2Pct.toFixed(1)}%`;
-
-        const suitO2SubEl = document.getElementById('suit-o2-sub');
-        if (suitO2SubEl) suitO2SubEl.innerHTML = `${o2Kg} kg • ${o2Burn} L/min<br>+${o2MarginH}h safety margin`;
-
-        const o2FillEl = document.getElementById('o2-progress-fill');
-        if (o2FillEl) o2FillEl.style.width = `${o2Pct}%`;
-
-        const o2BarText = document.getElementById('o2-bar-text');
-        if (o2BarText) o2BarText.textContent = `${o2Pct.toFixed(1)}% NOMINAL`;
-
-        // Battery
-        const battPct = Math.max(12, Math.round(100 - distRatio * 32));
-        const battWh = Math.round(750 * (battPct / 100));
-        const heatW = Math.round(210 + (roverDrive.slopeDeg / 15.0) * 40);
-        const suitBattPctEl = document.getElementById('suit-batt-pct');
-        if (suitBattPctEl) suitBattPctEl.textContent = `${battPct}%`;
-        const suitBattSubEl = document.getElementById('suit-batt-sub');
-        if (suitBattSubEl) suitBattSubEl.innerHTML = `${battWh} Wh (750 Wh pack)<br>${heatW} W active heating`;
-
-        // Heart Rate
-        const hr = Math.round(76 + (roverDrive.slopeDeg / 18.0) * 36 + (Math.abs(roverDrive.speed) / roverDrive.maxSpeed) * 18);
-        const suitHrValEl = document.getElementById('suit-hr-val');
-        if (suitHrValEl) suitHrValEl.textContent = `${hr} BPM`;
-      }
-
-    </script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
 
   <!-- 2. Lucide Icons -->
   <script src="https://unpkg.com/lucide@latest"></script>
@@ -5530,6 +5014,526 @@
       /* ========================================================================
          MAIN INITIALIZATION
          ======================================================================== */
+      
+      /* ========================================================================
+         FIRST-PERSON ROVER / ASTRONAUT COCKPIT ENGINE (WASD DRIVE & PHYSICS)
+         ======================================================================== */
+/* ========================================================================
+         FIRST-PERSON ROVER / ASTRONAUT COCKPIT ENGINE (WASD DRIVE & PHYSICS)
+         ======================================================================== */
+      function buildCompassTapeStrip() {
+        const strip = document.getElementById('hud-compass-tape-strip');
+        if (!strip) return;
+        strip.innerHTML = '';
+
+        // Build 3 sets of 0-360 degrees for seamless infinite wrap
+        const cardinals = { 0: 'N', 90: 'E', 180: 'S', 270: 'W' };
+        for (let set = 0; set < 3; set++) {
+          for (let deg = 0; deg < 360; deg += 10) {
+            const tick = document.createElement('div');
+            const isMajor = (deg % 30 === 0);
+            const isCardinal = (deg in cardinals);
+            tick.className = 'compass-tick' + (isMajor ? ' major' : '') + (isCardinal ? ' cardinal' : '');
+
+            const line = document.createElement('div');
+            line.className = 'tick-line';
+            tick.appendChild(line);
+
+            if (isMajor) {
+              const label = document.createElement('div');
+              label.className = 'tick-label';
+              label.textContent = isCardinal ? cardinals[deg] : String(deg).padStart(3, '0');
+              tick.appendChild(label);
+            }
+            strip.appendChild(tick);
+          }
+        }
+      }
+
+      function initCockpitControls() {
+        const btnToggle = document.getElementById('btn-toggle-cockpit');
+        if (btnToggle) {
+          btnToggle.addEventListener('click', toggleCockpitMode);
+        }
+
+        const btnInspect = document.getElementById('btn-hud-inspect-discovery');
+        if (btnInspect) {
+          btnInspect.addEventListener('click', () => {
+            const site = NASA_LANDED_SITES[currentSiteId];
+            if (site && site.landmarks) {
+              const nearest = findNearestLandmark(roverDrive.x, roverDrive.z);
+              if (nearest) openLandmarkModal(nearest);
+            }
+          });
+        }
+
+        // Global Key Listeners for WASD / Arrows / V / E
+        window.addEventListener('keydown', (e) => {
+          if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return;
+
+          if (e.code === 'KeyV') {
+            e.preventDefault();
+            toggleCockpitMode();
+            return;
+          }
+
+          if (e.code === 'KeyE') {
+            if (isCockpitMode) {
+              const site = NASA_LANDED_SITES[currentSiteId];
+              if (site && site.landmarks) {
+                const nearest = findNearestLandmark(roverDrive.x, roverDrive.z);
+                if (nearest && nearest.dist < 26) {
+                  e.preventDefault();
+                  openLandmarkModal(nearest);
+                }
+              }
+            }
+            return;
+          }
+
+          if (e.code === 'KeyW' || e.code === 'ArrowUp') {
+            driveKeys.forward = true;
+            if (isCockpitMode) e.preventDefault();
+          }
+          if (e.code === 'KeyS' || e.code === 'ArrowDown') {
+            driveKeys.backward = true;
+            if (isCockpitMode) e.preventDefault();
+          }
+          if (e.code === 'KeyA' || e.code === 'ArrowLeft') {
+            driveKeys.left = true;
+            if (isCockpitMode) e.preventDefault();
+          }
+          if (e.code === 'KeyD' || e.code === 'ArrowRight') {
+            driveKeys.right = true;
+            if (isCockpitMode) e.preventDefault();
+          }
+        });
+
+        window.addEventListener('keyup', (e) => {
+          if (e.code === 'KeyW' || e.code === 'ArrowUp') driveKeys.forward = false;
+          if (e.code === 'KeyS' || e.code === 'ArrowDown') driveKeys.backward = false;
+          if (e.code === 'KeyA' || e.code === 'ArrowLeft') driveKeys.left = false;
+          if (e.code === 'KeyD' || e.code === 'ArrowRight') driveKeys.right = false;
+        });
+      }
+
+      function toggleCockpitMode() {
+        if (isTransitioningCockpit) return;
+        if (isCockpitMode) {
+          exitCockpitMode();
+        } else {
+          enterCockpitMode();
+        }
+      }
+
+      function enterCockpitMode() {
+        if (!tCamera || !tControls) return;
+        isTransitioningCockpit = true;
+        audio.playBlip(720, 0.12);
+
+        // Save current orbital perspective
+        savedOrbitalCamPos.copy(tCamera.position);
+        savedOrbitalCamTarget.copy(tControls.target);
+        tControls.enabled = false;
+
+        // Position camera smoothly at rover coordinates
+        const eyeY = getTerrainElevation(currentSiteId, roverDrive.x, roverDrive.z) + 1.8;
+        const lookDist = 20.0;
+        const lookX = roverDrive.x + Math.sin(roverDrive.heading) * lookDist;
+        const lookZ = roverDrive.z + Math.cos(roverDrive.heading) * lookDist;
+
+        // Update button UI
+        const btnToggle = document.getElementById('btn-toggle-cockpit');
+        if (btnToggle) {
+          btnToggle.classList.add('active');
+          btnToggle.innerHTML = '<i data-lucide="video-off" class="hud-icon"></i> <span>Exit Cockpit [V]</span>';
+          if (window.lucide) lucide.createIcons();
+        }
+
+        // Camera badge
+        const badge = document.querySelector('.camera-hud-badge');
+        if (badge) {
+          badge.innerHTML = '<span>PERSPECTIVE:</span> <strong style="color: #FFFFFF;">SURFACE COCKPIT // WASD DRIVE</strong>';
+        }
+
+        // Swoop camera down with GSAP
+        gsap.to(tCamera.position, {
+          x: roverDrive.x,
+          y: eyeY,
+          z: roverDrive.z,
+          duration: 1.5,
+          ease: 'power2.inOut'
+        });
+
+        gsap.to(tControls.target, {
+          x: lookX,
+          y: eyeY,
+          z: lookZ,
+          duration: 1.5,
+          ease: 'power2.inOut',
+          onComplete: () => {
+            isTransitioningCockpit = false;
+            isCockpitMode = true;
+            const hud = document.getElementById('cockpit-hud-overlay');
+            if (hud) {
+              hud.classList.remove('hidden');
+            }
+            if (lidarRibbonMesh) lidarRibbonMesh.visible = true;
+            if (roverDustMesh) roverDustMesh.visible = true;
+          }
+        });
+      }
+
+      function exitCockpitMode() {
+        if (!tCamera || !tControls) return;
+        isTransitioningCockpit = true;
+        isCockpitMode = false;
+        audio.playBlip(540, 0.12);
+
+        // Hide HUD overlay
+        const hud = document.getElementById('cockpit-hud-overlay');
+        if (hud) hud.classList.add('hidden');
+        if (lidarRibbonMesh) lidarRibbonMesh.visible = false;
+        if (roverDustMesh) roverDustMesh.visible = false;
+
+        // Reset button UI
+        const btnToggle = document.getElementById('btn-toggle-cockpit');
+        if (btnToggle) {
+          btnToggle.classList.remove('active');
+          btnToggle.innerHTML = '<i data-lucide="video" class="hud-icon"></i> <span>Surface Cockpit (WASD)</span>';
+          if (window.lucide) lucide.createIcons();
+        }
+
+        // Camera badge
+        const badge = document.querySelector('.camera-hud-badge');
+        if (badge) {
+          badge.innerHTML = '<span>PERSPECTIVE:</span> <strong>3D TILT 55° // BEARING -20°</strong>';
+        }
+
+        // Swoop camera back up with GSAP
+        gsap.to(tCamera.position, {
+          x: savedOrbitalCamPos.x || 90,
+          y: savedOrbitalCamPos.y || 220,
+          z: savedOrbitalCamPos.z || 270,
+          duration: 1.3,
+          ease: 'power2.inOut'
+        });
+
+        gsap.to(tControls.target, {
+          x: savedOrbitalCamTarget.x || 0,
+          y: savedOrbitalCamTarget.y || 0,
+          z: savedOrbitalCamTarget.z || 0,
+          duration: 1.3,
+          ease: 'power2.inOut',
+          onComplete: () => {
+            isTransitioningCockpit = false;
+            tControls.enabled = true;
+          }
+        });
+      }
+
+      function updateCockpitDrivingPhysics(dt) {
+        // 1. Throttle / Acceleration
+        if (driveKeys.forward) {
+          roverDrive.speed = Math.min(roverDrive.maxSpeed, roverDrive.speed + roverDrive.accel * dt);
+        } else if (driveKeys.backward) {
+          roverDrive.speed = Math.max(-roverDrive.maxSpeed * 0.45, roverDrive.speed - roverDrive.accel * dt);
+        } else {
+          // Friction deceleration
+          if (roverDrive.speed > 0) {
+            roverDrive.speed = Math.max(0, roverDrive.speed - roverDrive.friction * dt);
+          } else if (roverDrive.speed < 0) {
+            roverDrive.speed = Math.min(0, roverDrive.speed + roverDrive.friction * dt);
+          }
+        }
+
+        // 2. Steering
+        if (driveKeys.left) {
+          roverDrive.heading += roverDrive.turnRate * dt;
+        }
+        if (driveKeys.right) {
+          roverDrive.heading -= roverDrive.turnRate * dt;
+        }
+
+        // 3. Position Translation & Boundary Clamping
+        roverDrive.x += Math.sin(roverDrive.heading) * roverDrive.speed * dt;
+        roverDrive.z += Math.cos(roverDrive.heading) * roverDrive.speed * dt;
+
+        const radDist = Math.hypot(roverDrive.x, roverDrive.z);
+        if (radDist > 270) {
+          roverDrive.x = (roverDrive.x / radDist) * 270;
+          roverDrive.z = (roverDrive.z / radDist) * 270;
+          roverDrive.speed = 0;
+        }
+
+        // Distance accumulated
+        roverDrive.distanceDrivenMeters += Math.abs(roverDrive.speed * dt * 3.8);
+
+        // 4. Sample 4 Wheel Contact Points for Real-Time Pitch & Roll
+        const halfW = 1.3;
+        const halfL = 1.8;
+        const sinH = Math.sin(roverDrive.heading);
+        const cosH = Math.cos(roverDrive.heading);
+
+        const fl_x = roverDrive.x + sinH * halfL - cosH * halfW;
+        const fl_z = roverDrive.z + cosH * halfL + sinH * halfW;
+        const fr_x = roverDrive.x + sinH * halfL + cosH * halfW;
+        const fr_z = roverDrive.z + cosH * halfL - sinH * halfW;
+        const rl_x = roverDrive.x - sinH * halfL - cosH * halfW;
+        const rl_z = roverDrive.z - cosH * halfL + sinH * halfW;
+        const rr_x = roverDrive.x - sinH * halfL + cosH * halfW;
+        const rr_z = roverDrive.z - cosH * halfL - sinH * halfW;
+
+        const hFL = getTerrainElevation(currentSiteId, fl_x, fl_z);
+        const hFR = getTerrainElevation(currentSiteId, fr_x, fr_z);
+        const hRL = getTerrainElevation(currentSiteId, rl_x, rl_z);
+        const hRR = getTerrainElevation(currentSiteId, rr_x, rr_z);
+
+        roverDrive.centerY = (hFL + hFR + hRL + hRR) * 0.25;
+        const pitchRad = Math.atan2((hFL + hFR) - (hRL + hRR), halfL * 3.8);
+        const rollRad = Math.atan2((hFL + hRL) - (hFR + hRR), halfW * 3.8);
+
+        roverDrive.pitchDeg = pitchRad * (180 / Math.PI);
+        roverDrive.rollDeg = rollRad * (180 / Math.PI);
+        roverDrive.slopeDeg = Math.sqrt(roverDrive.pitchDeg * roverDrive.pitchDeg + roverDrive.rollDeg * roverDrive.rollDeg);
+
+        // Subtle suspension bounce over rocky terrain
+        roverDrive.bounceOffset = Math.sin(Date.now() * 0.014) * 0.05 * (Math.abs(roverDrive.speed) / roverDrive.maxSpeed);
+
+        // 5. Update Camera POV
+        const eyeY = roverDrive.centerY + 1.8 + roverDrive.bounceOffset;
+        tCamera.position.set(roverDrive.x, eyeY, roverDrive.z);
+
+        const lookDist = 20.0;
+        const lookX = roverDrive.x + Math.sin(roverDrive.heading) * lookDist;
+        const lookZ = roverDrive.z + Math.cos(roverDrive.heading) * lookDist;
+        const lookY = eyeY + Math.tan(pitchRad) * lookDist;
+
+        tCamera.lookAt(lookX, lookY, lookZ);
+        tCamera.rotation.z = -rollRad * 0.65;
+
+        // Sync 3D Rover Marker in scene
+        if (roverMarkerMesh) {
+          roverMarkerMesh.position.set(roverDrive.x, roverDrive.centerY + 1.0, roverDrive.z);
+        }
+
+        // 6. Update Ground-Projected Lidar Path Ribbon Ahead
+        updateLidarRibbonAhead();
+
+        // 7. Update Regolith Dust Kick-Up Trail Behind Wheels
+        updateRoverDustParticles(rl_x, rl_z, rr_x, rr_z, dt);
+
+        // 8. Update Cockpit HUD Instruments & Telemetry
+        updateCockpitHUDInstruments();
+        syncCockpitTelemetry();
+      }
+
+      function updateLidarRibbonAhead() {
+        if (!lidarRibbonMesh) {
+          const ribbonCount = 24;
+          const ribbonGeo = new THREE.BufferGeometry();
+          const ribbonArr = new Float32Array(ribbonCount * 3);
+          ribbonGeo.setAttribute('position', new THREE.BufferAttribute(ribbonArr, 3));
+          const ribbonMat = new THREE.LineBasicMaterial({
+            color: 0xFFFFFF,
+            transparent: true,
+            opacity: 0.85,
+            linewidth: 2
+          });
+          lidarRibbonMesh = new THREE.Line(ribbonGeo, ribbonMat);
+          lidarRibbonMesh.frustumCulled = false;
+          tScene.add(lidarRibbonMesh);
+        }
+
+        const ribbonArr = lidarRibbonMesh.geometry.attributes.position.array;
+        for (let i = 0; i < 24; i++) {
+          const t = i / 23.0;
+          const dist = t * 34.0;
+          const rx = roverDrive.x + Math.sin(roverDrive.heading) * dist;
+          const rz = roverDrive.z + Math.cos(roverDrive.heading) * dist;
+          const ry = getTerrainElevation(currentSiteId, rx, rz) + 0.35;
+          ribbonArr[i * 3] = rx;
+          ribbonArr[i * 3 + 1] = ry;
+          ribbonArr[i * 3 + 2] = rz;
+        }
+        lidarRibbonMesh.geometry.attributes.position.needsUpdate = true;
+      }
+
+      function updateRoverDustParticles(rl_x, rl_z, rr_x, rr_z, dt) {
+        if (!roverDustMesh) {
+          const geo = new THREE.BufferGeometry();
+          const pos = new Float32Array(roverDustCount * 3);
+          for (let i = 0; i < roverDustCount * 3; i++) pos[i] = 0;
+          geo.setAttribute('position', new THREE.BufferAttribute(pos, 3));
+          const mat = new THREE.PointsMaterial({
+            color: 0xC46242,
+            size: 2.6,
+            transparent: true,
+            opacity: 0.45,
+            blending: THREE.AdditiveBlending
+          });
+          roverDustMesh = new THREE.Points(geo, mat);
+          roverDustMesh.frustumCulled = false;
+          tScene.add(roverDustMesh);
+        }
+
+        const pos = roverDustMesh.geometry.attributes.position.array;
+        const isMoving = Math.abs(roverDrive.speed) > 0.6;
+
+        for (let i = 0; i < roverDustCount; i++) {
+          pos[i * 3 + 1] += 0.04; // float upward
+          pos[i * 3] += 0.08;     // drift with Martian breeze
+
+          // Respawn at wheels when old or moving
+          if (pos[i * 3 + 1] > roverDrive.centerY + 4.5 || (isMoving && Math.random() < 0.08)) {
+            const isLeft = (i % 2 === 0);
+            pos[i * 3] = isLeft ? rl_x : rr_x;
+            pos[i * 3 + 1] = roverDrive.centerY + 0.2;
+            pos[i * 3 + 2] = isLeft ? rl_z : rr_z;
+          }
+        }
+        roverDustMesh.geometry.attributes.position.needsUpdate = true;
+      }
+
+      function findNearestLandmark(x, z) {
+        const site = NASA_LANDED_SITES[currentSiteId];
+        if (!site || !site.landmarks) return null;
+        let nearest = null;
+        let minDist = Infinity;
+
+        site.landmarks.forEach(lm => {
+          const dx = lm.local[0] - x;
+          const dz = lm.local[1] - z;
+          const d = Math.hypot(dx, dz);
+          if (d < minDist) {
+            minDist = d;
+            nearest = { ...lm, dist: d };
+          }
+        });
+        return nearest;
+      }
+
+      function updateCockpitHUDInstruments() {
+        // 1. Sliding Compass Tape & Heading Readout
+        const degRaw = (roverDrive.heading * 180 / Math.PI) % 360;
+        const deg = (degRaw + 360) % 360;
+        const strip = document.getElementById('hud-compass-tape-strip');
+        if (strip) {
+          // Each 360 deg is 864px (2.4px per degree)
+          const pxPerDeg = 2.4;
+          const offset = -(864 + deg * pxPerDeg);
+          strip.style.transform = `translateX(${offset.toFixed(1)}px)`;
+        }
+
+        const cardinals = ['N', 'NE', 'E', 'SE', 'S', 'SW', 'W', 'NW', 'N'];
+        const cardName = cardinals[Math.round(deg / 45) % 8];
+        const nearest = findNearestLandmark(roverDrive.x, roverDrive.z);
+        const headingText = document.getElementById('hud-compass-heading-text');
+        if (headingText) {
+          const targetStr = nearest ? `Toward ${nearest.name} (${Math.round(nearest.dist * 6)}m)` : 'Terrain Sector Scanning';
+          headingText.textContent = `Heading ${String(Math.round(deg)).padStart(3, '0')}° ${cardName} — ${targetStr}`;
+        }
+
+        // 2. Artificial Horizon Gimbal (Pitch & Roll)
+        const rotator = document.getElementById('hud-gimbal-rotator');
+        if (rotator) {
+          const transY = (roverDrive.pitchDeg * 3.2).toFixed(1);
+          const rotDeg = (-roverDrive.rollDeg).toFixed(1);
+          rotator.style.transform = `translateY(${transY}px) rotate(${rotDeg}deg)`;
+        }
+
+        // 3. Lidar Rangefinder
+        const lidarDistEl = document.getElementById('hud-lidar-dist');
+        const lidarSlopeEl = document.getElementById('hud-lidar-slope');
+        if (lidarDistEl && lidarSlopeEl) {
+          const forwardDist = Math.max(8.0, Math.min(75.0, 38.0 - roverDrive.pitchDeg * 1.4));
+          lidarDistEl.textContent = `${forwardDist.toFixed(1)} m`;
+          lidarSlopeEl.textContent = `SLOPE: ${roverDrive.slopeDeg.toFixed(1)}°`;
+          if (roverDrive.slopeDeg > 15) {
+            lidarSlopeEl.style.color = '#EF4444';
+          } else if (roverDrive.slopeDeg > 9) {
+            lidarSlopeEl.style.color = '#EAB308';
+          } else {
+            lidarSlopeEl.style.color = '#10B981';
+          }
+        }
+
+        // 4. Proximity Discovery Toast
+        const toast = document.getElementById('hud-proximity-toast');
+        const toastName = document.getElementById('hud-proximity-name');
+        const toastDist = document.getElementById('hud-proximity-dist');
+        if (toast && nearest) {
+          if (nearest.dist < 26) {
+            toast.classList.remove('hidden');
+            if (toastName) toastName.textContent = nearest.name;
+            if (toastDist) toastDist.textContent = `Distance: ${Math.round(nearest.dist * 6)}m`;
+          } else {
+            toast.classList.add('hidden');
+          }
+        }
+      }
+
+      function syncCockpitTelemetry() {
+        const traj = ALL_TRAJECTORIES[currentSiteId] || ALL_TRAJECTORIES['jezero-crater'];
+        
+        // Distance
+        const kmDriven = (roverDrive.distanceDrivenMeters / 1000).toFixed(2);
+        const totalDist = (traj.safe_survival_path.total_distance_m / 1000).toFixed(1);
+        const tapeDistEl = document.getElementById('tape-dist');
+        if (tapeDistEl) tapeDistEl.textContent = `${kmDriven} / ${totalDist} km`;
+
+        // Elevation
+        const elevM = Math.round(-2450 + (roverDrive.centerY || -22) * 3.5);
+        const tapeElevEl = document.getElementById('tape-elev');
+        if (tapeElevEl) tapeElevEl.textContent = `${elevM.toLocaleString()} m`;
+
+        // Slope
+        const tapeSlopeEl = document.getElementById('tape-slope');
+        if (tapeSlopeEl) tapeSlopeEl.textContent = `${roverDrive.slopeDeg.toFixed(1)}°`;
+
+        // Coords
+        const site = NASA_LANDED_SITES[currentSiteId];
+        if (site) {
+          const lat = (site.lat + (roverDrive.z / 1000) * 0.016).toFixed(4);
+          const lon = (site.lon + (roverDrive.x / 1000) * 0.016).toFixed(4);
+          const tapeCoordsEl = document.getElementById('tape-coords');
+          if (tapeCoordsEl) tapeCoordsEl.textContent = `${lat}° N, ${lon}° E`;
+        }
+
+        // Oxygen & Life Support
+        const distRatio = Math.min(1.0, roverDrive.distanceDrivenMeters / 4500);
+        const o2Pct = Math.max(8.0, 100 - distRatio * 38 - (roverDrive.slopeDeg / 20.0) * 4);
+        const o2Kg = (1.42 * (o2Pct / 100)).toFixed(2);
+        const o2Burn = (0.78 + (roverDrive.slopeDeg / 15.0) * 0.42).toFixed(2);
+        const o2MarginH = ((o2Pct / 100) * 6.2).toFixed(1);
+
+        const suitO2PctEl = document.getElementById('suit-o2-pct');
+        if (suitO2PctEl) suitO2PctEl.textContent = `${o2Pct.toFixed(1)}%`;
+
+        const suitO2SubEl = document.getElementById('suit-o2-sub');
+        if (suitO2SubEl) suitO2SubEl.innerHTML = `${o2Kg} kg • ${o2Burn} L/min<br>+${o2MarginH}h safety margin`;
+
+        const o2FillEl = document.getElementById('o2-progress-fill');
+        if (o2FillEl) o2FillEl.style.width = `${o2Pct}%`;
+
+        const o2BarText = document.getElementById('o2-bar-text');
+        if (o2BarText) o2BarText.textContent = `${o2Pct.toFixed(1)}% NOMINAL`;
+
+        // Battery
+        const battPct = Math.max(12, Math.round(100 - distRatio * 32));
+        const battWh = Math.round(750 * (battPct / 100));
+        const heatW = Math.round(210 + (roverDrive.slopeDeg / 15.0) * 40);
+        const suitBattPctEl = document.getElementById('suit-batt-pct');
+        if (suitBattPctEl) suitBattPctEl.textContent = `${battPct}%`;
+        const suitBattSubEl = document.getElementById('suit-batt-sub');
+        if (suitBattSubEl) suitBattSubEl.innerHTML = `${battWh} Wh (750 Wh pack)<br>${heatW} W active heating`;
+
+        // Heart Rate
+        const hr = Math.round(76 + (roverDrive.slopeDeg / 18.0) * 36 + (Math.abs(roverDrive.speed) / roverDrive.maxSpeed) * 18);
+        const suitHrValEl = document.getElementById('suit-hr-val');
+        if (suitHrValEl) suitHrValEl.textContent = `${hr} BPM`;
+      }
+
       window.addEventListener('DOMContentLoaded', () => {
         if (window.lucide) lucide.createIcons();
 
@@ -5540,9 +5544,7 @@
         initRouteControls();
         initChartTabs();
         initSimControls();
-        if (typeof initCockpitControls === 'function') {
-          initCockpitControls();
-        }
+        initCockpitControls();
         buildCompassTapeStrip();
         initAudioToggle();
 
