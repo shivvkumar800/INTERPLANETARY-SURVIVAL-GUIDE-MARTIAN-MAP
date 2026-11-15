@@ -765,7 +765,7 @@
           "lon": 77.45152
         }
       ],
-      "total_distance_m": 10947.7,
+      "total_distance_m": 10900,
       "max_slope_deg": 12.29,
       "estimated_eva_time_mins": 76.6,
       "elevation_array": [
@@ -1303,7 +1303,7 @@
           "lon": 137.36
         }
       ],
-      "total_distance_m": 14820,
+      "total_distance_m": 18500,
       "max_slope_deg": 11.6,
       "estimated_eva_time_mins": 98.4,
       "elevation_array": [
@@ -1765,7 +1765,7 @@
           "lon": 135.645
         }
       ],
-      "total_distance_m": 8120,
+      "total_distance_m": 2400,
       "max_slope_deg": 6.4,
       "estimated_eva_time_mins": 52.4,
       "detour_percentage": 25.8,
@@ -2233,7 +2233,7 @@
           "lon": 354.67
         }
       ],
-      "total_distance_m": 12850,
+      "total_distance_m": 14600,
       "max_slope_deg": 8.4,
       "estimated_eva_time_mins": 82.4,
       "elevation_array": [
@@ -2702,7 +2702,7 @@
           "lon": 175.535
         }
       ],
-      "total_distance_m": 8940,
+      "total_distance_m": 7800,
       "max_slope_deg": 11.8,
       "estimated_eva_time_mins": 68.2,
       "elevation_array": [

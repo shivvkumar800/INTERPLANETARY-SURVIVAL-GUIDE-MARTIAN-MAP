@@ -1728,7 +1728,7 @@
             <!-- Top Magnetic Compass Tape -->
             <div class="hud-compass-container">
               <div class="hud-compass-header" id="hud-compass-heading-text">
-                Heading 048° NE — Toward Octavia E. Butler Landing
+                Heading 048° NE — Surface Reconnaissance Active
               </div>
               <div class="hud-compass-tape-window">
                 <div class="hud-compass-center-indicator"></div>
@@ -4866,7 +4866,7 @@
           landmarks: [
             { id: 'homestead-hollow', name: 'Homestead Hollow', coords: [4.502, 135.623], local: [-90, -90], sol: 0, camera: 'IDC', elev: '-2,613m', img: 'https://images-assets.nasa.gov/image/PIA22877/PIA22877~orig.jpg', desc: 'Shallow impact depression filled with fine-grained dust where InSight landed in November 2018.' },
             { id: 'seis-zone', name: 'SEIS Seismometer Zone', coords: [4.510, 135.632], local: [0, 10], sol: 60, camera: 'ICC', elev: '-2,605m', img: 'https://images-assets.nasa.gov/image/PIA23000/PIA23000~orig.jpg', desc: 'Ultra-sensitive seismometer deployment site recording over 1,300 marsquakes and meteoroid impact tremors.' },
-            { id: 'hp3-mole', name: 'HP3 Heat Flow Mole Site', coords: [4.518, 135.641], local: [90, 80], sol: 110, camera: 'IDC', elev: '-2,595m', img: 'https://images-assets.nasa.gov/image/PIA23267/PIA23267~orig.jpg', desc: 'Deployment point of the self-hammering heat flow probe investigating internal Martian thermal crust mechanics.' }
+            { id: 'hp3-mole', name: 'HP3 Heat Flow Mole Site', coords: [4.518, 135.641], local: [90, 80], sol: 110, camera: 'IDC', elev: '-2,595m', img: 'https://images-assets.nasa.gov/image/PIA23620/PIA23620~orig.jpg', desc: 'InSight robotic arm scoop pushing HP3 mole probe into the red Martian soil at Elysium Planitia.' }
           ]
         },
         'meridiani-planum': {
@@ -4898,6 +4898,16 @@
             { id: 'home-plate', name: 'Home Plate Silica Deposit', coords: [-14.602, 175.535], local: [110, 100], sol: 750, camera: 'MI', elev: '-1,915m', img: 'https://images-assets.nasa.gov/image/PIA10197/PIA10197~orig.jpg', desc: 'Plateau of layered volcanic ash deposits where Spirit uncovered 90% pure opaline silica formed by ancient hydrothermal hot springs.' }
           ]
         }
+      };
+
+      
+      /* MISSION-SPECIFIC O2 AND DISTANCE SPECIFICATIONS */
+      const MISSION_O2_SPECS = {
+        'elysium-planitia': { totalKm: 2.4, totalM: 2400, maxSlope: 2.1, finalO2Pct: 96.4, burnRate: 0.84, baseElev: -2613, defaultTarget: 'HP3 Heat Flow Mole Site' },
+        'gusev-crater':     { totalKm: 7.8, totalM: 7800, maxSlope: 14.2, finalO2Pct: 87.2, burnRate: 1.15, baseElev: -1940, defaultTarget: 'Husband Hill Summit' },
+        'jezero-crater':    { totalKm: 10.9, totalM: 10900, maxSlope: 12.3, finalO2Pct: 83.5, burnRate: 1.05, baseElev: -2494, defaultTarget: 'Octavia E. Butler Landing' },
+        'meridiani-planum': { totalKm: 14.6, totalM: 14600, maxSlope: 9.8, finalO2Pct: 78.9, burnRate: 1.18, baseElev: -1440, defaultTarget: 'Victoria Crater' },
+        'gale-crater':      { totalKm: 18.5, totalM: 18500, maxSlope: 16.8, finalO2Pct: 69.4, burnRate: 1.35, baseElev: -4450, defaultTarget: 'Vera Rubin Ridge' }
       };
 
       let currentSiteId = 'jezero-crater';
@@ -4987,6 +4997,7 @@
       let lidarRibbonMesh, roverDustMesh, roverDustCount = 60;
       let isCockpitMode = false, isTransitioningCockpit = false;
       let savedOrbitalCamPos = new THREE.Vector3(), savedOrbitalCamTarget = new THREE.Vector3();
+      const cockpitCamPos = new THREE.Vector3(), cockpitLookPos = new THREE.Vector3();
       const driveKeys = { forward: false, backward: false, left: false, right: false };
       const roverDrive = {
         x: -120,
@@ -5174,6 +5185,7 @@
           onComplete: () => {
             isTransitioningCockpit = false;
             isCockpitMode = true;
+            if (roverMarkerMesh) roverMarkerMesh.visible = false;
             const hud = document.getElementById('cockpit-hud-overlay');
             if (hud) {
               hud.classList.remove('hidden');
@@ -5188,6 +5200,7 @@
         if (!tCamera || !tControls) return;
         isTransitioningCockpit = true;
         isCockpitMode = false;
+        if (roverMarkerMesh) roverMarkerMesh.visible = true;
         audio.playBlip(540, 0.12);
 
         // Hide HUD overlay
@@ -5300,21 +5313,25 @@
         // Subtle suspension bounce over rocky terrain
         roverDrive.bounceOffset = Math.sin(Date.now() * 0.014) * 0.05 * (Math.abs(roverDrive.speed) / roverDrive.maxSpeed);
 
-        // 5. Update Camera POV
+        // 5. Smooth Camera Follow Rig (Lerped for responsive, silky 60fps tracking)
         const eyeY = roverDrive.centerY + 1.8 + roverDrive.bounceOffset;
-        tCamera.position.set(roverDrive.x, eyeY, roverDrive.z);
+        const lookDist = 22.0;
+        const targetLookX = roverDrive.x + Math.sin(roverDrive.heading) * lookDist;
+        const targetLookZ = roverDrive.z + Math.cos(roverDrive.heading) * lookDist;
+        const targetLookY = eyeY + Math.tan(pitchRad) * lookDist;
 
-        const lookDist = 20.0;
-        const lookX = roverDrive.x + Math.sin(roverDrive.heading) * lookDist;
-        const lookZ = roverDrive.z + Math.cos(roverDrive.heading) * lookDist;
-        const lookY = eyeY + Math.tan(pitchRad) * lookDist;
+        // Smooth camera lerp
+        cockpitCamPos.lerp(new THREE.Vector3(roverDrive.x, eyeY, roverDrive.z), 0.28);
+        cockpitLookPos.lerp(new THREE.Vector3(targetLookX, targetLookY, targetLookZ), 0.28);
 
-        tCamera.lookAt(lookX, lookY, lookZ);
-        tCamera.rotation.z = -rollRad * 0.65;
+        tCamera.position.copy(cockpitCamPos);
+        tCamera.lookAt(cockpitLookPos);
+        tCamera.rotation.z = -rollRad * 0.45;
 
-        // Sync 3D Rover Marker in scene
+        // Sync 3D Rover Marker and ensure it NEVER blocks cockpit view
         if (roverMarkerMesh) {
           roverMarkerMesh.position.set(roverDrive.x, roverDrive.centerY + 1.0, roverDrive.z);
+          roverMarkerMesh.visible = false; // Never block Cockpit view
         }
 
         // 6. Update Ground-Projected Lidar Path Ribbon Ahead
@@ -5335,7 +5352,7 @@
           const ribbonArr = new Float32Array(ribbonCount * 3);
           ribbonGeo.setAttribute('position', new THREE.BufferAttribute(ribbonArr, 3));
           const ribbonMat = new THREE.LineBasicMaterial({
-            color: 0xFFFFFF,
+            color: 0xFBBF24,
             transparent: true,
             opacity: 0.85,
             linewidth: 2
@@ -5430,7 +5447,9 @@
         const nearest = findNearestLandmark(roverDrive.x, roverDrive.z);
         const headingText = document.getElementById('hud-compass-heading-text');
         if (headingText) {
-          const targetStr = nearest ? `Toward ${nearest.name} (${Math.round(nearest.dist * 6)}m)` : 'Terrain Sector Scanning';
+          const site = NASA_LANDED_SITES[currentSiteId] || NASA_LANDED_SITES['jezero-crater'];
+          const spec = MISSION_O2_SPECS[currentSiteId] || MISSION_O2_SPECS['jezero-crater'];
+          const targetStr = nearest ? `Toward ${nearest.name} (${Math.round(nearest.dist * 6)}m)` : `Toward ${spec.defaultTarget} (${site.name})`;
           headingText.textContent = `Heading ${String(Math.round(deg)).padStart(3, '0')}° ${cardName} — ${targetStr}`;
         }
 
@@ -6340,10 +6359,11 @@
         // 1. 3D Volumetric Tube Geometry (Luminous Pure White Corridor)
         const tubeGeo = new THREE.TubeGeometry(currentCorridorCurve, 120, 2.2, 8, false);
         const tubeMat = new THREE.MeshStandardMaterial({
-          color: 0xFFFFFF,
-          emissive: 0xFFFFFF,
-          emissiveIntensity: 0.75,
-          roughness: 0.2
+          color: 0xF59E0B, // Solar Amber
+          emissive: 0xEA580C, // Warm Copper-Gold Glow
+          emissiveIntensity: 0.65,
+          roughness: 0.25,
+          metalness: 0.15
         });
         corridorMesh = new THREE.Mesh(tubeGeo, tubeMat);
         corridorMesh.castShadow = true;
@@ -6371,15 +6391,17 @@
         // 3. Animated Directional Chevrons along safe corridor
         setupCorridorChevrons();
 
-        // 4. 3D Rover Moving Marker
-        const roverGeo = new THREE.SphereGeometry(3.5, 16, 16);
+        // 4. Compact Precision Telemetry Diamond Beacon (Hidden in Cockpit POV)
+        const roverGeo = new THREE.OctahedronGeometry(1.2, 0);
         const roverMat = new THREE.MeshStandardMaterial({
-          color: 0xFFFFFF,
-          emissive: 0xFFFFFF,
-          emissiveIntensity: 0.95
+          color: 0xFBBF24,
+          emissive: 0xD97706,
+          emissiveIntensity: 0.85,
+          roughness: 0.2
         });
         roverMarkerMesh = new THREE.Mesh(roverGeo, roverMat);
         roverMarkerMesh.position.copy(points3D[0]);
+        roverMarkerMesh.visible = !isCockpitMode;
         tScene.add(roverMarkerMesh);
       }
 
@@ -6390,7 +6412,7 @@
         for (let i = 0; i < numChevrons; i++) {
           const chevronGeo = new THREE.ConeGeometry(1.6, 3.2, 4);
           chevronGeo.rotateX(Math.PI / 2);
-          const chevronMat = new THREE.MeshBasicMaterial({ color: 0xFFFFFF });
+          const chevronMat = new THREE.MeshBasicMaterial({ color: 0xFBBF24 });
           const mesh = new THREE.Mesh(chevronGeo, chevronMat);
           mesh.userData.baseT = i / numChevrons;
           chevronGroup.add(mesh);
@@ -6432,9 +6454,9 @@
             new THREE.Vector3(x, yFloat, z)
           ]);
           const stemMat = new THREE.LineBasicMaterial({
-            color: 0xFFFFFF,
+            color: 0xF59E0B,
             transparent: true,
-            opacity: 0.65
+            opacity: 0.75
           });
           const stemLine = new THREE.Line(stemGeo, stemMat);
           stemsGroup.add(stemLine);
@@ -6443,10 +6465,10 @@
           const groundRingGeo = new THREE.RingGeometry(2.2, 3.2, 24);
           groundRingGeo.rotateX(-Math.PI / 2);
           const groundRingMat = new THREE.MeshBasicMaterial({
-            color: 0xFFFFFF,
+            color: 0xF59E0B,
             side: THREE.DoubleSide,
             transparent: true,
-            opacity: 0.7
+            opacity: 0.75
           });
           const groundRing = new THREE.Mesh(groundRingGeo, groundRingMat);
           groundRing.position.set(x, yGround + 0.3, z);
@@ -6517,8 +6539,15 @@
          ======================================================================== */
       function switchLandingSite(siteId) {
         currentSiteId = siteId;
+        roverDrive.x = -120;
+        roverDrive.z = -100;
+        roverDrive.heading = 0.82;
+        roverDrive.speed = 0;
+        roverDrive.distanceDrivenMeters = 0;
+        if (isCockpitMode) exitCockpitMode();
         const site = NASA_LANDED_SITES[siteId] || NASA_LANDED_SITES['jezero-crater'];
         const traj = ALL_TRAJECTORIES[siteId] || ALL_TRAJECTORIES['jezero-crater'];
+        const spec = MISSION_O2_SPECS[siteId] || MISSION_O2_SPECS['jezero-crater'];
 
         // Header and Dropdown updates with Editorial Italic styling
         document.getElementById('active-workspace-label').innerHTML = `
@@ -6537,6 +6566,31 @@
           dynTitle.innerHTML = `${site.name} // <span style="font-family: var(--font-sans); font-style: normal;">Traverse Waveform</span>`;
         }
 
+        // Mission-Specific Tape Distance and Starting O2
+        const tapeDistEl = document.getElementById('tape-dist');
+        if (tapeDistEl) tapeDistEl.textContent = `0.0 / ${spec.totalKm.toFixed(1)} km`;
+
+        const tapeElevEl = document.getElementById('tape-elev');
+        if (tapeElevEl) tapeElevEl.textContent = `${spec.baseElev.toLocaleString()} m`;
+
+        const tapeSlopeEl = document.getElementById('tape-slope');
+        if (tapeSlopeEl) tapeSlopeEl.textContent = '0.0°';
+
+        const tapeCoordsEl = document.getElementById('tape-coords');
+        if (tapeCoordsEl) tapeCoordsEl.textContent = `${site.coords[0].toFixed(4)}° N, ${site.coords[1].toFixed(4)}° E`;
+
+        const suitO2PctEl = document.getElementById('suit-o2-pct');
+        if (suitO2PctEl) suitO2PctEl.textContent = '100.0%';
+
+        const suitO2SubEl = document.getElementById('suit-o2-sub');
+        if (suitO2SubEl) suitO2SubEl.innerHTML = `1.42 kg • ${spec.burnRate.toFixed(2)} L/min<br>+4.8h safety margin`;
+
+        const o2FillEl = document.getElementById('o2-progress-fill');
+        if (o2FillEl) o2FillEl.style.width = '100%';
+
+        const o2BarText = document.getElementById('o2-bar-text');
+        if (o2BarText) o2BarText.textContent = '100.0% NOMINAL';
+
         // Build Bottom Discovered Sites Quick Carousel
         buildDiscoveredSitesCarousel(site);
 
@@ -6548,11 +6602,11 @@
 
         // Update Right Inspector Sidebar KPIs & Chart
         updateInspectorSidebar(site, traj);
+
+        // Immediately update Cockpit HUD with active mission target
+        updateCockpitHUDInstruments();
       }
 
-      /* ========================================================================
-         UPDATE ML TERRAIN INTELLIGENCE UI
-         ======================================================================== */
       function updateMLIntelligenceUI(siteId, routeMode) {
         const traj = ALL_TRAJECTORIES[siteId] || ALL_TRAJECTORIES['jezero-crater'];
         const isSafe = (routeMode === 'safe' || routeMode === 'both');
@@ -6859,6 +6913,7 @@
         const traj = ALL_TRAJECTORIES[currentSiteId] || ALL_TRAJECTORIES['jezero-crater'];
         const safePath = traj.safe_survival_path.coordinates;
         const total = safePath.length;
+        const spec = MISSION_O2_SPECS[currentSiteId] || MISSION_O2_SPECS['jezero-crater'];
 
         simTimer = setInterval(() => {
           simIndex++;
@@ -6872,60 +6927,67 @@
           }
 
           const curPt = safePath[simIndex];
-          const totalDistKm = (traj.safe_survival_path.total_distance_m / 1000).toFixed(1);
-          const curDistKm = ((simIndex / (total - 1)) * totalDistKm).toFixed(1);
-          const elev = traj.safe_survival_path.elevation_array[simIndex] || -2450;
-          const slope = traj.safe_survival_path.slope_array[simIndex] || 4.5;
+          const tProgress = simIndex / (total - 1);
+          const curDistKm = (tProgress * spec.totalKm).toFixed(2);
+          const elev = traj.safe_survival_path.elevation_array[simIndex] || spec.baseElev;
+          const slope = traj.safe_survival_path.slope_array[simIndex] || (spec.maxSlope * 0.7);
 
-          // 1. Move 3D Rover Beacon along corridor curve
-          if (roverMarkerMesh && currentCorridorCurve) {
-            const tProgress = simIndex / (total - 1);
+          // 1. Move 3D Rover Beacon & Sync Cockpit POV along curve
+          if (currentCorridorCurve) {
             const pt3D = currentCorridorCurve.getPointAt(tProgress);
-            roverMarkerMesh.position.copy(pt3D);
+            const tangent = currentCorridorCurve.getTangentAt(tProgress);
+
+            roverDrive.x = pt3D.x;
+            roverDrive.z = pt3D.z;
+            roverDrive.centerY = pt3D.y - 1.8;
+            roverDrive.heading = Math.atan2(tangent.x, tangent.z);
+            roverDrive.distanceDrivenMeters = tProgress * spec.totalM;
+
+            if (roverMarkerMesh) {
+              roverMarkerMesh.position.copy(pt3D);
+              roverMarkerMesh.visible = !isCockpitMode;
+            }
+
+            if (isCockpitMode) {
+              tCamera.position.set(pt3D.x, pt3D.y + 0.35, pt3D.z);
+              tCamera.lookAt(pt3D.x + tangent.x * 20, pt3D.y + tangent.y * 20, pt3D.z + tangent.z * 20);
+            }
           }
 
-          // 2. Telemetry Updates
-          const o2Pct = Math.max(10, (100 - (simIndex / (total - 1)) * 46)).toFixed(1);
+          // 2. Slow, continuous, realistic mission-specific O2 depletion
+          // Elysium: 96.4%, Gusev: 87.2%, Jezero: 83.5%, Meridiani: 78.9%, Gale: 69.4%
+          const deltaO2 = 100.0 - spec.finalO2Pct;
+          const o2Pct = Math.max(spec.finalO2Pct, 100.0 - (tProgress * deltaO2)).toFixed(1);
           const o2Kg = (1.42 * (o2Pct / 100)).toFixed(2);
-          const o2Burn = (0.75 + (slope / 15.0) * 0.45).toFixed(2);
+          const o2Burn = (spec.burnRate + (slope / 15.0) * 0.25).toFixed(2);
           const o2MarginH = ((o2Pct / 100) * 6.2).toFixed(1);
 
-          const battPct = Math.max(14, (100 - (simIndex / (total - 1)) * 38)).toFixed(0);
+          const battPct = Math.max(20, Math.round(100 - tProgress * 28));
           const battWh = Math.round(750 * (battPct / 100));
-          const heaterWatts = Math.round(210 + (slope / 15.0) * 65 + Math.cos(simIndex * 1.3) * 10);
+          const heatW = Math.round(210 + (slope / 15.0) * 45);
 
-          const pressKpa = (29.60 + Math.sin(simIndex * 0.9) * 0.03).toFixed(2);
-          const pressPsi = (pressKpa * 0.145038).toFixed(2);
+          const hr = Math.round(76 + (slope / 15.0) * 42);
 
-          const hrBpm = Math.round(78 + (Math.max(0, slope) / 15.0) * 52 + Math.sin(simIndex * 1.7) * 2);
-
-          // Update Telemetry Cards
-          document.getElementById('suit-o2-pct').textContent = o2Pct + '%';
-          document.getElementById('suit-o2-sub').innerHTML = `${o2Kg} kg • ${o2Burn} L/min<br>+${o2MarginH}h safety margin`;
-
-          document.getElementById('suit-batt-pct').textContent = battPct + '%';
-          document.getElementById('suit-batt-sub').innerHTML = `${battWh} Wh (750 Wh pack)<br>${heaterWatts} W active heating`;
-
-          document.getElementById('suit-press-val').textContent = pressKpa + ' kPa';
-          document.getElementById('suit-press-sub').innerHTML = `${pressPsi} psi nominal<br>±0.02 kPa regulator`;
-
-          document.getElementById('suit-hr-val').textContent = hrBpm + ' BPM';
-          document.getElementById('suit-hr-sub').innerHTML = `Resting: 78 BPM<br>Slope: ${slope.toFixed(1)}°`;
-
-          const o2Fill = document.getElementById('o2-progress-fill');
-          if (o2Fill) {
-            o2Fill.style.width = o2Pct + '%';
-          }
-          document.getElementById('o2-bar-text').textContent = o2Pct + '% NOMINAL';
-
-          // Update Bottom Ribbon
+          // Update UI DOM with Tabular numbers
           document.getElementById('tape-coords').textContent = `${curPt.lat.toFixed(4)}° N, ${curPt.lon.toFixed(4)}° E`;
-          document.getElementById('tape-elev').textContent = elev + ' m';
-          document.getElementById('tape-slope').textContent = slope.toFixed(1) + '°';
-          document.getElementById('tape-dist').textContent = `${curDistKm} / ${totalDistKm} km`;
-          document.getElementById('tape-o2').textContent = o2Burn + ' L/min';
+          document.getElementById('tape-elev').textContent = `${elev.toLocaleString()} m`;
+          document.getElementById('tape-slope').textContent = `${slope.toFixed(1)}°`;
+          document.getElementById('tape-dist').textContent = `${curDistKm} / ${spec.totalKm.toFixed(1)} km`;
 
-        }, 140);
+          document.getElementById('suit-o2-pct').textContent = `${o2Pct}%`;
+          document.getElementById('suit-o2-sub').innerHTML = `${o2Kg} kg • ${o2Burn} L/min<br>+${o2MarginH}h safety margin`;
+          document.getElementById('o2-progress-fill').style.width = `${o2Pct}%`;
+          document.getElementById('o2-bar-text').textContent = `${o2Pct}% NOMINAL`;
+
+          document.getElementById('suit-batt-pct').textContent = `${battPct}%`;
+          document.getElementById('suit-batt-sub').innerHTML = `${battWh} Wh (750 Wh pack)<br>${heatW} W active heating`;
+
+          document.getElementById('suit-hr-val').textContent = `${hr} BPM`;
+          document.getElementById('suit-hr-sub').innerHTML = `Resting: 78 BPM<br>Slope scaling: 78-${hr}`;
+
+          // Update Cockpit HUD Instruments if visible
+          updateCockpitHUDInstruments();
+        }, 280);
       }
 
       function resetSimulation() {
