@@ -105,7 +105,7 @@ const server = http.createServer((req, res) => {
   }
 
   // Root or Default Page
-  if (reqPath === '/' || reqPath === '/index.html') {
+  if (reqPath === '/' || reqPath === '/index.html' || reqPath === '/Mars Survival guide.html') {
     reqPath = '/index.html';
   }
 
