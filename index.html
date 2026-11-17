@@ -7121,7 +7121,7 @@
 
           roverDrive.x = pt.x;
           roverDrive.z = pt.z;
-          roverDrive.centerY = pt.y - 1.8;
+          roverDrive.centerY = pt.y;
           roverDrive.heading = Math.atan2(tangent.x, tangent.z);
 
           if (roverMarkerMesh) {
@@ -7189,19 +7189,14 @@
         ringMesh.position.y = 0.08;
         group.add(ringMesh);
 
-        // Sleek Low-Profile Martian Ground Spotlight (Positioned low to avoid camera occlusion)
-        const lightConeGeo = new THREE.ConeGeometry(1.2, 6, 12, 1, true);
-        lightConeGeo.rotateX(-Math.PI / 2);
-        lightConeGeo.translate(0, 0, 3);
-        const lightConeMat = new THREE.MeshBasicMaterial({
-          color: 0xFEF08A,
-          transparent: true,
-          opacity: 0.12,
-          side: THREE.DoubleSide
-        });
-        const lightCone = new THREE.Mesh(lightConeGeo, lightConeMat);
-        lightCone.position.set(0, 0.35, 1.8);
-        group.add(lightCone);
+        // Authentic High-Power Hazcam Headlights (Real dynamic light on terrain, zero occluding cone geometry)
+        const roverHeadlight = new THREE.SpotLight(0xFFF1B0, 3.2, 70, Math.PI / 4, 0.45, 1.2);
+        roverHeadlight.position.set(0, 1.4, 1.6);
+        const roverHeadlightTarget = new THREE.Object3D();
+        roverHeadlightTarget.position.set(0, 0.2, 28);
+        group.add(roverHeadlight);
+        group.add(roverHeadlightTarget);
+        roverHeadlight.target = roverHeadlightTarget;
 
         // Vertical Laser Tracking Beacon Drop-Line (Height ~24m)
         const laserGeo = new THREE.CylinderGeometry(0.04, 0.04, 20, 6);
@@ -7342,6 +7337,7 @@
           wheels: wheels,
           beacon: beaconMesh,
           ring: ringMesh,
+          laser: laserMesh,
           rollDistance: 0,
           animateRoll: function(distDelta) {
             this.rollDistance += distDelta;
@@ -7936,18 +7932,24 @@
         const fwdX = Math.sin(roverDrive.heading);
         const fwdZ = Math.cos(roverDrive.heading);
 
-        // Front-Facing Forward POV: Elevated atop chassis deck (+4.6m), looking forward onto Martian horizon
-        const camX = roverDrive.x + fwdX * 0.6;
-        const camZ = roverDrive.z + fwdZ * 0.6;
-        const camY = roverDrive.centerY + 4.6;
+        // Front-Facing Forward Cockpit POV: Eye level at driver station looking directly onto Martian horizon
+        const camX = roverDrive.x + fwdX * 0.1;
+        const camZ = roverDrive.z + fwdZ * 0.1;
+        const camY = roverDrive.centerY + 3.2;
 
-        const lookDist = 55.0;
+        const lookDist = 75.0;
         const lookX = roverDrive.x + fwdX * lookDist;
         const lookZ = roverDrive.z + fwdZ * lookDist;
-        const lookY = roverDrive.centerY + 2.0;
+        const lookY = roverDrive.centerY + 3.2;
 
         cockpitCamPos.set(camX, camY, camZ);
         cockpitLookPos.set(lookX, lookY, lookZ);
+
+        // In Cockpit View: hide vertical laser drop-line & floating chevrons so windshield is 100% unobstructed
+        if (chevronGroup) chevronGroup.visible = false;
+        if (roverMarkerMesh && roverMarkerMesh.userData && roverMarkerMesh.userData.laser) {
+          roverMarkerMesh.userData.laser.visible = false;
+        }
 
         // Update button UI
         const btnToggle = document.getElementById('btn-toggle-cockpit');
@@ -7989,6 +7991,10 @@
         isTransitioningCockpit = true;
         isCockpitMode = false;
         if (roverMarkerMesh) roverMarkerMesh.visible = true;
+        if (roverMarkerMesh && roverMarkerMesh.userData && roverMarkerMesh.userData.laser) {
+          roverMarkerMesh.userData.laser.visible = true;
+        }
+        if (chevronGroup) chevronGroup.visible = true;
         audio.playBlip(540, 0.12);
 
         // Hide HUD overlay
@@ -8137,14 +8143,20 @@
         if (isCockpitMode && !isTransitioningCockpit) {
           if (currentPOVMode === 'forward') {
             // DEFAULT FRONT-FACING FORWARD COCKPIT POV:
-            // Positioned atop chassis deck looking straight onto horizon, front bumper/wheels visible at bottom
-            targetCamX = roverDrive.x + fwdX * 0.6;
-            targetCamZ = roverDrive.z + fwdZ * 0.6;
-            targetCamY = roverDrive.centerY + 4.6 + roverDrive.bounceOffset;
+            // Authentic pilot eye-level looking directly out onto horizon; front bumper/wheels visible at bottom edge
+            targetCamX = roverDrive.x + fwdX * 0.1;
+            targetCamZ = roverDrive.z + fwdZ * 0.1;
+            targetCamY = roverDrive.centerY + 3.2 + roverDrive.bounceOffset;
 
-            targetLookX = roverDrive.x + fwdX * 60.0;
-            targetLookZ = roverDrive.z + fwdZ * 60.0;
-            targetLookY = roverDrive.centerY + 2.0 + Math.tan(pitchRad) * 60.0;
+            targetLookX = roverDrive.x + fwdX * 75.0;
+            targetLookZ = roverDrive.z + fwdZ * 75.0;
+            targetLookY = roverDrive.centerY + 3.1 + Math.tan(pitchRad) * 75.0;
+
+            // Windshield protection: hide vertical laser drop-line & floating chevrons
+            if (chevronGroup && chevronGroup.visible) chevronGroup.visible = false;
+            if (roverMarkerMesh && roverMarkerMesh.userData && roverMarkerMesh.userData.laser && roverMarkerMesh.userData.laser.visible) {
+              roverMarkerMesh.userData.laser.visible = false;
+            }
 
             // Frame-rate independent exponential lerp damping (zero jitter at any FPS)
             const damp = 1.0 - Math.exp(-14.0 * dt);
@@ -9917,14 +9929,14 @@
           const t = i / (n - 1);
           const x = -120 + t * 250;
           const z = -100 + t * 220 + Math.sin(t * Math.PI) * 25;
-          const y = getTerrainElevation(siteId, x, z) + 1.8;
+          const y = getTerrainElevation(siteId, x, z) + 0.15; // Sleek ground ribbon, hugs terrain topography
           points3D.push(new THREE.Vector3(x, y, z));
         }
 
         currentCorridorCurve = new THREE.CatmullRomCurve3(points3D);
 
-        // 1. 3D Navigational Path Ribbon (Sleek 0.45m Golden Cybernetic Guideline)
-        const tubeGeo = new THREE.TubeGeometry(currentCorridorCurve, 160, 0.45, 8, false);
+        // 1. 3D Navigational Path Ribbon (Sleek 0.20m Ground Guideline - never occludes cockpit)
+        const tubeGeo = new THREE.TubeGeometry(currentCorridorCurve, 160, 0.20, 8, false);
         const tubeMat = new THREE.MeshStandardMaterial({
           color: 0xF59E0B, // Solar Amber
           emissive: 0xEA580C, // Warm Copper-Gold Glow
@@ -10536,7 +10548,7 @@
           const pt0 = currentCorridorCurve.getPointAt(0);
           roverDrive.x = pt0.x;
           roverDrive.z = pt0.z;
-          roverDrive.centerY = pt0.y - 1.8;
+          roverDrive.centerY = pt0.y;
           roverDrive.heading = 0.82;
           if (roverMarkerMesh) {
             roverMarkerMesh.position.copy(pt0);
